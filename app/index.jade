@@ -1,0 +1,39 @@
+!!!
+html.no-js
+	head
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+		title The Basics of Flight
+		meta(name="description", content="")
+		meta(name="viewport", content="width=device-width")
+		//-Place favicon.ico and apple-touch-icon.png in the root directory
+		link(rel="stylesheet", href="styles/main.css")
+		//- build:js scripts/vendor/modernizr.js
+		script(src="bower_components/modernizr/modernizr.js")
+		//- endbuild
+	body
+		nav.nav
+			each page, i in ['Forces', 'Controls', 'Preflight']
+				a.nav-item(href='#/#' + page.toLowerCase())
+					img.nav-image(src='/images/proto-nav-' + page.toLowerCase() + '.png')
+					span.nav-text= page
+
+		.container
+			.hero-unit
+				h1 'Allo, 'Allo!
+				p You now hav
+				ul
+					li HTML5 Boilerplate
+					li RequireJS
+				p installed
+				h3 Enjoy coding! - Yeoman
+
+		script
+			var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+			(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+			g.src='//www.google-analytics.com/ga.js';
+			s.parentNode.insertBefore(g,s)}(document,'script'));
+
+		//- build:js scripts/main.js
+		script(data-main="scripts/main", src="bower_components/requirejs/require.js")
+		//- endbuild
