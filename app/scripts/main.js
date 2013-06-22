@@ -10,9 +10,12 @@ require.config({
     }
 });
 
-require(['app', 'jquery'], function (app, $) {
-    'use strict';
-    // use app here
-    console.log(app);
-    console.log('Running jQuery %s', $().jquery);
+require(['app', 'jquery', 'polyfills'], function (app, $) {
+	'use strict';
+	// use app here
+	console.log(app);
+	console.log('Running jQuery %s', $().jquery);
+	
+	// select the first page....sort of
+	document.querySelector('.nav-item').click()
 });
