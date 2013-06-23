@@ -12,12 +12,6 @@ html.no-js
 		script(src="bower_components/modernizr/modernizr.js")
 		//- endbuild
 	body
-		nav.nav
-			each page, i in ['Forces', 'Controls', 'Preflight']
-				a.nav-item(href='#/#' + page.toLowerCase())
-					img.nav-image(src='/images/proto-nav-' + page.toLowerCase() + '.png')
-					span.nav-text= page
-
 		.container
 			.hero-unit
 				h1 'Allo, 'Allo!
