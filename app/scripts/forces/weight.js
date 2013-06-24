@@ -37,11 +37,13 @@ define([], function() {
 			card.style.right = '1.5em';
 			card.style.width = '60%';
 			this._page.element.appendChild(card, this._page.element.firstChild);
+			this._page.card.style.display = 'none';
 		},
 
 		deactivate: function() {
 			console.log([this._page.name, this.name].join('#') + ': deactivate');
 			this._page.element.removeChild(this.element);
+			this._page.card.style.display = 'block';
 		}
 	};
 

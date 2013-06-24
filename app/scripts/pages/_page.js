@@ -81,7 +81,7 @@ define([
 		},
 
 		stop: function() {
-			this.movie.stop(arguments);
+			this.movie.stop && this.movie.stop(arguments);
 		},
 
 		subnavListener: function(e) {
