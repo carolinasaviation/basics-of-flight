@@ -1,11 +1,13 @@
 /*global define */
 define([
+	'./config',
 	'./pages/forces',
 	'./pages/controls',
 	'./pages/preflight',
 	'./views/navigation',
-], function (forces, controls, preflight, viewNavigation) {
+], function (config, forces, controls, preflight, viewNavigation) {
 	'use strict';
+	window.config = config;
 
 	var NAV_ACTIVE_CLASS = 'nav-item-active';
 

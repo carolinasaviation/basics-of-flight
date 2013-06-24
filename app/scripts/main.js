@@ -13,6 +13,7 @@ require.config({
 
 require(['app', 'jquery', 'lodash', 'polyfills'], function (app, $, _) {
 	'use strict';
+	window.config = config;
 
 	// use app here
 	console.log('Running jQuery %s', $.prototype.jquery);
