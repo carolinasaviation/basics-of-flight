@@ -39,7 +39,7 @@ define([
 
 			document.body.insertBefore(this.element, document.body.firstChild.nextSibling);
 
-			var pages = this.sections;
+			this.deselectActiveSection();
 			this.element.querySelector('.subnav').addEventListener('click', this.subnavListener, false);
 		},
 
@@ -84,25 +84,31 @@ define([
 			this.movie.stop && this.movie.stop(arguments);
 		},
 
+		deselectActiveSection: function(e) {
+			var active = document.querySelector('.subnav .' + NAV_ACTIVE_CLASS);
+			if (!active) return;
+
+			section = _.findWhere(this.sections, { name: active.textContent });
+			if (section)
+				section.deactivate();
+			active.classList.remove(NAV_ACTIVE_CLASS);
+		},
+
 		subnavListener: function(e) {
 			e.preventDefault();
-			var active = document.querySelector('.subnav .' + NAV_ACTIVE_CLASS),
-					node = e.target;
+			this.deselectActiveSection();
+
+			var node = e.target;
 
 			var section;
-
-			if (active) {
-				section = _.findWhere(this.sections, { name: active.textContent });
-				section.deactivate();
-				active.classList.remove(NAV_ACTIVE_CLASS);
-			}
 
 			while (!node.matches('.subnav-item'))
 				node = node.parentNode;
 
 			node.classList.add(NAV_ACTIVE_CLASS);
 			section = _.findWhere(this.sections, { name: node.textContent });
-			section.activate();
+			if (section)
+				section.activate();
 		}
 	}
 
