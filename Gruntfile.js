@@ -133,6 +133,16 @@ module.exports = function (grunt) {
               dest: '<%= yeoman.tmp %>',
               ext: '.html'
             }]
+          },
+          dist: {
+            options: {},
+            files: [{
+              expand: true,
+              cwd: '<%= yeoman.app %>',
+              src: '{,*/}*.jade',
+              dest: '<%= yeoman.dist %>',
+              ext: '.html'
+            }]
           }
         },
         stylus: {
@@ -159,23 +169,26 @@ module.exports = function (grunt) {
             dist: {}
         },*/
         requirejs: {
-            dist: {
-                // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
-                options: {
-                    // `name` and `out` is set by grunt-usemin
-                    baseUrl: yeomanConfig.app + '/scripts',
-                    optimize: 'none',
-                    // TODO: Figure out how to make sourcemaps work with grunt-usemin
-                    // https://github.com/yeoman/grunt-usemin/issues/30
-                    //generateSourceMaps: true,
-                    // required to support SourceMaps
-                    // http://requirejs.org/docs/errors.html#sourcemapcomments
-                    preserveLicenseComments: false,
-                    useStrict: true,
-                    wrap: true
-                    //uglify2: {} // https://github.com/mishoo/UglifyJS2
-                }
-            }
+					dist: {
+						// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
+						options: {
+							// `name` and `out` is set by grunt-usemin
+							name: 'main',
+							out: yeomanConfig.dist + '/scripts/main.js',
+							baseUrl: yeomanConfig.app + '/scripts',
+							optimize: 'none',
+							mainConfigFile: yeomanConfig.app + '/scripts/main.js',
+							// TODO: Figure out how to make sourcemaps work with grunt-usemin
+							// https://github.com/yeoman/grunt-usemin/issues/30
+							//generateSourceMaps: true,
+							// required to support SourceMaps
+							// http://requirejs.org/docs/errors.html#sourcemapcomments
+							preserveLicenseComments: false,
+							useStrict: true,
+							wrap: true
+							//uglify2: {} // https://github.com/mishoo/UglifyJS2
+						}
+					}
         },
         rev: {
             dist: {
@@ -193,7 +206,7 @@ module.exports = function (grunt) {
             options: {
                 dest: '<%= yeoman.dist %>'
             },
-            html: '<%= yeoman.app %>/index.html'
+            html: '<%= yeoman.tmp %>/index.html'
         },
         usemin: {
             options: {
@@ -267,8 +280,7 @@ module.exports = function (grunt) {
             dist: [
                 'stylus:dist',
                 'imagemin',
-                'svgmin',
-								'jade:dist'
+                'svgmin'
             ]
         },
         bower: {
@@ -304,12 +316,11 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
+				'jade:dist',
         'useminPrepare',
         'concurrent:dist',
         'requirejs',
-        'cssmin',
-        'concat',
-        'uglify',
+        //'uglify',
         'copy',
         'rev',
         'usemin'
