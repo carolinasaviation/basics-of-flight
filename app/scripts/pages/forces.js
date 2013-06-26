@@ -49,7 +49,7 @@ define([
 		//this.play(this.element.querySelector('img'), { });
 		var element = this.element.querySelector('img');
 
-		draw.createAnimation(element, '3s ease-in infinite', [
+		draw.createAnimation(element, '3s linear infinite', [
 		 [0, '-webkit-transform: translate(0,0);'],
 		 [25, '-webkit-transform: translate(0,30px)'],
 		 [50, '-webkit-transform: translate(0,0px)'],

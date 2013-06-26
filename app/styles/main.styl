@@ -103,3 +103,36 @@ h1
 	width 38%
 
 // cards }}}
+
+// {{{ animations
+
+@keyframes slideUpAndFadeOut
+	from
+		transform translateY(0)
+		opacity 1
+	to
+		transform translateY(-12em)
+		opacity 0
+
+@keyframes slideDownAndFadeIn
+	from
+		transform translateY(-12em)
+		opacity 0
+	to
+		transform translateY(0)
+		opacity 1
+
+.slideUpAndFadeOut
+	animation-duration: 1s
+	animation-name: slideUpAndFadeOut
+	animation-iteration-count: 1
+	animation-fill-mode: forwards
+
+.slideDownAndFadeIn
+	animation-duration: 1s
+	animation-name: slideDownAndFadeIn
+	animation-direction: alternate
+	animation-fill-mode: forwards
+
+
+// animations }}}

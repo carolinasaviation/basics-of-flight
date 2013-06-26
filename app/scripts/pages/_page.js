@@ -11,6 +11,7 @@ define([
 		this.subnav = viewSubnav;
 		this.subnavListener = this.subnavListener.bind(this);
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
+		this.activatedSection = false;
 	}
 
 	Page.prototype = {
@@ -46,6 +47,8 @@ define([
 		load: function() {
 			if (this.isInit === false) this.init();
 			this.beforeLoad();
+			this.card.classList.remove('slideUpAndFadeOut');
+			this.card.classList.add('slideDownAndFadeIn');
 
 			if (config.logger.pageLifeCycle) console.log('Load page %s', this.name);
 			this.onLoad();
@@ -72,6 +75,7 @@ define([
 			if (config.logger.pageLifeCycle) console.log('OnUnload page %s', this.name);
 			this.element.querySelector('.subnav').removeEventListener('click', this.subnavListener);
 			this.element.parentNode.removeChild(this.element);
+			this.activatedSection = false;
 		},
 
 		// event listeners
@@ -97,6 +101,14 @@ define([
 		subnavListener: function(e) {
 			e.preventDefault();
 			this.deselectActiveSection();
+
+			if (!this.activatedSection) {
+				console.log('adding up and out class');
+				this.card.classList.remove('slideDownAndFadeIn');
+				this.card.classList.add('slideUpAndFadeOut');
+			}
+
+			this.activatedSection = true;
 
 			var node = e.target;
 

@@ -18,12 +18,10 @@ define([], function() {
 
 		activate: function() {
 			console.log([this._page.name, this.name].join('#') + ': activate');
-			this._page.card.style.display = 'none';
 		},
 
 		deactivate: function() {
 			console.log([this._page.name, this.name].join('#') + ': deactivate');
-			this._page.card.style.display = 'block';
 		}
 	};
 
