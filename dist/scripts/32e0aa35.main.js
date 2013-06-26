@@ -6623,8 +6623,8 @@ define('forces/weight',[], function() {
 			'</div>',
 			'<div class="card-secondary">',
 				'<button class="column column-golden-large" data-action="play">Play Film</button>',
-				'<div class="column column-golden-small" data-action="play"><img src="/images/weight-weight-button.png"></div>',
-				'<div><img src="/images/weight-elevation.png"></div>',
+				'<div class="column column-golden-small" data-action="play"><img src="images/weight-weight-button.png"></div>',
+				'<div><img src="images/weight-elevation.png"></div>',
 			'</div>',
 		'</div>'
 	].join('');
@@ -6835,7 +6835,7 @@ define('pages/forces',[
 	'../lib/animations',
 ], function(Page, weight, lift, drag, thrust, draw) {
 
-	var html = '<img src="/images/plane.png" style="-webkit-transform: translate(0px,0px)">';
+	var html = '<img src="images/plane.png" style="-webkit-transform: translate(0px,0px)">';
 	var card = [
 		'<div class="card">',
 			'<div class="card-primary">',
@@ -6943,7 +6943,7 @@ define('views/navigation',['lodash'], function(_) {
 		'<nav class="nav">',
 			'{[ _.forEach(pages, function(page) { ]}',
 				'<a class="nav-item" href="#/{{ page.toLowerCase() }}">',
-					'<img class="nav-image" src="/images/proto-nav-{{ page.toLowerCase() }}.png">',
+					'<img class="nav-image" src="images/proto-nav-{{ page.toLowerCase() }}.png">',
 					'<span class="nav-text">{{ page }}</span>',
 				'</a>',
 			'{[ }); ]}',
@@ -16634,29 +16634,29 @@ this.Element && function(ElementPrototype) {
  * @param {function} fn The callback function
  * @param {int} delay The delay in milliseconds
  */
- 
+
 window.requestTimeout = function(fn, delay) {
-	if( !window.requestAnimationFrame      	&& 
-		!window.webkitRequestAnimationFrame && 
+	if( !window.requestAnimationFrame      	&&
+		!window.webkitRequestAnimationFrame &&
 		!(window.mozRequestAnimationFrame && window.mozCancelRequestAnimationFrame) && // Firefox 5 ships without cancel support
-		!window.oRequestAnimationFrame      && 
+		!window.oRequestAnimationFrame      &&
 		!window.msRequestAnimationFrame)
 			return window.setTimeout(fn, delay);
-			
+
 	var start = new Date().getTime(),
 		handle = new Object();
-		
+
 	function loop(){
 		var current = new Date().getTime(),
 			delta = current - start;
-			
+
 		delta >= delay ? fn.call() : handle.value = requestAnimFrame(loop);
 	};
-	
+
 	handle.value = requestAnimFrame(loop);
 	return handle;
 };
- 
+
 /**
  * Behaves the same as clearTimeout except uses cancelRequestAnimationFrame() where possible for better performance
  * @param {int|object} fn The callback function
