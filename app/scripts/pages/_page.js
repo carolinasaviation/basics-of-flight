@@ -1,7 +1,6 @@
 define([
 	'../views/subnavigation',
-	'../vendor/morpheus'
-], function(viewSubnav, morpheus) {
+], function(viewSubnav) {
 	var NAV_ACTIVE_CLASS = 'subnav-item-active';
 
 	function Page() {

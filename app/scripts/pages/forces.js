@@ -5,9 +5,10 @@ define([
 	'../forces/drag',
 	'../forces/thrust',
 	'../lib/animations',
-], function(Page, weight, lift, drag, thrust, draw) {
+	'paper',
+], function(Page, weight, lift, drag, thrust, draw, paper) {
 
-	var html = '<img src="/images/plane.png" style="-webkit-transform: translate(0px,0px)">';
+	var html = '<img src="/images/cessna-isometric.svg" style="position:relative;z-index:1;-webkit-transform: translate(0px,0px)">';
 	var card = [
 		'<div class="card">',
 			'<div class="card-primary">',
