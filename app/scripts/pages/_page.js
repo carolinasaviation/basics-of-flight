@@ -80,11 +80,23 @@ define([
 		// event listeners
 
 		play: function(elements, options) {
-			this.movie = morpheus(elements, options);
+			this.movie = {};
+			//this.movie = morpheus(elements, options);
 		},
 
 		stop: function() {
 			this.movie.stop && this.movie.stop(arguments);
+		},
+
+		activate: function() {
+			console.log('Section#activate %s', this.name);
+			paper || (paper = window.paper);
+		},
+
+		deactivate: function() {
+			console.log('Section#deactivate %s', this.name);
+			this.card.classList.remove('slideDownAndFadeIn');
+			this.card.classList.add('slideUpAndFadeOut');
 		},
 
 		deselectActiveSection: function(e) {
@@ -92,8 +104,10 @@ define([
 			if (!active) return;
 
 			section = _.findWhere(this.sections, { name: active.textContent });
-			if (section)
+			if (section) {
 				section.deactivate();
+				this.activate();
+			}
 			active.classList.remove(NAV_ACTIVE_CLASS);
 		},
 
@@ -101,11 +115,8 @@ define([
 			e.preventDefault();
 			this.deselectActiveSection();
 
-			if (!this.activatedSection) {
-				console.log('adding up and out class');
-				this.card.classList.remove('slideDownAndFadeIn');
-				this.card.classList.add('slideUpAndFadeOut');
-			}
+			if (!this.activatedSection)
+				this.deactivate();
 
 			this.activatedSection = true;
 
