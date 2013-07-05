@@ -7,8 +7,8 @@ define([], function() {
 			'</div>',
 			'<div class="card-secondary">',
 				'<button class="column column-golden-large" data-action="play">Play Film</button>',
-				'<div class="column column-golden-small" data-action="play"><img src="/images/weight-weight-button.png"></div>',
-				'<div><img src="/images/weight-elevation.png"></div>',
+				'<div class="column column-golden-small" data-action="play"><img src="images/weight-weight-button.png"></div>',
+				'<div><img src="images/weight-elevation.png"></div>',
 			'</div>',
 		'</div>'
 	].join('');

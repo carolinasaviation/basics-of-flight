@@ -159,7 +159,10 @@ module.exports = function (grunt) {
           },
           dist: {
             files: {
-              '<%= yeoman.dist %>/styles/main.css': ['<%= yeoman.app %>/styles/{,*/}*.styl']
+              '<%= yeoman.dist %>/styles/main.css': [
+								'<%= yeoman.app %>/bower_components/normalize-css/{,*/}*.css',
+								'<%= yeoman.app %>/styles/{,*/}*.styl'
+							]
             }
           }
         },
@@ -169,6 +172,19 @@ module.exports = function (grunt) {
             dist: {}
         },*/
         requirejs: {
+					almond: {
+						options: {
+							name: '../bower_components/almond/almond',
+							out: yeomanConfig.dist + '/scripts/main.js',
+							baseUrl: yeomanConfig.app + '/scripts',
+							optimize: 'none', // need to turn off variable munging
+							//optimize: 'uglify2',
+							mainConfigFile: yeomanConfig.app + '/scripts/main.js',
+							include: ['main'],
+							insertRequire: ['main'],
+							wrap: true
+						}
+					},
 					dist: {
 						// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 						options: {
@@ -176,7 +192,7 @@ module.exports = function (grunt) {
 							name: 'main',
 							out: yeomanConfig.dist + '/scripts/main.js',
 							baseUrl: yeomanConfig.app + '/scripts',
-							optimize: 'none',
+							optimize: 'uglify2',
 							mainConfigFile: yeomanConfig.app + '/scripts/main.js',
 							// TODO: Figure out how to make sourcemaps work with grunt-usemin
 							// https://github.com/yeoman/grunt-usemin/issues/30
@@ -213,7 +229,7 @@ module.exports = function (grunt) {
                 dirs: ['<%= yeoman.dist %>']
             },
             html: ['<%= yeoman.dist %>/{,*/}*.html'],
-            css: ['<%= yeoman.dist %>/styles/{,*/}*.css']
+            css: [] // ['<%= yeoman.dist %>/styles/{,*/}*.css']
         },
         imagemin: {
             dist: {
@@ -314,16 +330,20 @@ module.exports = function (grunt) {
         'mocha'
     ]);
 
+		grunt.registerTask('builtHtmlWarning', function() {
+			grunt.log.warn('Don\'t forget to fix dist/index.html. See yeoman/grunt-usemin#44');
+		});
+
     grunt.registerTask('build', [
         'clean:dist',
 				'jade:dist',
         'useminPrepare',
         'concurrent:dist',
-        'requirejs',
-        //'uglify',
+        'requirejs:almond',
         'copy',
-        'rev',
-        'usemin'
+        //'rev',
+        'usemin',
+				'builtHtmlWarning'
     ]);
 
     grunt.registerTask('default', [

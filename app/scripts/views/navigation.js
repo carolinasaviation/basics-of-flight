@@ -14,7 +14,7 @@ define(['lodash'], function(_) {
 		'<nav class="nav">',
 			'{[ _.forEach(pages, function(page) { ]}',
 				'<a class="nav-item" href="#/{{ page.toLowerCase() }}">',
-					'<img class="nav-image" src="/images/proto-nav-{{ page.toLowerCase() }}.png">',
+					'<img class="nav-image" src="images/proto-nav-{{ page.toLowerCase() }}.png">',
 					'<span class="nav-text">{{ page }}</span>',
 				'</a>',
 			'{[ }); ]}',

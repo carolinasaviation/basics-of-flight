@@ -7,7 +7,8 @@
     "jquery": "~1.9.1",
     "lodash": "~1.3.1",
     "normalize-css": "~2.1.2",
-    "git://github.com/paperjs/paper.js": "latest"
+    "paper": "latest",
+    "almond": "~0.2.5"
   },
   "devDependencies": {}
 }
