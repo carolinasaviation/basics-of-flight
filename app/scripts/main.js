@@ -25,11 +25,12 @@ require([
 	window.config = config;
 
 	// use app here
+	console.groupCollapsed('Dependencies');
 	console.log('Running jQuery %s', $.prototype.jquery);
 	console.log('Running LoDash %s', _.VERSION);
 	console.log('Running Paper.js %s', paper.version);
 	console.log('Running Hammerjs %s', hammer.VERSION);
-
+	console.groupEnd();
 
 	app.init();
 

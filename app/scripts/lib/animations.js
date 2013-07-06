@@ -47,7 +47,7 @@ define(function() {
 		var frames = animation.map(function(frame) {
 			return frame[0] + '%{' + frame[1] + '}'
 		}).join('');
-		console.log(frames)
+		//console.log(frames)
 		var keyframes = ['@', prefix, 'keyframes ', name, '{ ', frames, '}'].join('');
 
 		appendStyle(keyframes);
