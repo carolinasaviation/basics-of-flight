@@ -143,5 +143,32 @@ h1
 	animation-direction: alternate
 	animation-fill-mode: forwards
 
+@keyframes slideDownAndFadeOut
+	from
+		transform translateY(0)
+		opacity 1
+	to
+		transform translateY(12em)
+		opacity 0
+
+@keyframes slideUpAndFadeIn
+	from
+		transform translateY(12em)
+		opacity 0
+	to
+		transform translateY(0)
+		opacity 1
+
+.slideDownAndFadeOut
+	animation-duration: 1s
+	animation-name: slideDownAndFadeOut
+	animation-iteration-count: 1
+	animation-fill-mode: forwards
+
+.slideUpAndFadeIn
+	animation-duration: 1s
+	animation-name: slideUpAndFadeIn
+	animation-direction: alternate
+	animation-fill-mode: forwards
 
 // animations }}}

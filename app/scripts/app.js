@@ -19,13 +19,12 @@ define([
 		];
 
 		this.render();
-		this.bind();
-		this.init();
 	}
 
 	AppManager.prototype = {
 		init: function() {
-			document.querySelector('.nav-item').click();
+			this.bind();
+			this._onNavigationAction({ target: document.querySelector('.nav-item') });
 		},
 
 		render: function() {
@@ -36,24 +35,28 @@ define([
 		},
 
 		bind: function() {
-			var pages = this.pages;
-			document.querySelector('.nav').addEventListener('click', function(e) {
-				var active = document.querySelector('.nav .' + NAV_ACTIVE_CLASS);
-				if (active) {
-					page = _.findWhere(pages, { name: active.textContent });
-					page.unload();
-					active.classList.remove(NAV_ACTIVE_CLASS);
-				}
+			// prevent all clicks
+			document.body.addEventListener('click', function(e) { e.preventDefault(); }, false);
 
-				var node = e.target;
+			Hammer(document.querySelector('.nav')).on('tap', this._onNavigationAction.bind(this));
+		},
 
-				while (!node.matches('.nav-item'))
-					node = node.parentNode;
+		_onNavigationAction: function(e) {
+			var active = document.querySelector('.nav .' + NAV_ACTIVE_CLASS);
+			if (active) {
+				page = _.findWhere(this.pages, { name: active.textContent });
+				page.unload();
+				active.classList.remove(NAV_ACTIVE_CLASS);
+			}
 
-				node.classList.add(NAV_ACTIVE_CLASS);
-				var page = _.findWhere(pages, { name: node.textContent });
-				page.load();
-			}, false);
+			var node = e.target;
+
+			while (!node.matches('.nav-item'))
+				node = node.parentNode;
+
+			node.classList.add(NAV_ACTIVE_CLASS);
+			var page = _.findWhere(this.pages, { name: node.textContent });
+			page.load();
 		}
 	}
 
