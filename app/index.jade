@@ -5,12 +5,14 @@ html.no-js
 		meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
 		title The Basics of Flight
 		meta(name="description", content="")
-		meta(name="viewport", content="width=device-width")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0, user-scalable=no")
+
 		//-Place favicon.ico and apple-touch-icon.png in the root directory
 		link(rel="stylesheet", href="styles/main.css")
 		//- build:js scripts/vendor/modernizr.js
 		//-script(src="bower_components/modernizr/modernizr.js")
 		//- endbuild
+	// addClass `fakepad` to hardcode the height/width to 1024x768
 	body
 		script
 			var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
