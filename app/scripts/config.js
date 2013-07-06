@@ -5,7 +5,14 @@ define(['./i18n/en'], function(i18n) {
 
 	return {
 		logger: {
-			pageLifeCycle: false
+			pageLifeCycle: true,
+			sectionLifeCycle: true,
+			pageLifeCycleFn: function(fn) {
+				console.log("%s: %s", this.name, fn);
+			},
+			sectionLifeCycleFn: function(fn) {
+				console.log([this._page.name, this.name].join('#') + ': ' + fn);
+			}
 		},
 
 		width: dim.width,

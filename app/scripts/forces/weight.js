@@ -1,4 +1,9 @@
-define([], function() {
+define([
+	'../lib/section',
+	'../lib/animations',
+	'paper',
+], function(Section, draw, paper) {
+
 	var html = [
 		'<div class="card">',
 			'<div class="card-primary">',
@@ -8,41 +13,49 @@ define([], function() {
 			'<div class="card-secondary">',
 				'<button class="column column-golden-large" data-action="play">Play Film</button>',
 				'<div class="column column-golden-small" data-action="play"><img src="images/weight-weight-button.png"></div>',
-				'<div><img src="images/weight-elevation.png"></div>',
+				'<button data-action="startInteraction"><img src="images/weight-elevation.png"></button>',
 			'</div>',
 		'</div>'
 	].join('');
 
 	function Weight() {
-		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
+		Section.call(this);
 	}
 
-	Weight.prototype = {
-		constructor: Weight,
+	Weight.prototype = Object.create(Section.prototype);
 
-		page: function(page) {
-			if (page) this._page = page;
-			return this._page;
-		},
+	Weight.prototype.constructor = Weight;
 
-		init: function() {
-			console.log([this._page.name, this.name].join('#') + ': init');
-		},
+	Weight.prototype.activate = function() {
+		Section.prototype.activate.call(this);
+		var card = this.element = config.createDomNode(html);
+		card.style.position = 'absolute';
+		card.style.bottom = '1.5em';
+		card.style.right = '1.5em';
+		card.style.width = '60%';
+		card.classList.add('slideUpAndFadeIn');
+		var page = this;
+		this._page.element.appendChild(card, this._page.element.firstChild);
+		this._page.element.addEventListener('click', function(e) {
+			var action = e.target.getAttribute('data-action') || e.target.parentNode.getAttribute('data-action');
+			if (!action) return false;
 
-		activate: function() {
-			console.log([this._page.name, this.name].join('#') + ': activate');
-			var card = this.element = config.createDomNode(html);
-			card.style.position = 'absolute';
-			card.style.bottom = '1.5em';
-			card.style.right = '1.5em';
-			card.style.width = '60%';
-			this._page.element.appendChild(card, this._page.element.firstChild);
-		},
+			page[action] && page[action]();
+		}, false);
+	};
 
-		deactivate: function() {
-			console.log([this._page.name, this.name].join('#') + ': deactivate');
-			this._page.element.removeChild(this.element);
-		}
+	Weight.prototype.deactivate = function() {
+		Section.prototype.activate.call(this);
+		this._page.element.removeChild(this.element);
+	};
+
+	Weight.prototype.startInteraction = function() {
+		Section.prototype.startInteraction.call(this);
+		this.element.classList.remove('slideUpAndFadeIn');
+		this.element.classList.add('slideDownAndFadeOut');
+		this.element.appendChild(this.canvas);
+		paper.setup(this.canvas);
+		project.importSVG(document.getElementById('cessna-elevation'));
 	};
 
 	return new Weight();

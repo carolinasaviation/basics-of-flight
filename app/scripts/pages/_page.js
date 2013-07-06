@@ -17,7 +17,7 @@ define([
 		card: document.createElement('div'),
 		movie: -1,
 
-		init: function() {
+		init: function init() {
 			if (this.isInit) return;
 
 			this.element = document.createElement('div');
@@ -31,48 +31,50 @@ define([
 			this.element.insertBefore(this.subnav, this.element.firstChild);
 
 			this.isInit = true;
-			if (config.logger.pageLifeCycle) console.log('init page %s', this.name);
+			if (config.logger.pageLifeCycle)
+				config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 		},
 
-		beforeLoad: function() {
-			if (config.logger.pageLifeCycle) console.log('BeforeLoad page %s', this.name);
+		beforeLoad: function beforeLoad() {
+			if (config.logger.pageLifeCycle)
+				config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 
 			document.body.insertBefore(this.element, document.body.firstChild.nextSibling);
 
 			this.deselectActiveSection();
-			this.element.querySelector('.subnav').addEventListener('click', this.subnavListener, false);
+			Hammer(this.element.querySelector('.subnav')).on('tap', this.subnavListener);
 		},
 
-		load: function() {
+		load: function load() {
 			if (this.isInit === false) this.init();
 			this.beforeLoad();
 			this.card.classList.remove('slideUpAndFadeOut');
 			this.card.classList.add('slideDownAndFadeIn');
 
-			if (config.logger.pageLifeCycle) console.log('Load page %s', this.name);
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 			this.onLoad();
 		},
 
-		onLoad: function() {
-			if (config.logger.pageLifeCycle) console.log('OnLoad page %s', this.name);
+		onLoad: function onLoad() {
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 			this.isActive = true;
 		},
 
-		beforeUnload: function() {
-			if (config.logger.pageLifeCycle) console.log('BeforeUnload page %s', this.name);
+		beforeUnload: function beforeUnload() {
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 		},
 
-		unload: function() {
-			if (config.logger.pageLifeCycle) console.log('Unload page %s', this.name);
+		unload: function unload() {
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 			this.isActive = false;
 
 			this.stop();
 			this.onunload();
 		},
 
-		onunload: function() {
-			if (config.logger.pageLifeCycle) console.log('OnUnload page %s', this.name);
-			this.element.querySelector('.subnav').removeEventListener('click', this.subnavListener);
+		onunload: function onUnload() {
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
+			Hammer(this.element.querySelector('.subnav')).off('tap', this.subnavListener);
 			this.element.parentNode.removeChild(this.element);
 			this.activatedSection = false;
 		},
@@ -85,16 +87,16 @@ define([
 		},
 
 		stop: function() {
-			this.movie.stop && this.movie.stop(arguments);
+			this.movie.stop && this.movie.stop();
 		},
 
 		activate: function() {
-			console.log('Section#activate %s', this.name);
+			//console.log('Section#activate %s', this.name);
 			paper || (paper = window.paper);
 		},
 
 		deactivate: function() {
-			console.log('Section#deactivate %s', this.name);
+			//console.log('Section#deactivate %s', this.name);
 			this.card.classList.remove('slideDownAndFadeIn');
 			this.card.classList.add('slideUpAndFadeOut');
 		},
@@ -121,7 +123,6 @@ define([
 			this.activatedSection = true;
 
 			var node = e.target;
-
 			var section;
 
 			while (!node.matches('.subnav-item'))
