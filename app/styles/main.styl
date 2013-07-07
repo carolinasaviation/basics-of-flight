@@ -1,6 +1,6 @@
 @import nib
 @import url('../bower_components/normalize-css/normalize.css')
-
+YELLOW = #feec09
 *
 	moz-box-sizing border-box
 	-webkit-box-sizing border-box
@@ -80,7 +80,7 @@ body
 // {{{ cards
 
 h1
-	color #feec09
+	color YELLOW
 	text-transform uppercase
 	letter-spacing 1px
 	margin-top 0
@@ -89,8 +89,9 @@ h1
 	padding: 3em 1.5em 1.5em 9.5em
 
 .card
-	background rgba(0,0,0,0.8)
-	border #000
+	background #000
+	//background rgba(0,0,0,0.8)
+	border-top: 3px solid YELLOW
 	color #fff
 
 .card-primary
