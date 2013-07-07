@@ -13,7 +13,7 @@ define([
 			'<div class="card-secondary">',
 				'<button class="column column-golden-large" data-action="play">Play Film</button>',
 				'<div class="column column-golden-small" data-action="play"><img src="images/weight-weight-button.png"></div>',
-				'<button data-action="startInteraction"><img src="images/weight-elevation.png"></button>',
+				'<button class="btn btn-weight-interaction" data-action="startInteraction"><img src="images/weight-elevation.png"></button>',
 			'</div>',
 		'</div>'
 	].join('');
