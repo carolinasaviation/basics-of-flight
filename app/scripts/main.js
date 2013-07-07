@@ -29,7 +29,7 @@ require([
 	console.log('Running jQuery %s', $.prototype.jquery);
 	console.log('Running LoDash %s', _.VERSION);
 	console.log('Running Paper.js %s', paper.version);
-	console.log('Running Hammerjs %s', hammer.VERSION);
+	console.log('Running Hammerjs %s', (hammer || Hammer).VERSION);
 	console.groupEnd();
 
 	app.init();
