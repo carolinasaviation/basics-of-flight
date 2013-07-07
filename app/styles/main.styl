@@ -64,17 +64,21 @@ body
 // {{{ subnav
 .subnav
 	absolute top 0 left 8em
-	z-index 10
+	z-index 20
 
 .subnav-item
 	background #fff
 	color #999
 	display inline-block
-	padding: 1em
+	font-weight bold
+	letter-spacing 1px
+	padding: 0.41666em 1em
 	text-decoration none
+	text-transform uppercase
 
 .subnav-item-active
 	background #f2ec59
+	color #000
 
 // subnav }}}
 // {{{ cards
@@ -121,12 +125,12 @@ h1
 		transform translateY(0)
 		opacity 1
 	to
-		transform translateY(-12em)
+		transform translateY(-16em)
 		opacity 0
 
 @keyframes slideDownAndFadeIn
 	from
-		transform translateY(-12em)
+		transform translateY(-16em)
 		opacity 0
 	to
 		transform translateY(0)
@@ -149,12 +153,12 @@ h1
 		transform translateY(0)
 		opacity 1
 	to
-		transform translateY(12em)
+		transform translateY(16em)
 		opacity 0
 
 @keyframes slideUpAndFadeIn
 	from
-		transform translateY(12em)
+		transform translateY(16em)
 		opacity 0
 	to
 		transform translateY(0)
