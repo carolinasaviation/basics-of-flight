@@ -37,6 +37,7 @@ define([
 		bind: function() {
 			// prevent all clicks
 			document.body.addEventListener('click', function(e) { e.preventDefault(); }, false);
+			document.body.addEventListener('touchmove', function(e) { e.preventDefault(); }, false);
 
 			Hammer(document.querySelector('.nav')).on('tap', this._onNavigationAction.bind(this));
 		},
