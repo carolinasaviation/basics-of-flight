@@ -38,8 +38,25 @@ define(['./i18n/en'], function(i18n) {
 		}
 	};
 
+
+	var text = undefined;
 	return {
 		logger: logger,
+		// false or fn
+		fps: function(delta) {
+			if (delta === 0) {
+				if (!project.layers[0].children['fps']) {
+					text = new paper.PointText(view.viewSize.width - 55, 20);
+					text.name = 'fps';
+				}
+				return '00';
+			}
+			fps = (1 / delta).toFixed(2);
+
+			text.content = fps + 'fps'
+			text.fillColor = '#ffffff';
+			return fps;
+		},
 		width: dim.width,
 		height: dim.height,
 
