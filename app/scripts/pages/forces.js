@@ -8,7 +8,7 @@ define([
 	'paper',
 ], function(Page, weight, lift, drag, thrust, draw, paper) {
 
-	var NUMBER_OF_PARTICLES = 100;
+	var NUMBER_OF_PARTICLES = 30;
 	var CESSNA_SIN_MULTIPLIER = 40;
 	var CESSNA_SIN_ADDITIVE = 0.04;
 
