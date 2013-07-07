@@ -8,7 +8,10 @@ define([
 	'paper',
 ], function(Page, weight, lift, drag, thrust, draw, paper) {
 
-	var html = '<img src="images/cessna-isometric.svg" style="position:relative;z-index:1;-webkit-transform: translate(0px,0px)">';
+	var NUMBER_OF_PARTICLES = 100;
+	var CESSNA_SIN_MULTIPLIER = 40;
+	var CESSNA_SIN_ADDITIVE = 0.04;
+
 	var card = [
 		'<div class="card">',
 			'<div class="card-primary">',
@@ -37,7 +40,7 @@ define([
 		this.card.style.width = '50%';
 		this.card.style.zIndex = '10';
 		this.element.appendChild(this.card);
-		this.element.appendChild(config.createDomNode(html));
+		//this.element.appendChild(config.createDomNode(html));
 
 		var canvas = this.canvas = document.createElement('canvas');
 		canvas.setAttribute('data-paper-resize', 'true');
@@ -53,15 +56,6 @@ define([
 
 	Forces.prototype.onLoad = function() {
 		Page.prototype.onLoad.call(this);
-		//this.play(this.element.querySelector('img'), { });
-		var element = this.element.querySelector('img');
-
-		draw.createAnimation(element, '3s linear infinite', [
-		 [0, '-webkit-transform: translate(0,0);'],
-		 [27, '-webkit-transform: translate(0,30px)'],
-		 [50, '-webkit-transform: translate(0,0px)'],
-		 [73, '-webkit-transform: translate(0,-30px)']
-		]);
 
 		// temp!
 		this.activate();
@@ -75,25 +69,35 @@ define([
 
 		paper.install(window);
 		paper.setup(this.canvas);
-		var num = 100;
-		circles = new Array(100);
+
+		var num = NUMBER_OF_PARTICLES;
+		circles = new Array(num);
 		while (num--)
 			circles[num] = new paper.Path.Circle({
 					center: [rand(-10, config.width), rand(-10, config.height)],
 					radius: rand(3, 6),
 					fillColor: new paper.Color(255,255,255),
-					strokeColor: new paper.Color(255,255,255,0.3),
-					strokeWidth: 5
+					// opacity greatly reduces frame rate on tablets
+					// strokeColor: new paper.Color(255,255,255,0.3), strokeWidth: 5
 				});
+
+		var cessna = project.importSVG(document.getElementById('cessna-isometric'));
+		cessna.position.x = 500;
 
 		view.onFrame = onFrame;
 		var w = view.viewSize.width;
 		var h = view.viewSize.height;
+		var angle = -Math.PI;
+		var frame = 0
 		function onFrame(event) {
+			cessna.position.y = Math.floor(CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
+			if (frame > 100) frame = 0;
+			frame += CESSNA_SIN_ADDITIVE;
+
 			circles.forEach(function(c, i) {
 				if (c.position.x > w) c.position.x = -10;
 				if (c.position.y < 0) c.position.y = h + 10;
-				c.position.x += rand(3, 5);
+				c.position.x += rand(2, 4);
 				c.position.y -= rand(1, 3);
 			});
 		}

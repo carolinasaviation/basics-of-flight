@@ -28,15 +28,16 @@ define([
 
 	Weight.prototype.activate = function() {
 		Section.prototype.activate.call(this);
+		var page = this;
 		var card = this.element = config.createDomNode(html);
 		card.style.position = 'absolute';
 		card.style.bottom = '1.5em';
 		card.style.right = '1.5em';
 		card.style.width = '60%';
+		card.classList.remove('slideDownAndFadeOut');
 		card.classList.add('slideUpAndFadeIn');
-		var page = this;
 		this._page.element.appendChild(card, this._page.element.firstChild);
-		this._page.element.addEventListener('click', function(e) {
+		Hammer(this._page.element).on('tap', function handleTap(e) {
 			var action = e.target.getAttribute('data-action') || e.target.parentNode.getAttribute('data-action');
 			if (!action) return false;
 
