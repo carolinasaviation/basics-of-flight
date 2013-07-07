@@ -12,6 +12,7 @@ define([
 	var CESSNA_SIN_MULTIPLIER = 40;
 	var CESSNA_SIN_ADDITIVE = 0.04;
 
+	var image = '<img src="images/cessna-isometric.svg" style="position:relative;z-index:1;-webkit-transform: translate(0,0)">';
 	var card = [
 		'<div class="card">',
 			'<div class="card-primary">',
@@ -40,7 +41,7 @@ define([
 		this.card.style.width = '50%';
 		this.card.style.zIndex = '10';
 		this.element.appendChild(this.card);
-		//this.element.appendChild(config.createDomNode(html));
+		this.element.appendChild(config.createDomNode(image));
 
 		var canvas = this.canvas = document.createElement('canvas');
 		canvas.setAttribute('data-paper-resize', 'true');
@@ -57,6 +58,13 @@ define([
 	Forces.prototype.onLoad = function() {
 		Page.prototype.onLoad.call(this);
 
+		var element = this.element.querySelector('img');
+		draw.createAnimation(element, '3s linear infinite', [
+			[0, '-webkit-transform: translate(0,0);'],
+			[27, '-webkit-transform: translate(0,30px);'],
+			[50, '-webkit-transform: translate(0,0);'],
+			[73, '-webkit-transform: translate(0,-30px);']
+		]);
 		// temp!
 		this.activate();
 	};
