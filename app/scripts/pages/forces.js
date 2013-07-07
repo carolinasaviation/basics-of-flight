@@ -89,9 +89,6 @@ define([
 					// strokeColor: new paper.Color(255,255,255,0.3), strokeWidth: 5
 				});
 
-		//var cessna = project.importSVG(document.getElementById('cessna-isometric'));
-		//cessna.position.x = 500;
-
 		view.onFrame = onFrame;
 		var w = view.viewSize.width;
 		var h = view.viewSize.height;
@@ -99,9 +96,6 @@ define([
 		var frame = 0
 		function onFrame(event) {
 			if (config.fps) config.fps(event.delta);
-			//cessna.position.y = Math.floor(CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
-			//if (frame > 100) frame = 0;
-			//frame += CESSNA_SIN_ADDITIVE;
 
 			circles.forEach(function(c, i) {
 				if (c.position.x > w) c.position.x = -10;
