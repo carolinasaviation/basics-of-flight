@@ -92,8 +92,6 @@ define([
 		view.onFrame = onFrame;
 		var w = view.viewSize.width;
 		var h = view.viewSize.height;
-		var angle = -Math.PI;
-		var frame = 0
 		function onFrame(event) {
 			if (config.fps) config.fps(event.delta);
 

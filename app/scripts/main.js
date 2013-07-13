@@ -2,7 +2,7 @@ require.config({
     paths: {
         jquery: '../bower_components/jquery/jquery',
         lodash: '../bower_components/lodash/lodash',
-        paper: '../bower_components/paper/dist/paper-core',
+        paper: '../bower_components/paper/dist/paper-full',
         hammer: '../bower_components/hammerjs/dist/hammer',
     },
     shim: {

@@ -2,7 +2,8 @@ define([
 	'../lib/section',
 	'../lib/animations',
 	'paper',
-], function(Section, draw, paper) {
+	'./weightInteraction'
+], function(Section, draw, paper, WeightInteraction) {
 
 	var html = [
 		'<div class="card">',
@@ -46,17 +47,18 @@ define([
 	};
 
 	Weight.prototype.deactivate = function() {
-		Section.prototype.activate.call(this);
+		Section.prototype.deactivate.call(this);
 		this._page.element.removeChild(this.element);
+		WeightInteraction.stop();
 	};
 
 	Weight.prototype.startInteraction = function() {
 		Section.prototype.startInteraction.call(this);
 		this.element.classList.remove('slideUpAndFadeIn');
 		this.element.classList.add('slideDownAndFadeOut');
-		this.element.appendChild(this.canvas);
-		paper.setup(this.canvas);
-		project.importSVG(document.getElementById('cessna-elevation'));
+
+		WeightInteraction.prependTo(this._page.element);
+		WeightInteraction.start();
 	};
 
 	return new Weight();

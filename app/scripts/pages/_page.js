@@ -5,6 +5,7 @@ define([
 
 	function Page() {
 		this.isInit = false;
+		this.isLoaded = false;
 		this.isActive = false;
 		this.sections = [];
 		this.subnav = viewSubnav;
@@ -22,7 +23,7 @@ define([
 
 			this.element = document.createElement('div');
 			this.element.classList.add('page');
-			this.element.setAttribute('id', 'page' + this.name.toLowerCase());
+			this.element.setAttribute('id', 'page-' + this.name.toLowerCase());
 
 			var nav = this.subnav({ sections: this.sections });
 			var tmp = document.createElement('div');
@@ -57,7 +58,7 @@ define([
 
 		onLoad: function onLoad() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
-			this.isActive = true;
+			this.isLoaded = true;
 		},
 
 		beforeUnload: function beforeUnload() {
@@ -66,9 +67,8 @@ define([
 
 		unload: function unload() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
-			this.isActive = false;
+			this.isLoaded = false;
 
-			this.stop();
 			this.onunload();
 		},
 
@@ -81,24 +81,17 @@ define([
 
 		// event listeners
 
-		play: function(elements, options) {
-			this.movie = {};
-			//this.movie = morpheus(elements, options);
-		},
-
-		stop: function() {
-			this.movie.stop && this.movie.stop();
-		},
-
-		activate: function() {
-			//console.log('Section#activate %s', this.name);
+		activate: function activate() {
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 			paper || (paper = window.paper);
+			this.isActive = true;
 		},
 
-		deactivate: function() {
-			//console.log('Section#deactivate %s', this.name);
+		deactivate: function deactivate() {
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 			this.card.classList.remove('slideDownAndFadeIn');
 			this.card.classList.add('slideUpAndFadeOut');
+			this.isActive = false;
 		},
 
 		deselectActiveSection: function(e) {
