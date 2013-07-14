@@ -1,9 +1,10 @@
 define([
 	'../lib/section',
 	'../lib/animations',
+	'../lib/helpers',
 	'paper',
 	'./weightInteraction'
-], function(Section, draw, paper, WeightInteraction) {
+], function(Section, draw, helper, paper, WeightInteraction) {
 
 	var html = [
 		'<div class="card">',
@@ -21,6 +22,12 @@ define([
 
 	function Weight() {
 		Section.call(this);
+		var card = this.card = helper.createDomNode(html);
+		card.style.position = 'absolute';
+		card.style.bottom = card.style.right = '1.5em';
+		card.style.width = '60%';
+		card.style.zIndex = 5;
+		WeightInteraction.setup(this.canvas);
 	}
 
 	Weight.prototype = Object.create(Section.prototype);
@@ -30,35 +37,31 @@ define([
 	Weight.prototype.activate = function() {
 		Section.prototype.activate.call(this);
 		var page = this;
-		var card = this.element = config.createDomNode(html);
-		card.style.position = 'absolute';
-		card.style.bottom =
-			card.style.right = '1.5em';
-		card.style.width = '60%';
-		card.classList.remove('slideDownAndFadeOut');
-		card.classList.add('slideUpAndFadeIn');
-		this._page.element.appendChild(card, this._page.element.firstChild);
-		Hammer(this._page.element).on('tap', function handleTap(e) {
+
+		this.card.classList.remove('slideDownAndFadeOut');
+		this.card.classList.add('slideUpAndFadeIn');
+
+		Hammer(this.card).on('tap', function handleTap(e) {
 			var action = e.target.getAttribute('data-action') || e.target.parentNode.getAttribute('data-action');
 			if (!action) return false;
 
 			page[action] && page[action]();
-		}, false);
+		});
 	};
 
 	Weight.prototype.deactivate = function() {
 		Section.prototype.deactivate.call(this);
-		this._page.element.removeChild(this.element);
-		WeightInteraction.stop();
+		this.paperScope.clear();
+		Hammer(this.card).off('tap');
 	};
 
 	Weight.prototype.startInteraction = function() {
 		Section.prototype.startInteraction.call(this);
-		this.element.classList.remove('slideUpAndFadeIn');
-		this.element.classList.add('slideDownAndFadeOut');
+		this.card.classList.remove('slideUpAndFadeIn');
+		this.card.classList.add('slideDownAndFadeOut');
 
-		WeightInteraction.prependTo(this._page.element);
-		WeightInteraction.start();
+		this.paperScope = helper.createPaperScript(this.canvas, WeightInteraction.paperScript)
+		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
 
 	return new Weight();

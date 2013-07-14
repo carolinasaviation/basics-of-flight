@@ -1,7 +1,6 @@
 define([
-	'../lib/animations',
 	'../lib/helpers',
-], function(draw, helper) {
+], function(helper) {
 
 	window.state || (window.state = {});
 	window.state.WEIGHT_INTERACTIVE = {
@@ -12,51 +11,22 @@ define([
 		CESSNA_SIN_ADDITIVE: 0.04
 	}
 
-	var transform = '-webkit-transform';
+	return {
+		setup: function(canvas) {
+			canvas.id = 'weightInteraction';
+			canvas.setAttribute('data-paper-resize', 'true');
+			canvas.classList.add('hardware-hack');
+			canvas.style.position = 'absolute';
+			canvas.style.backgroundColor = '#000';
+			canvas.style.top =
+				canvas.style.left =
+				canvas.style.right =
+				0;
+			canvas.style.zIndex = 2;
+		},
 
-	function Interaction() {
-		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
-		var canvas = this.canvas = document.createElement('canvas');
-		canvas.id = 'weightInteraction';
-		canvas.setAttribute('data-paper-resize', 'true');
-		canvas.classList.add('hardware-hack');
-		canvas.style.position = 'absolute';
-		canvas.style.backgroundColor = '#000';
-		canvas.style.top = 0;
-		canvas.style.left = 0;
-		canvas.style.right = 0;
-		canvas.style.zIndex = 2;
+		paperScript: paperScript
 	}
-
-	Interaction.prototype = {
-		constructor: Interaction,
-
-		prependTo: function(el) {
-			el.insertBefore(this.canvas, el.firstChild);
-		},
-
-		appendTo: function(el) {
-			el.appendChild(this.canvas);
-		},
-
-		remove: function() {
-			if (this.canvas.parentNode)
-				this.canvas.parentNode.removeChild(this.canvas);
-		},
-
-		start: function() {
-			var scope = helper.createPaperScript(this.canvas, paperScript)
-			if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
-		},
-
-		stop: function() {
-			var self = this;
-			this.canvas.style[transform] = 'translate(100%, 0)';
-			self.remove();
-		}
-	}
-
-	return new Interaction();
 
 	function intro(callback) {
 		// Code ported to Paper.js from http://the389.com/9/1/

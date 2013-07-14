@@ -6,6 +6,9 @@ define([], function() {
 	}
 
 	Section.prototype = {
+		card: document.createElement('div'),
+		paperScope: undefined,
+
 		page: function page(page) {
 			if (page) this._page = page;
 			return this._page;
@@ -14,11 +17,21 @@ define([], function() {
 		activate: function activate() {
 			if (config.logger.sectionLifeCycle)
 			 	config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
+
+			if (this._page && this._page.element) {
+				this._page.element.appendChild(this.card, this._page.element.firstChild);
+				this._page.element.insertBefore(this.canvas, this._page.element.firstChild);
+			}
 		},
 
 		deactivate: function deactivate() {
 			if (config.logger.sectionLifeCycle)
 			 	config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
+
+			if (this._page && this._page.element) {
+				this._page.element.removeChild(this.card);
+				this._page.element.removeChild(this.canvas);
+			}
 		},
 
 		startInteraction: function startInteraction() {

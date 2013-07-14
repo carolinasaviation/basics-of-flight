@@ -16,6 +16,12 @@ define(function() {
 
 
 	return {
-		createPaperScript: createPaperScript
+		createPaperScript: createPaperScript,
+
+		createDomNode: function(str, tmpElement) {
+			tmpElement = document.createElement(tmpElement || 'div');
+			tmpElement.innerHTML = str;
+			return tmpElement.firstChild;
+		}
 	}
 });

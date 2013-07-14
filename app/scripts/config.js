@@ -73,13 +73,7 @@ define(['./i18n/en'], function(i18n) {
 		height: dim.height,
 
 		transform: 'webkitTransform',
-		animation: 'webkitAnimation',
-
-		createDomNode: function(str, tmpElement) {
-			tmpElement = document.createElement(tmpElement || 'div');
-			tmpElement.innerHTML = str;
-			return tmpElement.firstChild;
-		}
+		animation: 'webkitAnimation'
 	}
 
 });

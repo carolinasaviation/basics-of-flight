@@ -16,7 +16,6 @@ define([
 		CESSNA_SIN_ADDITIVE: 0.04,
 	};
 
-
 	var image = '<img src="images/cessna-isometric.svg" style="position:relative;z-index:1;-webkit-transform: translate(0,0)">';
 	var card = [
 		'<div class="card">',
@@ -40,13 +39,13 @@ define([
 	Forces.prototype.constructor = Forces;
 	Forces.prototype.init = function() {
 		Page.prototype.init.call(this);
-		this.card = config.createDomNode(card);
+		this.card = helper.createDomNode(card);
 		this.card.style.position = 'absolute';
 		this.card.style.marginTop = '1.5em';
 		this.card.style.width = '50%';
 		this.card.style.zIndex = '10';
 		this.element.appendChild(this.card);
-		this.element.appendChild(config.createDomNode(image));
+		this.element.appendChild(helper.createDomNode(image));
 
 		var canvas = this.canvas = document.createElement('canvas');
 		canvas.setAttribute('data-paper-resize', 'true');
