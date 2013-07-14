@@ -3,6 +3,15 @@ define([
 	'../lib/helpers',
 ], function(draw, helper) {
 
+	window.state || (window.state = {});
+	window.state.WEIGHT_INTERACTIVE = {
+		SPEED: 100,
+		xDiff: 0,
+		yDiff: 0,
+		CESSNA_SIN_MULTIPLIER: 4,
+		CESSNA_SIN_ADDITIVE: 0.04
+	}
+
 	var transform = '-webkit-transform';
 
 	function Interaction() {
@@ -36,7 +45,7 @@ define([
 		},
 
 		start: function() {
-			var scope = helper.createPaperScript(this.canvas, mainInteraction)
+			var scope = helper.createPaperScript(this.canvas, paperScript)
 			if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 		},
 
@@ -162,20 +171,24 @@ define([
 		}
 	}
 
-	function mainInteraction() {
-		var numberOfLines = 20
+	function paperScript() {
+		var w = view.element.width;
+
+		var numberOfLines = Math.floor(w / 50);
 		var lines = [], line;
 		var top = new Point(0, 0);
 		var bottom = new Point(0, view.element.height);
-		var offset;
+		var offset, color;
 
 		while (numberOfLines--) {
 			offset = state.rand(10, 40);
 			top.x -= offset;
 			bottom.x -= offset;
 			line = new Path.Line(top, bottom);
-			line.strokeColor = '#fff';
-			line.strokeWidth = state.rand(1, 10);
+			line.speed = state.rand(2, 7);
+			color = state.rand(250, 255);
+			line.strokeColor = new Color(color, color, color);
+			line.strokeWidth = Math.floor(state.rand(4, 20) / line.speed);
 			lines.push(line);
 		}
 
@@ -185,31 +198,26 @@ define([
 		cessna.position.y = 400;
 		window.cessna = cessna;
 
-		var w = view.element.width;
-		var CESSNA_SIN_MULTIPLIER = 4;
-		var CESSNA_SIN_ADDITIVE = 0.04;
-
 		var angle = -Math.PI;
 		var frame = 0
 
 		function onFrame(event) {
-			console.log('onFrame');
 			if (!lines) return;
 			if (config.fps) config.fps(event.delta);
 
 			var w = view._element.width;
 			lines.forEach(function(l) {
-				l.position.x += 3;
+				l.position.x += l.speed * 50 / state.WEIGHT_INTERACTIVE.SPEED;
 				if (l.position.x > w) l.position.x = -10;
 			});
 
-			cessna.position.y = Math.floor(CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
+			cessna.position.y = Math.floor(state.WEIGHT_INTERACTIVE.CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
 			if (frame > 100) frame = 0;
-			frame += CESSNA_SIN_ADDITIVE;
+			frame += state.WEIGHT_INTERACTIVE.CESSNA_SIN_ADDITIVE;
 		};
 
 		function resize() {
-			console.log('resize');
+			w = view.element.width;
 		}
 	}
 });
