@@ -1,74 +1,51 @@
 define([
 	'../lib/animations',
-], function(draw) {
+	'../lib/helpers',
+], function(draw, helper) {
 
 	var transform = '-webkit-transform';
 
 	function Interaction() {
-		var canvas = this.element = document.createElement('canvas');
+		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
+		var canvas = this.canvas = document.createElement('canvas');
 		canvas.id = 'weightInteraction';
 		canvas.setAttribute('data-paper-resize', 'true');
 		canvas.classList.add('hardware-hack');
 		canvas.style.position = 'absolute';
+		canvas.style.backgroundColor = '#000';
 		canvas.style.top = 0;
 		canvas.style.left = 0;
 		canvas.style.right = 0;
 		canvas.style.zIndex = 2;
-
 	}
 
 	Interaction.prototype = {
+		constructor: Interaction,
+
 		prependTo: function(el) {
-			el.insertBefore(this.element, el.firstChild);
+			el.insertBefore(this.canvas, el.firstChild);
 		},
 
 		appendTo: function(el) {
-			el.appendChild(this.element);
+			el.appendChild(this.canvas);
 		},
 
 		remove: function() {
-			this.element.parentNode.removeChild(this.element);
+			if (this.canvas.parentNode)
+				this.canvas.parentNode.removeChild(this.canvas);
 		},
 
 		start: function() {
-			paper.install(window);
-
-			if (window.view && view._element === this.canvas) return;
-
-			var scope = paper.setup(this.element);
-
-			//var c = paper.evaluate(mainInteraction.toString(), paper);
-			//var code = editor.getValue();
-			//script.text(code);
-			// Keep a reference to the used canvas, since we're going to
-			// fully clear the scope and initialize again with this canvas.
-			// Support both old and new versions of paper.js for now:
-			//var element = scope.view.element || scope.view.canvas;
-			// Clear scope first, then evaluate a new script.
-			scope.clear();
-			scope.initialize();
-			scope.setup(this.element);
-			debugger;
-
-			scope.evaluate(mainInteraction.toString());
-			//debugger;
-			//intro(mainInteraction);
+			var scope = helper.createPaperScript(this.canvas, mainInteraction)
+			if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 		},
 
 		stop: function() {
 			var self = this;
-			this.element.style[transform] = 'translate(100%, 0)';
-			setTimeout(function() {
-				self.remove();
-			}, 1500);
+			this.canvas.style[transform] = 'translate(100%, 0)';
+			self.remove();
 		}
 	}
-
-	function rand(min, max, isFloat) {
-		var rand = Math.random();
-		return Math.floor(max * rand) + min;
-	}
-
 
 	return new Interaction();
 
@@ -186,7 +163,6 @@ define([
 	}
 
 	function mainInteraction() {
-		console.log('mainInteraction');
 		var numberOfLines = 20
 		var lines = [], line;
 		var top = new Point(0, 0);
@@ -194,12 +170,12 @@ define([
 		var offset;
 
 		while (numberOfLines--) {
-			offset = rand(10, 40);
+			offset = state.rand(10, 40);
 			top.x -= offset;
 			bottom.x -= offset;
 			line = new Path.Line(top, bottom);
 			line.strokeColor = '#fff';
-			line.strokeWidth = rand(1, 10);
+			line.strokeWidth = state.rand(1, 10);
 			lines.push(line);
 		}
 
@@ -231,5 +207,9 @@ define([
 			if (frame > 100) frame = 0;
 			frame += CESSNA_SIN_ADDITIVE;
 		};
+
+		function resize() {
+			console.log('resize');
+		}
 	}
 });

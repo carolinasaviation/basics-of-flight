@@ -5,12 +5,17 @@ define([
 	'../forces/drag',
 	'../forces/thrust',
 	'../lib/animations',
+	'../lib/helpers',
 	'paper',
-], function(Page, weight, lift, drag, thrust, draw, paper) {
+], function(Page, weight, lift, drag, thrust, draw, helper, paper) {
 
-	var NUMBER_OF_PARTICLES = 30;
-	var CESSNA_SIN_MULTIPLIER = 40;
-	var CESSNA_SIN_ADDITIVE = 0.04;
+	window.state || (window.state = {});
+	window.state.FORCES = {
+		NUMBER_OF_PARTICLES: 30,
+		CESSNA_SIN_MULTIPLIER: 40,
+		CESSNA_SIN_ADDITIVE: 0.04,
+	};
+
 
 	var image = '<img src="images/cessna-isometric.svg" style="position:relative;z-index:1;-webkit-transform: translate(0,0)">';
 	var card = [
@@ -73,23 +78,29 @@ define([
 		Page.prototype.activate.call(this);
 		this.element.appendChild(this.canvas);
 
-		if (window.view && view._element === this.canvas) return;
+		var scope = helper.createPaperScript(this.canvas, paperScript)
+		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
+	};
 
-		paper.install(window);
-		paper.setup(this.canvas);
+	Forces.prototype.deactivate = function() {
+		Page.prototype.deactivate.call(this);
+		//paper.clear();
+		this.element.removeChild(this.canvas);
+	};
 
-		var num = NUMBER_OF_PARTICLES;
+
+	function paperScript() {
+		var num = state.FORCES.NUMBER_OF_PARTICLES;
 		circles = new Array(num);
 		while (num--)
-			circles[num] = new paper.Path.Circle({
-					center: [rand(-10, config.width), rand(-10, config.height)],
-					radius: rand(3, 6),
-					fillColor: new paper.Color(255,255,255),
+			circles[num] = new Path.Circle({
+					center: [state.rand(-10, config.width), state.rand(-10, config.height)],
+					radius: state.rand(3, 6),
+					fillColor: new Color(255,255,255),
 					// opacity greatly reduces frame rate on tablets
-					// strokeColor: new paper.Color(255,255,255,0.3), strokeWidth: 5
+					// strokeColor: new Color(255,255,255,0.3), strokeWidth: 5
 				});
 
-		view.onFrame = onFrame;
 		var w = view.viewSize.width;
 		var h = view.viewSize.height;
 		function onFrame(event) {
@@ -98,21 +109,15 @@ define([
 			circles.forEach(function(c, i) {
 				if (c.position.x > w) c.position.x = -10;
 				if (c.position.y < 0) c.position.y = h + 10;
-				c.position.x += rand(2, 4);
-				c.position.y -= rand(1, 3);
+				c.position.x += state.rand(2, 4);
+				c.position.y -= state.rand(1, 3);
 			});
 		}
-	};
 
-	Forces.prototype.deactivate = function() {
-		Page.prototype.deactivate.call(this);
-		project.remove();
-		this.element.removeChild(this.canvas);
-	};
-
-	function rand(min, max, isFloat) {
-		var rand = Math.random();
-		return Math.floor(max * rand) + min;
+		function onResize() {
+			w = view.viewSize.width;
+			h = view.viewSize.height;
+		}
 	}
 
 	return new Forces();

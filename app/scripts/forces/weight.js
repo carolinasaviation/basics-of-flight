@@ -32,8 +32,8 @@ define([
 		var page = this;
 		var card = this.element = config.createDomNode(html);
 		card.style.position = 'absolute';
-		card.style.bottom = '1.5em';
-		card.style.right = '1.5em';
+		card.style.bottom =
+			card.style.right = '1.5em';
 		card.style.width = '60%';
 		card.classList.remove('slideDownAndFadeOut');
 		card.classList.add('slideUpAndFadeIn');
