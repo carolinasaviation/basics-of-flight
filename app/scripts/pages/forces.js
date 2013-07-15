@@ -87,18 +87,26 @@ define([
 
 	function paperScript() {
 		var num = state.FORCES.NUMBER_OF_PARTICLES;
+		var w = view.viewSize.width;
+		var h = view.viewSize.height;
+		var white = new Color(255, 255, 255);
+		var weight, lift, drag, thrust;
+
+		lift = createArrow('north');
+		weight = createArrow('south');
+		drag = createArrow('east');
+		thrust = createArrow('west');
+
 		circles = new Array(num);
 		while (num--)
 			circles[num] = new Path.Circle({
 					center: [state.rand(-10, config.width), state.rand(-10, config.height)],
 					radius: state.rand(3, 6),
-					fillColor: new Color(255,255,255),
+					fillColor: white,
 					// opacity greatly reduces frame rate on tablets
 					// strokeColor: new Color(255,255,255,0.3), strokeWidth: 5
 				});
 
-		var w = view.viewSize.width;
-		var h = view.viewSize.height;
 		function onFrame(event) {
 			if (config.fps) config.fps(event.delta);
 
@@ -113,6 +121,50 @@ define([
 		function onResize() {
 			w = view.viewSize.width;
 			h = view.viewSize.height;
+		}
+
+		function createArrow(direction) {
+			var p1, ps, line, triangle;
+
+			switch (direction) {
+			case 'north':
+				p1 = new Point(375, 50);
+				p2 = new Point(375, 125);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p1, 3, 7);
+				break;
+			case 'south':
+				p1 = new Point(375, 350);
+				p2 = new Point(375, 425);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p2, 3, 7);
+				triangle.rotate(180)
+				break;
+			case 'east':
+				p1 = new Point(575, 150);
+				p2 = new Point(670, 150);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p2, 3, 7);
+				triangle.position.y += 2;
+				triangle.rotate(90)
+				break;
+			case 'west':
+				p1 = new Point(100, 350);
+				p2 = new Point(200, 350);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p1, 3, 7);
+				triangle.position.y += 1;
+				triangle.rotate(-90)
+				break;
+			}
+			window.triangle = triangle;
+
+			line.strokeWidth = 2;
+			line.fillColor = white;
+			line.strokeColor = white;
+			triangle.fillColor = white;
+			var g = new Group([line, triangle]);
+			return g
 		}
 	}
 
