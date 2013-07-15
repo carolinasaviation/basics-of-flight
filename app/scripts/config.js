@@ -35,21 +35,33 @@ define(['./i18n/en'], function(i18n) {
 				'color: ' + logger.colors[this.name], this.name,
 				'color: ' + logger.colors.fn, fn
 			);
-		}
+		},
+		paperjsScope: true,
+		paperjsScopeFn: function(scope) {
+			console.log(
+				"%c%s paperjs view id: %c%s",
+				'color:' + logger.colors[this.name] + ';font-weight: bold', this.name,
+				'color: ' + logger.colors.fn, scope
+			);
+		},
+
 	};
 
 
-	var text = undefined;
 	return {
 		logger: logger,
 		// false or fn
 		fps: function(delta) {
+			var text;
 			if (delta === 0) {
-				if (!project.layers[0].children['fps']) {
-					text = new paper.PointText(view.viewSize.width - 55, 20);
+				if (!paper.project.layers[0].children['fps']) {
+					text = new PointText(paper.view.viewSize.width - 55, 20);
 					text.name = 'fps';
 				}
 				return '00';
+			}
+			else {
+				text = paper.project.layers[0].children['fps'];
 			}
 			fps = (1 / delta).toFixed(2);
 
@@ -61,13 +73,7 @@ define(['./i18n/en'], function(i18n) {
 		height: dim.height,
 
 		transform: 'webkitTransform',
-		animation: 'webkitAnimation',
-
-		createDomNode: function(str, tmpElement) {
-			tmpElement = document.createElement(tmpElement || 'div');
-			tmpElement.innerHTML = str;
-			return tmpElement.firstChild;
-		}
+		animation: 'webkitAnimation'
 	}
 
 });

@@ -5,12 +5,16 @@ define([
 	'../forces/drag',
 	'../forces/thrust',
 	'../lib/animations',
+	'../lib/helpers',
 	'paper',
-], function(Page, weight, lift, drag, thrust, draw, paper) {
+], function(Page, weight, lift, drag, thrust, draw, helper, paper) {
 
-	var NUMBER_OF_PARTICLES = 30;
-	var CESSNA_SIN_MULTIPLIER = 40;
-	var CESSNA_SIN_ADDITIVE = 0.04;
+	window.state || (window.state = {});
+	window.state.FORCES = {
+		NUMBER_OF_PARTICLES: 30,
+		CESSNA_SIN_MULTIPLIER: 40,
+		CESSNA_SIN_ADDITIVE: 0.04,
+	};
 
 	var image = '<img src="images/cessna-isometric.svg" style="position:relative;z-index:1;-webkit-transform: translate(0,0)">';
 	var card = [
@@ -35,13 +39,10 @@ define([
 	Forces.prototype.constructor = Forces;
 	Forces.prototype.init = function() {
 		Page.prototype.init.call(this);
-		this.card = config.createDomNode(card);
-		this.card.style.position = 'absolute';
-		this.card.style.marginTop = '1.5em';
-		this.card.style.width = '50%';
-		this.card.style.zIndex = '10';
+		this.card = helper.createDomNode(card);
+		this.card.classList.add('card-main')
 		this.element.appendChild(this.card);
-		this.element.appendChild(config.createDomNode(image));
+		this.element.appendChild(helper.createDomNode(image));
 
 		var canvas = this.canvas = document.createElement('canvas');
 		canvas.setAttribute('data-paper-resize', 'true');
@@ -73,54 +74,98 @@ define([
 		Page.prototype.activate.call(this);
 		this.element.appendChild(this.canvas);
 
-		if (window.view && view._element === this.canvas) return;
-
-		paper.install(window);
-		paper.setup(this.canvas);
-
-		var num = NUMBER_OF_PARTICLES;
-		circles = new Array(num);
-		while (num--)
-			circles[num] = new paper.Path.Circle({
-					center: [rand(-10, config.width), rand(-10, config.height)],
-					radius: rand(3, 6),
-					fillColor: new paper.Color(255,255,255),
-					// opacity greatly reduces frame rate on tablets
-					// strokeColor: new paper.Color(255,255,255,0.3), strokeWidth: 5
-				});
-
-		//var cessna = project.importSVG(document.getElementById('cessna-isometric'));
-		//cessna.position.x = 500;
-
-		view.onFrame = onFrame;
-		var w = view.viewSize.width;
-		var h = view.viewSize.height;
-		var angle = -Math.PI;
-		var frame = 0
-		function onFrame(event) {
-			if (config.fps) config.fps(event.delta);
-			//cessna.position.y = Math.floor(CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
-			//if (frame > 100) frame = 0;
-			//frame += CESSNA_SIN_ADDITIVE;
-
-			circles.forEach(function(c, i) {
-				if (c.position.x > w) c.position.x = -10;
-				if (c.position.y < 0) c.position.y = h + 10;
-				c.position.x += rand(2, 4);
-				c.position.y -= rand(1, 3);
-			});
-		}
+		var scope = helper.createPaperScript(this.canvas, paperScript)
+		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
 
 	Forces.prototype.deactivate = function() {
 		Page.prototype.deactivate.call(this);
-		project.remove();
+		//paper.clear();
 		this.element.removeChild(this.canvas);
 	};
 
-	function rand(min, max, isFloat) {
-		var rand = Math.random();
-		return Math.floor(max * rand) + min;
+
+	function paperScript() {
+		var num = state.FORCES.NUMBER_OF_PARTICLES;
+		var w = view.viewSize.width;
+		var h = view.viewSize.height;
+		var white = new Color(255, 255, 255);
+		var weight, lift, drag, thrust;
+
+		lift = createArrow('north');
+		weight = createArrow('south');
+		drag = createArrow('east');
+		thrust = createArrow('west');
+
+		circles = new Array(num);
+		while (num--)
+			circles[num] = new Path.Circle({
+					center: [state.rand(-10, config.width), state.rand(-10, config.height)],
+					radius: state.rand(3, 6),
+					fillColor: white,
+					// opacity greatly reduces frame rate on tablets
+					// strokeColor: new Color(255,255,255,0.3), strokeWidth: 5
+				});
+
+		function onFrame(event) {
+			if (config.fps) config.fps(event.delta);
+
+			circles.forEach(function(c, i) {
+				if (c.position.x > w) c.position.x = -10;
+				if (c.position.y < 0) c.position.y = h + 10;
+				c.position.x += state.rand(2, 4);
+				c.position.y -= state.rand(1, 3);
+			});
+		}
+
+		function onResize() {
+			w = view.viewSize.width;
+			h = view.viewSize.height;
+		}
+
+		function createArrow(direction) {
+			var p1, ps, line, triangle;
+
+			switch (direction) {
+			case 'north':
+				p1 = new Point(375, 50);
+				p2 = new Point(375, 125);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p1, 3, 7);
+				break;
+			case 'south':
+				p1 = new Point(375, 350);
+				p2 = new Point(375, 425);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p2, 3, 7);
+				triangle.rotate(180)
+				break;
+			case 'east':
+				p1 = new Point(575, 150);
+				p2 = new Point(670, 150);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p2, 3, 7);
+				triangle.position.y += 2;
+				triangle.rotate(90)
+				break;
+			case 'west':
+				p1 = new Point(100, 350);
+				p2 = new Point(200, 350);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p1, 3, 7);
+				triangle.position.y += 1;
+				triangle.rotate(-90)
+				break;
+			}
+			window.triangle = triangle;
+
+			line.strokeWidth = 2;
+			line.fillColor = white;
+			line.strokeColor = white;
+			triangle.fillColor = white;
+			var g = new Group([line, triangle]);
+			return g
+		}
 	}
 
 	return new Forces();

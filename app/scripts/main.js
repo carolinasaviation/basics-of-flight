@@ -2,7 +2,7 @@ require.config({
     paths: {
         jquery: '../bower_components/jquery/jquery',
         lodash: '../bower_components/lodash/lodash',
-        paper: '../bower_components/paper/dist/paper-core',
+        paper: '../bower_components/paper/dist/paper-full',
         hammer: '../bower_components/hammerjs/dist/hammer',
     },
     shim: {
@@ -32,6 +32,13 @@ require([
 	console.log('Running Hammerjs %s', (hammer || Hammer).VERSION);
 	console.groupEnd();
 
+	window.state = window.state || {}
+	window.state.rand = function rand(min, max, isFloat) {
+		var rand = Math.random();
+		return Math.floor(max * rand) + min;
+	};
+
+	paper.install(window);
 	app.init();
 
 	// select the first page....sort of
