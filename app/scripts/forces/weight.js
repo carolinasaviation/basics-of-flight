@@ -8,13 +8,18 @@ define([
 
 	var html = [
 		'<div class="card">',
+			'<h1>', i18n.weight.title, '</h1>',
 			'<div class="card-primary">',
-				'<h1>', i18n.weight.title, '</h1>',
-				'<p>', i18n.weight.description, '</p>',
+				'<div>',
+					'<div class="col col-equation" style="width: 20%">', i18n.weight.equation, '</div>',
+					'<div class="col" style="width: 80%">', i18n.weight.equationDescription, '</div>',
+				'</div>',
+				'<div>',
+					'<div class="col col-equation" style="width: 20%">', '<img src="/images/', i18n.weight.historicalFigure, '" />', '</div>',
+					'<div class="col" style="width: 80%">', i18n.weight.historicalDescription, '</div>',
+				'</div>',
 			'</div>',
 			'<div class="card-secondary">',
-				'<button class="column column-golden-large" data-action="play">Play Film</button>',
-				'<div class="column column-golden-small" data-action="play"><img src="images/weight-weight-button.png"></div>',
 				'<button class="btn btn-weight-interaction" data-action="startInteraction"><img src="images/weight-elevation.png"></button>',
 			'</div>',
 		'</div>'
