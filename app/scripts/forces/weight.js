@@ -23,10 +23,6 @@ define([
 	function Weight() {
 		Section.call(this);
 		var card = this.card = helper.createDomNode(html);
-		card.style.position = 'absolute';
-		card.style.bottom = card.style.right = '1.5em';
-		card.style.width = '60%';
-		card.style.zIndex = 5;
 		WeightInteraction.setup(this.canvas);
 	}
 

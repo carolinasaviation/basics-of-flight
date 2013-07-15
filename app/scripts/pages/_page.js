@@ -49,8 +49,8 @@ define([
 		load: function load() {
 			if (this.isInit === false) this.init();
 			this.beforeLoad();
-			this.card.classList.remove('slideUpAndFadeOut');
-			this.card.classList.add('slideDownAndFadeIn');
+			this.card.classList.remove('slideDownAndFadeOut');
+			this.card.classList.add('slideUpAndFadeIn');
 
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 			this.onLoad();
@@ -89,8 +89,8 @@ define([
 
 		deactivate: function deactivate() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
-			this.card.classList.remove('slideDownAndFadeIn');
-			this.card.classList.add('slideUpAndFadeOut');
+			this.card.classList.remove('slideUpAndFadeIn');
+			this.card.classList.add('slideDownAndFadeOut');
 			this.isActive = false;
 		},
 

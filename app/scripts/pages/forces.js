@@ -40,10 +40,7 @@ define([
 	Forces.prototype.init = function() {
 		Page.prototype.init.call(this);
 		this.card = helper.createDomNode(card);
-		this.card.style.position = 'absolute';
-		this.card.style.marginTop = '1.5em';
-		this.card.style.width = '50%';
-		this.card.style.zIndex = '10';
+		this.card.classList.add('card-main')
 		this.element.appendChild(this.card);
 		this.element.appendChild(helper.createDomNode(image));
 
