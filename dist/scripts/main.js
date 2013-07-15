@@ -413,8 +413,11 @@ define('i18n/en',{
 		description: 'To fly an airplane you have to master the aerodynamics of flight.'
 	},
 	weight: {
-		title: 'Weight',
-		description: 'This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane.'
+		title: 'What is weight?',
+		equation: 'W = mg',
+		equationDescription: 'The weight of an object is equal to the mass of an object multiplied by the force of gravity.',
+		historicalFigure: 'throwaway-newton.jpg',
+		historicalDescription: 'Newton&rsquo;s third law of motino states something or another. The png wireframes are much too small to read. This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane.'
 	}
 });
 
@@ -456,21 +459,33 @@ define('config',['./i18n/en'], function(i18n) {
 				'color: ' + logger.colors[this.name], this.name,
 				'color: ' + logger.colors.fn, fn
 			);
-		}
+		},
+		paperjsScope: true,
+		paperjsScopeFn: function(scope) {
+			console.log(
+				"%c%s paperjs view id: %c%s",
+				'color:' + logger.colors[this.name] + ';font-weight: bold', this.name,
+				'color: ' + logger.colors.fn, scope
+			);
+		},
+
 	};
 
 
-	var text = undefined;
 	return {
 		logger: logger,
 		// false or fn
 		fps: function(delta) {
+			var text;
 			if (delta === 0) {
-				if (!project.layers[0].children['fps']) {
-					text = new paper.PointText(view.viewSize.width - 55, 20);
+				if (!paper.project.layers[0].children['fps']) {
+					text = new PointText(paper.view.viewSize.width - 55, 20);
 					text.name = 'fps';
 				}
 				return '00';
+			}
+			else {
+				text = paper.project.layers[0].children['fps'];
 			}
 			fps = (1 / delta).toFixed(2);
 
@@ -482,13 +497,7 @@ define('config',['./i18n/en'], function(i18n) {
 		height: dim.height,
 
 		transform: 'webkitTransform',
-		animation: 'webkitAnimation',
-
-		createDomNode: function(str, tmpElement) {
-			tmpElement = document.createElement(tmpElement || 'div');
-			tmpElement.innerHTML = str;
-			return tmpElement.firstChild;
-		}
+		animation: 'webkitAnimation'
 	}
 
 });
@@ -6458,6 +6467,7 @@ define('pages/_page',[
 
 	function Page() {
 		this.isInit = false;
+		this.isLoaded = false;
 		this.isActive = false;
 		this.sections = [];
 		this.subnav = viewSubnav;
@@ -6475,7 +6485,7 @@ define('pages/_page',[
 
 			this.element = document.createElement('div');
 			this.element.classList.add('page');
-			this.element.setAttribute('id', 'page' + this.name.toLowerCase());
+			this.element.setAttribute('id', 'page-' + this.name.toLowerCase());
 
 			var nav = this.subnav({ sections: this.sections });
 			var tmp = document.createElement('div');
@@ -6501,8 +6511,8 @@ define('pages/_page',[
 		load: function load() {
 			if (this.isInit === false) this.init();
 			this.beforeLoad();
-			this.card.classList.remove('slideUpAndFadeOut');
-			this.card.classList.add('slideDownAndFadeIn');
+			this.card.classList.remove('slideDownAndFadeOut');
+			this.card.classList.add('slideUpAndFadeIn');
 
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 			this.onLoad();
@@ -6510,7 +6520,7 @@ define('pages/_page',[
 
 		onLoad: function onLoad() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
-			this.isActive = true;
+			this.isLoaded = true;
 		},
 
 		beforeUnload: function beforeUnload() {
@@ -6519,9 +6529,8 @@ define('pages/_page',[
 
 		unload: function unload() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
-			this.isActive = false;
+			this.isLoaded = false;
 
-			this.stop();
 			this.onunload();
 		},
 
@@ -6534,24 +6543,17 @@ define('pages/_page',[
 
 		// event listeners
 
-		play: function(elements, options) {
-			this.movie = {};
-			//this.movie = morpheus(elements, options);
-		},
-
-		stop: function() {
-			this.movie.stop && this.movie.stop();
-		},
-
-		activate: function() {
-			//console.log('Section#activate %s', this.name);
+		activate: function activate() {
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 			paper || (paper = window.paper);
+			this.isActive = true;
 		},
 
-		deactivate: function() {
-			//console.log('Section#deactivate %s', this.name);
-			this.card.classList.remove('slideDownAndFadeIn');
-			this.card.classList.add('slideUpAndFadeOut');
+		deactivate: function deactivate() {
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
+			this.card.classList.remove('slideUpAndFadeIn');
+			this.card.classList.add('slideDownAndFadeOut');
+			this.isActive = false;
 		},
 
 		deselectActiveSection: function(e) {
@@ -6600,6 +6602,9 @@ define('lib/section',[], function() {
 	}
 
 	Section.prototype = {
+		card: document.createElement('div'),
+		paperScope: undefined,
+
 		page: function page(page) {
 			if (page) this._page = page;
 			return this._page;
@@ -6608,11 +6613,21 @@ define('lib/section',[], function() {
 		activate: function activate() {
 			if (config.logger.sectionLifeCycle)
 			 	config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
+
+			if (this._page && this._page.element) {
+				this._page.element.appendChild(this.card, this._page.element.firstChild);
+				this._page.element.insertBefore(this.canvas, this._page.element.firstChild);
+			}
 		},
 
 		deactivate: function deactivate() {
 			if (config.logger.sectionLifeCycle)
 			 	config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
+
+			if (this._page && this._page.element) {
+				this._page.element.removeChild(this.card);
+				this._page.element.removeChild(this.canvas);
+			}
 		},
 
 		startInteraction: function startInteraction() {
@@ -6647,6 +6662,8 @@ define('lib/animations',[],function() {
 			break;
 		}
 
+	var transitionstring = '-webkit-transition';
+
 	var appendStyle = (function() {
 		/*
 		if (document.styleSheets && document.styleSheets.length)
@@ -6663,18 +6680,17 @@ define('lib/animations',[],function() {
 	})();
 
 	var counter = 0;
-	function generateName() {
-		return 'animation-' + counter++;
+	function generateName(type) {
+		return type + '-' + counter++;
 	}
 
 	// examples:
 	// animate(myDiv, 'rotate 1s linear infinite', [[0, 'transform: rotate(0deg)'], [100, 'transform: rotate(360deg)']]);
 	function animate(element, properties, animation) {
-		var name = generateName();
+		var name = generateName('animate');
 		var frames = animation.map(function(frame) {
 			return frame[0] + '%{' + frame[1] + '}'
 		}).join('');
-		//console.log(frames)
 		var keyframes = ['@', prefix, 'keyframes ', name, '{ ', frames, '}'].join('');
 
 		appendStyle(keyframes);
@@ -6682,12 +6698,50 @@ define('lib/animations',[],function() {
 		element.style[animationstring] = name + ' ' + properties
 	}
 
+	function transition(element, transitions) {
+		var name = generateName('transition');
+
+
+
+		console.log(transitionstring, transitions);
+		element.style[transitionstring] = transitions.join(',');
+	}
+
 	return {
-		createAnimation: animate
+		createAnimation: animate,
+		createTransition: transition
 	}
 
 });
 
+
+define('lib/helpers',[],function() {
+
+	function createPaperScript(canvas, paperScriptFunction) {
+		if (paper.view && paper.view._element === canvas) {
+		 	return paper.PaperScope.get(canvas);
+		}
+
+		var scope = paper.PaperScope.get(canvas) || new paper.PaperScope().setup(canvas);
+		var code = paperScriptFunction.toString().replace(/^function[\w\s()]*{/, '').replace(/}$/, '')
+		canvas.id = scope._id;
+
+		scope.PaperScript.evaluate(code, scope);
+
+		return scope;
+	}
+
+
+	return {
+		createPaperScript: createPaperScript,
+
+		createDomNode: function(str, tmpElement) {
+			tmpElement = document.createElement(tmpElement || 'div');
+			tmpElement.innerHTML = str;
+			return tmpElement.firstChild;
+		}
+	}
+});
 
 /*!
  * Paper.js v0.9.8 - The Swiss Army Knife of Vector Graphics Scripting.
@@ -7217,7 +7271,7 @@ Base.inject({
 				Base.each(hash, function(value, key) {
 					this[key] = value;
 				}, this);
-			}, new Base(), true); 
+			}, new Base(), true);
 		},
 
 		capitalize: function(str) {
@@ -7250,7 +7304,7 @@ var Callback = {
 		if (entry) {
 			var handlers = this._handlers = this._handlers || {};
 			handlers = handlers[type] = handlers[type] || [];
-			if (handlers.indexOf(func) == -1) { 
+			if (handlers.indexOf(func) == -1) {
 				handlers.push(func);
 				if (entry.install && handlers.length == 1)
 					entry.install.call(this, type);
@@ -7566,7 +7620,7 @@ var Numerical = new function() {
 				B = A + a,
 				i = 0,
 				m = (n + 1) >> 1,
-				sum = n & 1 ? w[i++] * f(B) : 0; 
+				sum = n & 1 ? w[i++] * f(B) : 0;
 			while (i < m) {
 				var Ax = A * x[i];
 				sum += w[i++] * (f(B + Ax) + f(B - Ax));
@@ -7598,18 +7652,18 @@ var Numerical = new function() {
 					roots[0] = -c / b;
 					return 1;
 				}
-				return abs(c) < epsilon ? -1 : 0; 
+				return abs(c) < epsilon ? -1 : 0;
 			}
 			var q = b * b - 4 * a * c;
 			if (q < 0)
-				return 0; 
+				return 0;
 			q = sqrt(q);
-			a *= 2; 
+			a *= 2;
 			var n = 0;
 			roots[n++] = (-b - q) / a;
 			if (q > 0)
 				roots[n++] = (-b + q) / a;
-			return n; 
+			return n;
 		},
 
 		solveCubic: function(a, b, c, d, roots) {
@@ -7626,17 +7680,17 @@ var Numerical = new function() {
 				D = q * q - ppp;
 			b /= 3;
 			if (abs(D) < epsilon) {
-				if (abs(q) < epsilon) { 
+				if (abs(q) < epsilon) {
 					roots[0] = - b;
 					return 1;
-				} 
+				}
 				var sqp = sqrt(p),
 					snq = q > 0 ? 1 : -1;
 				roots[0] = -snq * 2 * sqp - b;
 				roots[1] = snq * sqp - b;
 				return 2;
 			}
-			if (D < 0) { 
+			if (D < 0) {
 				var sqp = sqrt(p),
 					phi = Math.acos(q / (sqp * sqp * sqp)) / 3,
 					t = -2 * sqp,
@@ -8932,9 +8986,9 @@ var Line = Base.extend({
 			}
 			var v2x = x - px,
 				v2y = y - py,
-				ccw = v2x * vy - v2y * vx; 
+				ccw = v2x * vy - v2y * vx;
 			if (ccw === 0) {
-				ccw = v2x * vx + v2y * vy; 
+				ccw = v2x * vx + v2y * vy;
 				if (ccw > 0) {
 					v2x -= vx;
 					v2y -= vy;
@@ -8951,8 +9005,8 @@ var Line = Base.extend({
 				vx -= px;
 				vy -= py;
 			}
-			var m = vy / vx, 
-				b = py - m * px; 
+			var m = vy / vx,
+				b = py - m * px;
 			return (y - (m * x) - b) / Math.sqrt(m * m + 1);
 		}
 	}
@@ -9454,7 +9508,7 @@ var Item = Base.extend(Callback, {
 	},
 
 	setData: function(data) {
-		this._data = data;		
+		this._data = data;
 	},
 
 	getPosition: function() {
@@ -9488,7 +9542,7 @@ var Item = Base.extend(Callback, {
 						? getter : getter && getter[name] || name, arguments[0]);
 			return name === 'getBounds'
 					? new LinkedRectangle(bounds.x, bounds.y, bounds.width,
-							bounds.height, this, 'setBounds') 
+							bounds.height, this, 'setBounds')
 					: bounds;
 		};
 	},
@@ -10257,7 +10311,7 @@ var Layer = Group.extend({
 		return false;
 	},
 
-	getNextSibling: function getNextSibling() {		
+	getNextSibling: function getNextSibling() {
 		return this._parent ? getNextSibling.base.call(this)
 				: this._project.layers[this._index + 1] || null;
 	},
@@ -10936,7 +10990,7 @@ var Segment = Base.extend({
 
 	_setSelected: function(point, selected) {
 		var path = this._path,
-			selected = !!selected, 
+			selected = !!selected,
 			state = this._selectionState || 0,
 			selection = [
 				!!(state & 4),
@@ -11100,7 +11154,7 @@ var SegmentPoint = Point.extend({
 		var x, y, selected;
 		if (!point) {
 			x = y = 0;
-		} else if ((x = point[0]) !== undefined) { 
+		} else if ((x = point[0]) !== undefined) {
 			y = point[1];
 		} else {
 			if ((x = point.x) === undefined) {
@@ -11320,7 +11374,7 @@ var Curve = Base.extend({
 				: offset && offset.curve === this
 					? offset.parameter
 					: offset === undefined && isParameter === undefined
-						? 0.5 
+						? 0.5
 						: this.getParameterAt(offset, 0);
 	},
 
@@ -11351,7 +11405,7 @@ var Curve = Base.extend({
 				} else {
 					this._path.insert(this._segment2._index, segment);
 				}
-				res = this; 
+				res = this;
 			} else {
 				var end = this._segment2;
 				this._segment2 = segment;
@@ -11452,8 +11506,8 @@ statics: {
 			p7x = u * p4x + t * p5x, p7y = u * p4y + t * p5y,
 			p8x = u * p6x + t * p7x, p8y = u * p6y + t * p7y;
 		return [
-			[p1x, p1y, p3x, p3y, p6x, p6y, p8x, p8y], 
-			[p8x, p8y, p7x, p7y, p5x, p5y, p2x, p2y] 
+			[p1x, p1y, p3x, p3y, p6x, p6y, p8x, p8y],
+			[p8x, p8y, p7x, p7y, p5x, p5y, p2x, p2y]
 		];
 	},
 
@@ -11499,9 +11553,9 @@ statics: {
 
 	getPart: function(v, from, to) {
 		if (from > 0)
-			v = Curve.subdivide(v, from)[1]; 
+			v = Curve.subdivide(v, from)[1];
 		if (to < 1)
-			v = Curve.subdivide(v, (to - from) / (1 - from))[0]; 
+			v = Curve.subdivide(v, (to - from) / (1 - from))[0];
 		return v;
 	},
 
@@ -11536,8 +11590,8 @@ statics: {
 	},
 
 	getBounds: function(v) {
-		var min = v.slice(0, 2), 
-			max = min.slice(), 
+		var min = v.slice(0, 2),
+			max = min.slice(),
 			roots = [0, 0];
 		for (var i = 0; i < 2; i++)
 			Curve._addBounds(v[i], v[i + 2], v[i + 4], v[i + 6],
@@ -11698,7 +11752,7 @@ statics: {
 	}
 
 }),
-new function() { 
+new function() {
 
 	function getLengthIntegrand(v) {
 		var p1x = v[0], p1y = v[1],
@@ -11734,8 +11788,8 @@ new function() {
 			if (b === undefined)
 				b = 1;
 			if (v[0] == v[2] && v[1] == v[3] && v[6] == v[4] && v[7] == v[5]) {
-				var dx = v[6] - v[0], 
-					dy = v[7] - v[1]; 
+				var dx = v[6] - v[0],
+					dy = v[7] - v[1];
 				return (b - a) * Math.sqrt(dx * dx + dy * dy);
 			}
 			var ds = getLengthIntegrand(v);
@@ -11765,11 +11819,11 @@ new function() {
 				return length - offset;
 			}
 			return Numerical.findRoot(f, ds,
-					forward ? a + guess : b - guess, 
+					forward ? a + guess : b - guess,
 					a, b, 16, 0.00001);
 		}
 	};
-}, new function() { 
+}, new function() {
 	function addLocation(locations, curve1, t1, point1, curve2, t2, point2) {
 		var first = locations[0],
 			last = locations[locations.length - 1];
@@ -12166,7 +12220,7 @@ var PathItem = Item.extend({
 			coords,
 			relative = false,
 			control,
-			current = new Point(); 
+			current = new Point();
 
 		function getCoord(index, coord, update) {
 			var val = parseFloat(coords[index]);
@@ -12516,7 +12570,7 @@ var Path = PathItem.extend({
 		to = Base.pick(to, this._segments.length);
 		var segments = this._segments,
 			curves = this._curves,
-			count = segments.length, 
+			count = segments.length,
 			removed = segments.splice(from, to - from),
 			amount = removed.length;
 		if (!amount)
@@ -12746,7 +12800,7 @@ var Path = PathItem.extend({
 		var curves = this.getCurves(),
 			length = 0;
 		if (isParameter) {
-			var index = ~~offset; 
+			var index = ~~offset;
 			return curves[index].getLocationAt(offset - index, true);
 		}
 		for (var i = 0, l = curves.length; i < l; i++) {
@@ -12893,7 +12947,7 @@ var Path = PathItem.extend({
 				area = [];
 				if (closed || segment._index > 0
 						&& segment._index < segments.length - 1) {
-					if (join !== 'round' && (segment._handleIn.isZero() 
+					if (join !== 'round' && (segment._handleIn.isZero()
 							|| segment._handleOut.isZero()))
 						Path._addSquareJoin(segment, join, radius, miterLimit,
 								addAreaPoint, true);
@@ -12945,7 +12999,7 @@ var Path = PathItem.extend({
 					: null;
 	}
 
-}, new function() { 
+}, new function() {
 
 	function drawHandles(ctx, segments, matrix, size) {
 		var half = size / 2;
@@ -13096,12 +13150,12 @@ var Path = PathItem.extend({
 					this._project.options.handleSize || 4);
 		}
 	};
-}, new function() { 
+}, new function() {
 
 	function getFirstControlPoints(rhs) {
 		var n = rhs.length,
-			x = [], 
-			tmp = [], 
+			x = [],
+			tmp = [],
 			b = 2;
 		x[0] = rhs[0] / b;
 		for (var i = 1; i < n; i++) {
@@ -13193,7 +13247,7 @@ var Path = PathItem.extend({
 			}
 		}
 	};
-}, new function() { 
+}, new function() {
 	function getCurrentSegment(that) {
 		var segments = that._segments;
 		if (segments.length == 0)
@@ -13339,7 +13393,7 @@ var Path = PathItem.extend({
 			this.setClosed(true);
 		}
 	};
-}, {  
+}, {
 
 	_getBounds: function(getter, matrix) {
 		return Path[getter](this._segments, this._closed, this.getStyle(),
@@ -13379,18 +13433,18 @@ statics: {
 			return new Rectangle();
 		var coords = new Array(6),
 			prevCoords = first._transformCoordinates(matrix, new Array(6), false),
-			min = prevCoords.slice(0, 2), 
-			max = min.slice(), 
+			min = prevCoords.slice(0, 2),
+			max = min.slice(),
 			roots = new Array(2);
 
 		function processSegment(segment) {
 			segment._transformCoordinates(matrix, coords, false);
 			for (var i = 0; i < 2; i++) {
 				Curve._addBounds(
-					prevCoords[i], 
-					prevCoords[i + 4], 
-					coords[i + 2], 
-					coords[i], 
+					prevCoords[i],
+					prevCoords[i + 4],
+					coords[i + 2],
+					coords[i],
 					i, strokePadding ? strokePadding[i] : 0, min, max, roots);
 			}
 			var tmp = prevCoords;
@@ -13457,7 +13511,7 @@ statics: {
 				break;
 			case 'butt':
 			case 'square':
-				Path._addSquareCap(segment, cap, radius, add); 
+				Path._addSquareCap(segment, cap, radius, add);
 				break;
 			}
 		}
@@ -13590,7 +13644,7 @@ Path.inject({ statics: new function() {
 			]);
 		} else {
 			radius = Size.min(radius, rect.getSize(true).divide(2));
-			var h = radius.multiply(kappa * 2); 
+			var h = radius.multiply(kappa * 2);
 			path._add([
 				new Segment(bl.add(radius.width, 0), null, [-h.width, 0]),
 				new Segment(bl.subtract(0, radius.height), [0, h.height], null),
@@ -13846,7 +13900,7 @@ var CompoundPath = PathItem.extend({
 				ctx.stroke();
 		}
 	}
-}, new function() { 
+}, new function() {
 	function getCurrentPath(that) {
 		if (!that._children.length)
 			throw new Error('Use a moveTo() command first');
@@ -13883,9 +13937,9 @@ var CompoundPath = PathItem.extend({
 
 var PathFlattener = Base.extend({
 	initialize: function(path) {
-		this.curves = []; 
-		this.parts = []; 
-		this.length = 0; 
+		this.curves = [];
+		this.parts = [];
+		this.length = 0;
 		this.index = 0;
 
 		var segments = path._segments,
@@ -14151,7 +14205,7 @@ var PathFitter = Base.extend({
 		for (var i = first + 1; i < last; i++) {
 			var P = this.evaluate(3, curve, u[i - first]);
 			var v = P.subtract(this.points[i]);
-			var dist = v.x * v.x + v.y * v.y; 
+			var dist = v.x * v.x + v.y * v.y;
 			if (dist >= maxDist) {
 				maxDist = dist;
 				index = i;
@@ -14452,7 +14506,7 @@ var Color = Base.extend(new function() {
 		gradient: ['gradient', 'origin', 'destination', 'highlight']
 	};
 
-	var componentParsers = {}, 
+	var componentParsers = {},
 		colorCache = {},
 		colorCtx;
 
@@ -14490,12 +14544,12 @@ var Color = Base.extend(new function() {
 	}
 
 	var hsbIndices = [
-		[0, 3, 1], 
-		[2, 0, 1], 
-		[1, 0, 3], 
-		[1, 2, 0], 
-		[3, 1, 0], 
-		[0, 1, 2]  
+		[0, 3, 1],
+		[2, 0, 1],
+		[1, 0, 3],
+		[1, 2, 0],
+		[3, 1, 0],
+		[0, 1, 2]
 	];
 
 	var converters = {
@@ -14506,20 +14560,20 @@ var Color = Base.extend(new function() {
 				h = delta === 0 ? 0
 					:   ( max == r ? (g - b) / delta + (g < b ? 6 : 0)
 						: max == g ? (b - r) / delta + 2
-						:            (r - g) / delta + 4) * 60; 
+						:            (r - g) / delta + 4) * 60;
 			return [h, max === 0 ? 0 : delta / max, max];
 		},
 
 		'hsb-rgb': function(h, s, b) {
-			var h = (h / 60) % 6, 
-				i = Math.floor(h), 
+			var h = (h / 60) % 6,
+				i = Math.floor(h),
 				f = h - i,
 				i = hsbIndices[i],
 				v = [
-					b,						
-					b * (1 - s),			
-					b * (1 - s * f),		
-					b * (1 - s * (1 - f))	
+					b,
+					b * (1 - s),
+					b * (1 - s * f),
+					b * (1 - s * (1 - f))
 				];
 			return [v[i[0]], v[i[1]], v[i[2]]];
 		},
@@ -14532,7 +14586,7 @@ var Color = Base.extend(new function() {
 				h = achromatic ? 0
 					:   ( max == r ? (g - b) / delta + (g < b ? 6 : 0)
 						: max == g ? (b - r) / delta + 2
-						:            (r - g) / delta + 4) * 60, 
+						:            (r - g) / delta + 4) * 60,
 				l = (max + min) / 2,
 				s = achromatic ? 0 : l < 0.5
 						? delta / (max + min)
@@ -14672,7 +14726,7 @@ var Color = Base.extend(new function() {
 					alpha = args[2];
 				} else {
 					if (this.__read)
-						read = 1; 
+						read = 1;
 					args = slice.call(args, 1);
 					argType = typeof arg;
 				}
@@ -15057,7 +15111,7 @@ var Gradient = Base.extend({
 		if (stops.length < 2)
 			throw new Error(
 					'Gradient stop list needs to contain at least two stops.');
-		this._stops = GradientStop.readAll(stops, 0, false, true); 
+		this._stops = GradientStop.readAll(stops, 0, false, true);
 		for (var i = 0, l = this._stops.length; i < l; i++) {
 			var stop = this._stops[i];
 			stop._owner = this;
@@ -15115,7 +15169,7 @@ var GradientStop = Base.extend({
 	},
 
 	_serialize: function(options, dictionary) {
-		return Base.serialize([this._color, this._rampPoint], options, true, 
+		return Base.serialize([this._color, this._rampPoint], options, true,
 				dictionary);
 	},
 
@@ -15186,7 +15240,7 @@ var Style = Base.extend(new function() {
 		fields = {
 			_defaults: defaults,
 			_textDefaults: Base.merge(defaults, {
-				fillColor: new Color() 
+				fillColor: new Color()
 			})
 		};
 
@@ -15442,7 +15496,7 @@ var DomElement = new function() {
 			var doc = el.ownerDocument,
 				view = doc.defaultView,
 				html = doc.documentElement;
-			return new Rectangle(0, 0, 
+			return new Rectangle(0, 0,
 				view.innerWidth || html.clientWidth,
 				view.innerHeight || html.clientHeight
 			);
@@ -15765,7 +15819,7 @@ var View = Base.extend(Callback, {
 		this._element.width = size.width;
 		this._element.height = size.height;
 		this._viewSize.set(size.width, size.height, true);
-		this._bounds = null; 
+		this._bounds = null;
 		this.fire('resize', {
 			size: size,
 			delta: delta
@@ -15970,7 +16024,7 @@ var CanvasView = View.extend({
 		this._project._needsRedraw = false;
 		return true;
 	}
-}, new function() { 
+}, new function() {
 
 	var downPoint,
 		lastPoint,
@@ -16129,8 +16183,8 @@ var Key = new function() {
 		40: 'down',
 		46: 'delete',
 		91: 'command',
-		93: 'command', 
-		224: 'command'  
+		93: 'command',
+		224: 'command'
 	},
 
 	modifiers = Base.merge({
@@ -16142,9 +16196,9 @@ var Key = new function() {
 		space: false
 	}),
 
-	charCodeMap = {}, 
-	keyMap = {}, 
-	downCode; 
+	charCodeMap = {},
+	keyMap = {},
+	downCode;
 
 	function handleKey(down, keyCode, charCode, event) {
 		var character = String.fromCharCode(charCode),
@@ -16538,7 +16592,7 @@ var ToolEvent = Event.extend({
 var Tool = PaperScopeItem.extend({
 	_class: 'Tool',
 	_list: 'tools',
-	_reference: '_tool', 
+	_reference: '_tool',
 	_events: [ 'onActivate', 'onDeactivate', 'onEditOptions',
 			'onMouseDown', 'onMouseUp', 'onMouseDrag', 'onMouseMove',
 			'onKeyDown', 'onKeyUp' ],
@@ -16728,9 +16782,9 @@ var BlendMode = new function() {
 	var min = Math.min,
 		max = Math.max,
 		abs = Math.abs,
-		sr, sg, sb, sa, 
-		br, bg, bb, ba, 
-		dr, dg, db;     
+		sr, sg, sb, sa,
+		br, bg, bb, ba,
+		dr, dg, db;
 
 	function getLum(r, g, b) {
 		return 0.2989 * r + 0.587 * g + 0.114 * b;
@@ -16765,9 +16819,9 @@ var BlendMode = new function() {
 
 	function setSat(r, g, b, s) {
 		var col = [r, g, b],
-			mx = max(r, g, b), 
-			mn = min(r, g, b), 
-			md; 
+			mx = max(r, g, b),
+			mn = min(r, g, b),
+			md;
 		mn = mn === r ? 0 : mn === g ? 1 : 2;
 		mx = mx === r ? 0 : mx === g ? 1 : 2;
 		md = min(mn, mx) === 0 ? max(mn, mx) === 1 ? 2 : 1 : 0;
@@ -16920,7 +16974,7 @@ var BlendMode = new function() {
 	}
 	this.nativeModes = testMode('multiply') && Base.each(modes,
 			function(func, mode) {
-				this[mode] = testMode(mode); 
+				this[mode] = testMode(mode);
 			}, {});
 	CanvasProvider.release(ctx);
 
@@ -16934,7 +16988,7 @@ var BlendMode = new function() {
 			if (!normal)
 				dstContext.globalCompositeOperation = mode;
 			dstContext.drawImage(srcCanvas, offset.x, offset.y);
-			dstContext.restore();	
+			dstContext.restore();
 		} else {
 			var process = modes[mode];
 			if (!process)
@@ -17125,7 +17179,7 @@ new function() {
 						- getDistance(segments, 1, 3))
 						? 'circle'
 						: 'ellipse';
-			} 
+			}
 		}
 		return 'path';
 	}
@@ -17203,8 +17257,8 @@ new function() {
 				height = getDistance(segments, 0, 3),
 				rx = (width - getDistance(segments, 0, 7)) / 2,
 				ry = (height - getDistance(segments, 1, 2)) / 2,
-				left = segments[3]._point, 
-				right = segments[4]._point, 
+				left = segments[3]._point,
+				right = segments[4]._point,
 				point = left.subtract(right.subtract(left).normalize(rx))
 						.rotate(-angle, center);
 			attrs = {
@@ -17387,7 +17441,7 @@ new function() {
 		if (item._visibility != null && !item._visibility)
 			attrs.visibility = 'hidden';
 
-		delete item._gradientMatrix; 
+		delete item._gradientMatrix;
 		return setAttributes(node, attrs);
 	}
 
@@ -17862,28 +17916,456 @@ if (typeof define === 'function' && define.amd)
 return paper;
 };
 
+paper.PaperScope.prototype.PaperScript = new function() {
+	var Base = paper.Base,
+		PaperScope = paper.PaperScope,
+		exports = undefined;
+!function(e){return"object"==typeof exports&&"object"==typeof module?e(exports):(e(this.acorn||(this.acorn={})),void 0)}(function(e){function r(e){fr=e||{};for(var r in hr)Object.prototype.hasOwnProperty.call(fr,r)||(fr[r]=hr[r]);mr=fr.sourceFile||null}function t(e,r){var t=vr(pr,e);r+=" ("+t.line+":"+t.column+")";var n=new SyntaxError(r);throw n.pos=e,n.loc=t,n.raisedAt=br,n}function n(e){function r(e){if(1==e.length)return t+="return str === "+JSON.stringify(e[0])+";";t+="switch(str){";for(var r=0;r<e.length;++r)t+="case "+JSON.stringify(e[r])+":";t+="return true}return false;"}e=e.split(" ");var t="",n=[];e:for(var a=0;a<e.length;++a){for(var o=0;o<n.length;++o)if(n[o][0].length==e[a].length){n[o].push(e[a]);continue e}n.push([e[a]])}if(n.length>3){n.sort(function(e,r){return r.length-e.length}),t+="switch(str.length){";for(var a=0;a<n.length;++a){var i=n[a];t+="case "+i[0].length+":",r(i)}t+="}"}else r(e);return new Function("str",t)}function a(){this.line=Ar,this.column=br-Sr}function o(){Ar=1,br=Sr=0,Er=!0,u()}function i(e,r){gr=br,fr.locations&&(kr=new a),wr=e,u(),Cr=r,Er=e.beforeExpr}function s(){var e=fr.onComment&&fr.locations&&new a,r=br,n=pr.indexOf("*/",br+=2);if(-1===n&&t(br-2,"Unterminated comment"),br=n+2,fr.locations){Ht.lastIndex=r;for(var o;(o=Ht.exec(pr))&&o.index<br;)++Ar,Sr=o.index+o[0].length}fr.onComment&&fr.onComment(!0,pr.slice(r+2,n),r,br,e,fr.locations&&new a)}function c(){for(var e=br,r=fr.onComment&&fr.locations&&new a,t=pr.charCodeAt(br+=2);dr>br&&10!==t&&13!==t&&8232!==t&&8329!==t;)++br,t=pr.charCodeAt(br);fr.onComment&&fr.onComment(!1,pr.slice(e+2,br),e,br,r,fr.locations&&new a)}function u(){for(;dr>br;){var e=pr.charCodeAt(br);if(32===e)++br;else if(13===e){++br;var r=pr.charCodeAt(br);10===r&&++br,fr.locations&&(++Ar,Sr=br)}else if(10===e)++br,++Ar,Sr=br;else if(14>e&&e>8)++br;else if(47===e){var r=pr.charCodeAt(br+1);if(42===r)s();else{if(47!==r)break;c()}}else if(14>e&&e>8||32===e||160===e)++br;else{if(!(e>=5760&&Wt.test(String.fromCharCode(e))))break;++br}}}function l(){var e=pr.charCodeAt(br+1);return e>=48&&57>=e?E(!0):(++br,i(gt))}function f(){var e=pr.charCodeAt(br+1);return Er?(++br,k()):61===e?x(Ct,2):x(kt,1)}function p(){var e=pr.charCodeAt(br+1);return 61===e?x(Ct,2):x(jt,1)}function d(e){var r=pr.charCodeAt(br+1);return r===e?x(124===e?It:Lt,2):61===r?x(Ct,2):x(124===e?Ut:Tt,1)}function m(){var e=pr.charCodeAt(br+1);return 61===e?x(Ct,2):x(Rt,1)}function h(e){var r=pr.charCodeAt(br+1);return r===e?x(At,2):61===r?x(Ct,2):x(Et,1)}function v(e){var r=pr.charCodeAt(br+1),t=1;return r===e?(t=62===e&&62===pr.charCodeAt(br+2)?3:2,61===pr.charCodeAt(br+t)?x(Ct,t+1):x(Ot,t)):(61===r&&(t=61===pr.charCodeAt(br+2)?3:2),x(qt,t))}function b(e){var r=pr.charCodeAt(br+1);return 61===r?x(Vt,61===pr.charCodeAt(br+2)?3:2):x(61===e?wt:St,1)}function y(e){switch(e){case 46:return l();case 40:return++br,i(mt);case 41:return++br,i(ht);case 59:return++br,i(bt);case 44:return++br,i(vt);case 91:return++br,i(lt);case 93:return++br,i(ft);case 123:return++br,i(pt);case 125:return++br,i(dt);case 58:return++br,i(yt);case 63:return++br,i(xt);case 48:var r=pr.charCodeAt(br+1);if(120===r||88===r)return C();case 49:case 50:case 51:case 52:case 53:case 54:case 55:case 56:case 57:return E(!1);case 34:case 39:return A(e);case 47:return f(e);case 37:case 42:return p();case 124:case 38:return d(e);case 94:return m();case 43:case 45:return h(e);case 60:case 62:return v(e);case 61:case 33:return b(e);case 126:return x(St,1)}return!1}function g(e){if(e?br=yr+1:yr=br,fr.locations&&(xr=new a),e)return k();if(br>=dr)return i(Dr);var r=pr.charCodeAt(br);if(Kt(r)||92===r)return L();var n=y(r);if(n===!1){var o=String.fromCharCode(r);if("\\"===o||$t.test(o))return L();t(br,"Unexpected character '"+o+"'")}return n}function x(e,r){var t=pr.slice(br,br+r);br+=r,i(e,t)}function k(){for(var e,r,n="",a=br;;){br>=dr&&t(a,"Unterminated regular expression");var o=pr.charAt(br);if(Gt.test(o)&&t(a,"Unterminated regular expression"),e)e=!1;else{if("["===o)r=!0;else if("]"===o&&r)r=!1;else if("/"===o&&!r)break;e="\\"===o}++br}var n=pr.slice(a,br);++br;var s=I();return s&&!/^[gmsiy]*$/.test(s)&&t(a,"Invalid regexp flag"),i(Or,new RegExp(n,s))}function w(e,r){for(var t=br,n=0,a=0,o=null==r?1/0:r;o>a;++a){var i,s=pr.charCodeAt(br);if(i=s>=97?s-97+10:s>=65?s-65+10:s>=48&&57>=s?s-48:1/0,i>=e)break;++br,n=n*e+i}return br===t||null!=r&&br-t!==r?null:n}function C(){br+=2;var e=w(16);return null==e&&t(yr+2,"Expected hexadecimal number"),Kt(pr.charCodeAt(br))&&t(br,"Identifier directly after number"),i(qr,e)}function E(e){var r=br,n=!1,a=48===pr.charCodeAt(br);e||null!==w(10)||t(r,"Invalid number"),46===pr.charCodeAt(br)&&(++br,w(10),n=!0);var o=pr.charCodeAt(br);(69===o||101===o)&&(o=pr.charCodeAt(++br),(43===o||45===o)&&++br,null===w(10)&&t(r,"Invalid number"),n=!0),Kt(pr.charCodeAt(br))&&t(br,"Identifier directly after number");var s,c=pr.slice(r,br);return n?s=parseFloat(c):a&&1!==c.length?/[89]/.test(c)||Vr?t(r,"Invalid number"):s=parseInt(c,8):s=parseInt(c,10),i(qr,s)}function A(e){br++;for(var r="";;){br>=dr&&t(yr,"Unterminated string constant");var n=pr.charCodeAt(br);if(n===e)return++br,i(jr,r);if(92===n){n=pr.charCodeAt(++br);var a=/^[0-7]+/.exec(pr.slice(br,br+3));for(a&&(a=a[0]);a&&parseInt(a,8)>255;)a=a.slice(0,a.length-1);if("0"===a&&(a=null),++br,a)Vr&&t(br-2,"Octal literal in strict mode"),r+=String.fromCharCode(parseInt(a,8)),br+=a.length-1;else switch(n){case 110:r+="\n";break;case 114:r+="\r";break;case 120:r+=String.fromCharCode(S(2));break;case 117:r+=String.fromCharCode(S(4));break;case 85:r+=String.fromCharCode(S(8));break;case 116:r+="	";break;case 98:r+="\b";break;case 118:r+="";break;case 102:r+="\f";break;case 48:r+="\0";break;case 13:10===pr.charCodeAt(br)&&++br;case 10:fr.locations&&(Sr=br,++Ar);break;default:r+=String.fromCharCode(n)}}else(13===n||10===n||8232===n||8329===n)&&t(yr,"Unterminated string constant"),r+=String.fromCharCode(n),++br}}function S(e){var r=w(16,e);return null===r&&t(yr,"Bad character escape sequence"),r}function I(){Dt=!1;for(var e,r=!0,n=br;;){var a=pr.charCodeAt(br);if(Qt(a))Dt&&(e+=pr.charAt(br)),++br;else{if(92!==a)break;Dt||(e=pr.slice(n,br)),Dt=!0,117!=pr.charCodeAt(++br)&&t(br,"Expecting Unicode escape sequence \\uXXXX"),++br;var o=S(4),i=String.fromCharCode(o);i||t(br-1,"Invalid Unicode escape"),(r?Kt(o):Qt(o))||t(br-4,"Invalid Unicode escape"),e+=i}r=!1}return Dt?e:pr.slice(n,br)}function L(){var e=I(),r=Fr;return Dt||(Nt(e)?r=ut[e]:(fr.forbidReserved&&(3===fr.ecmaVersion?Bt:Mt)(e)||Vr&&zt(e))&&t(yr,"The keyword '"+e+"' is reserved")),i(r,e)}function U(){Ir=yr,Lr=gr,Ur=kr,g()}function R(e){for(Vr=e,br=Lr;Sr>br;)Sr=pr.lastIndexOf("\n",Sr-2)+1,--Ar;u(),g()}function T(){this.type=null,this.start=yr,this.end=null}function V(){this.start=xr,this.end=null,null!==mr&&(this.source=mr)}function q(){var e=new T;return fr.locations&&(e.loc=new V),fr.ranges&&(e.range=[yr,0]),e}function O(e){var r=new T;return r.start=e.start,fr.locations&&(r.loc=new V,r.loc.start=e.loc.start),fr.ranges&&(r.range=[e.range[0],0]),r}function j(e,r){return e.type=r,e.end=Lr,fr.locations&&(e.loc.end=Ur),fr.ranges&&(e.range[1]=Lr),e}function F(e){return fr.ecmaVersion>=5&&"ExpressionStatement"===e.type&&"Literal"===e.expression.type&&"use strict"===e.expression.value}function D(e){return wr===e?(U(),!0):void 0}function B(){return!fr.strictSemicolons&&(wr===Dr||wr===dt||Gt.test(pr.slice(Lr,yr)))}function M(){D(bt)||B()||X()}function z(e){wr===e?U():X()}function X(){t(yr,"Unexpected token")}function N(e){"Identifier"!==e.type&&"MemberExpression"!==e.type&&t(e.start,"Assigning to rvalue"),Vr&&"Identifier"===e.type&&Xt(e.name)&&t(e.start,"Assigning to "+e.name+" in strict mode")}function W(e){Ir=Lr=br,fr.locations&&(Ur=new a),Rr=Vr=null,Tr=[],g();var r=e||q(),t=!0;for(e||(r.body=[]);wr!==Dr;){var n=J();r.body.push(n),t&&F(n)&&R(!0),t=!1}return j(r,"Program")}function J(){wr===kt&&g(!0);var e=wr,r=q();switch(e){case Br:case Xr:U();var n=e===Br;D(bt)||B()?r.label=null:wr!==Fr?X():(r.label=lr(),M());for(var a=0;a<Tr.length;++a){var o=Tr[a];if(null==r.label||o.name===r.label.name){if(null!=o.kind&&(n||"loop"===o.kind))break;if(r.label&&n)break}}return a===Tr.length&&t(r.start,"Unsyntactic "+e.keyword),j(r,n?"BreakStatement":"ContinueStatement");case Nr:return U(),M(),j(r,"DebuggerStatement");case Jr:return U(),Tr.push(Yt),r.body=J(),Tr.pop(),z(rt),r.test=P(),M(),j(r,"DoWhileStatement");case _r:if(U(),Tr.push(Yt),z(mt),wr===bt)return _(r,null);if(wr===et){var i=q();return U(),H(i,!0),1===i.declarations.length&&D(ct)?G(r,i):_(r,i)}var i=K(!1,!0);return D(ct)?(N(i),G(r,i)):_(r,i);case Gr:return U(),cr(r,!0);case Hr:return U(),r.test=P(),r.consequent=J(),r.alternate=D(Pr)?J():null,j(r,"IfStatement");case Kr:return Rr||t(yr,"'return' outside of function"),U(),D(bt)||B()?r.argument=null:(r.argument=K(),M()),j(r,"ReturnStatement");case Qr:U(),r.discriminant=P(),r.cases=[],z(pt),Tr.push(Zt);for(var s,c;wr!=dt;)if(wr===Mr||wr===Wr){var u=wr===Mr;s&&j(s,"SwitchCase"),r.cases.push(s=q()),s.consequent=[],U(),u?s.test=K():(c&&t(Ir,"Multiple default clauses"),c=!0,s.test=null),z(yt)}else s||X(),s.consequent.push(J());return s&&j(s,"SwitchCase"),U(),Tr.pop(),j(r,"SwitchStatement");case Yr:return U(),Gt.test(pr.slice(Lr,yr))&&t(Lr,"Illegal newline after throw"),r.argument=K(),M(),j(r,"ThrowStatement");case Zr:if(U(),r.block=$(),r.handler=null,wr===zr){var l=q();U(),z(mt),l.param=lr(),Vr&&Xt(l.param.name)&&t(l.param.start,"Binding "+l.param.name+" in strict mode"),z(ht),l.guard=null,l.body=$(),r.handler=j(l,"CatchClause")}return r.finalizer=D($r)?$():null,r.handler||r.finalizer||t(r.start,"Missing catch or finally clause"),j(r,"TryStatement");case et:return U(),r=H(r),M(),r;case rt:return U(),r.test=P(),Tr.push(Yt),r.body=J(),Tr.pop(),j(r,"WhileStatement");case tt:return Vr&&t(yr,"'with' in strict mode"),U(),r.object=P(),r.body=J(),j(r,"WithStatement");case pt:return $();case bt:return U(),j(r,"EmptyStatement");default:var f=Cr,p=K();if(e===Fr&&"Identifier"===p.type&&D(yt)){for(var a=0;a<Tr.length;++a)Tr[a].name===f&&t(p.start,"Label '"+f+"' is already declared");var d=wr.isLoop?"loop":wr===Qr?"switch":null;return Tr.push({name:f,kind:d}),r.body=J(),Tr.pop(),r.label=p,j(r,"LabeledStatement")}return r.expression=p,M(),j(r,"ExpressionStatement")}}function P(){z(mt);var e=K();return z(ht),e}function $(){var e,r=q(),t=!0,n=!1;for(r.body=[],z(pt);!D(dt);){var a=J();r.body.push(a),t&&F(a)&&(e=n,R(n=!0)),t=!1}return n&&!e&&R(!1),j(r,"BlockStatement")}function _(e,r){return e.init=r,z(bt),e.test=wr===bt?null:K(),z(bt),e.update=wr===ht?null:K(),z(ht),e.body=J(),Tr.pop(),j(e,"ForStatement")}function G(e,r){return e.left=r,e.right=K(),z(ht),e.body=J(),Tr.pop(),j(e,"ForInStatement")}function H(e,r){for(e.declarations=[],e.kind="var";;){var n=q();if(n.id=lr(),Vr&&Xt(n.id.name)&&t(n.id.start,"Binding "+n.id.name+" in strict mode"),n.init=D(wt)?K(!0,r):null,e.declarations.push(j(n,"VariableDeclarator")),!D(vt))break}return j(e,"VariableDeclaration")}function K(e,r){var t=Q(r);if(!e&&wr===vt){var n=O(t);for(n.expressions=[t];D(vt);)n.expressions.push(Q(r));return j(n,"SequenceExpression")}return t}function Q(e){var r=Y(e);if(wr.isAssign){var t=O(r);return t.operator=Cr,t.left=r,U(),t.right=Q(e),N(r),j(t,"AssignmentExpression")}return r}function Y(e){var r=Z(e);if(D(xt)){var t=O(r);return t.test=r,t.consequent=K(!0),z(yt),t.alternate=K(!0,e),j(t,"ConditionalExpression")}return r}function Z(e){return er(rr(e),-1,e)}function er(e,r,t){var n=wr.binop;if(null!=n&&(!t||wr!==ct)&&n>r){var a=O(e);a.left=e,a.operator=Cr,U(),a.right=er(rr(t),n,t);var a=j(a,/&&|\|\|/.test(a.operator)?"LogicalExpression":"BinaryExpression");return er(a,r,t)}return e}function rr(e){if(wr.prefix){var r=q(),n=wr.isUpdate;return r.operator=Cr,r.prefix=!0,U(),r.argument=rr(e),n?N(r.argument):Vr&&"delete"===r.operator&&"Identifier"===r.argument.type&&t(r.start,"Deleting local variable in strict mode"),j(r,n?"UpdateExpression":"UnaryExpression")}for(var a=tr();wr.postfix&&!B();){var r=O(a);r.operator=Cr,r.prefix=!1,r.argument=a,N(a),U(),a=j(r,"UpdateExpression")}return a}function tr(){return nr(ar())}function nr(e,r){if(D(gt)){var t=O(e);return t.object=e,t.property=lr(!0),t.computed=!1,nr(j(t,"MemberExpression"),r)}if(D(lt)){var t=O(e);return t.object=e,t.property=K(),t.computed=!0,z(ft),nr(j(t,"MemberExpression"),r)}if(!r&&D(mt)){var t=O(e);return t.callee=e,t.arguments=ur(ht,!1),nr(j(t,"CallExpression"),r)}return e}function ar(){switch(wr){case at:var e=q();return U(),j(e,"ThisExpression");case Fr:return lr();case qr:case jr:case Or:var e=q();return e.value=Cr,e.raw=pr.slice(yr,gr),U(),j(e,"Literal");case ot:case it:case st:var e=q();return e.value=wr.atomValue,e.raw=wr.keyword,U(),j(e,"Literal");case mt:var r=xr,t=yr;U();var n=K();return n.start=t,n.end=gr,fr.locations&&(n.loc.start=r,n.loc.end=kr),fr.ranges&&(n.range=[t,gr]),z(ht),n;case lt:var e=q();return U(),e.elements=ur(ft,!0,!0),j(e,"ArrayExpression");case pt:return ir();case Gr:var e=q();return U(),cr(e,!1);case nt:return or();default:X()}}function or(){var e=q();return U(),e.callee=nr(ar(),!0),e.arguments=D(mt)?ur(ht,!1):[],j(e,"NewExpression")}function ir(){var e=q(),r=!0,n=!1;for(e.properties=[],U();!D(dt);){if(r)r=!1;else if(z(vt),fr.allowTrailingCommas&&D(dt))break;var a,o={key:sr()},i=!1;if(D(yt)?(o.value=K(!0),a=o.kind="init"):fr.ecmaVersion>=5&&"Identifier"===o.key.type&&("get"===o.key.name||"set"===o.key.name)?(i=n=!0,a=o.kind=o.key.name,o.key=sr(),wr!==mt&&X(),o.value=cr(q(),!1)):X(),"Identifier"===o.key.type&&(Vr||n))for(var s=0;s<e.properties.length;++s){var c=e.properties[s];if(c.key.name===o.key.name){var u=a==c.kind||i&&"init"===c.kind||"init"===a&&("get"===c.kind||"set"===c.kind);u&&!Vr&&"init"===a&&"init"===c.kind&&(u=!1),u&&t(o.key.start,"Redefinition of property")}}e.properties.push(o)}return j(e,"ObjectExpression")}function sr(){return wr===qr||wr===jr?ar():lr(!0)}function cr(e,r){wr===Fr?e.id=lr():r?X():e.id=null,e.params=[];var n=!0;for(z(mt);!D(ht);)n?n=!1:z(vt),e.params.push(lr());var a=Rr,o=Tr;if(Rr=!0,Tr=[],e.body=$(!0),Rr=a,Tr=o,Vr||e.body.body.length&&F(e.body.body[0]))for(var i=e.id?-1:0;i<e.params.length;++i){var s=0>i?e.id:e.params[i];if((zt(s.name)||Xt(s.name))&&t(s.start,"Defining '"+s.name+"' in strict mode"),i>=0)for(var c=0;i>c;++c)s.name===e.params[c].name&&t(s.start,"Argument name clash in strict mode")}return j(e,r?"FunctionDeclaration":"FunctionExpression")}function ur(e,r,t){for(var n=[],a=!0;!D(e);){if(a)a=!1;else if(z(vt),r&&fr.allowTrailingCommas&&D(e))break;t&&wr===vt?n.push(null):n.push(K(!0))}return n}function lr(e){var r=q();return r.name=wr===Fr?Cr:e&&!fr.forbidReserved&&wr.keyword||X(),U(),j(r,"Identifier")}e.version="0.3.1";var fr,pr,dr,mr;e.parse=function(e,t){return pr=String(e),dr=pr.length,r(t),o(),W(fr.program)};var hr=e.defaultOptions={ecmaVersion:5,strictSemicolons:!1,allowTrailingCommas:!0,forbidReserved:!1,locations:!1,onComment:null,ranges:!1,program:null,sourceFile:null},vr=e.getLineInfo=function(e,r){for(var t=1,n=0;;){Ht.lastIndex=n;var a=Ht.exec(e);if(!(a&&a.index<r))break;++t,n=a.index+a[0].length}return{line:t,column:r-n}};e.tokenize=function(e,t){function n(e){return g(e),a.start=yr,a.end=gr,a.startLoc=xr,a.endLoc=kr,a.type=wr,a.value=Cr,a}pr=String(e),dr=pr.length,r(t),o();var a={};return n.jumpTo=function(e,r){if(br=e,fr.locations){Ar=Sr=Ht.lastIndex=0;for(var t;(t=Ht.exec(pr))&&t.index<e;)++Ar,Sr=t.index+t[0].length}pr.charAt(e-1),Er=r,u()},n};var br,yr,gr,xr,kr,wr,Cr,Er,Ar,Sr,Ir,Lr,Ur,Rr,Tr,Vr,qr={type:"num"},Or={type:"regexp"},jr={type:"string"},Fr={type:"name"},Dr={type:"eof"},Br={keyword:"break"},Mr={keyword:"case",beforeExpr:!0},zr={keyword:"catch"},Xr={keyword:"continue"},Nr={keyword:"debugger"},Wr={keyword:"default"},Jr={keyword:"do",isLoop:!0},Pr={keyword:"else",beforeExpr:!0},$r={keyword:"finally"},_r={keyword:"for",isLoop:!0},Gr={keyword:"function"},Hr={keyword:"if"},Kr={keyword:"return",beforeExpr:!0},Qr={keyword:"switch"},Yr={keyword:"throw",beforeExpr:!0},Zr={keyword:"try"},et={keyword:"var"},rt={keyword:"while",isLoop:!0},tt={keyword:"with"},nt={keyword:"new",beforeExpr:!0},at={keyword:"this"},ot={keyword:"null",atomValue:null},it={keyword:"true",atomValue:!0},st={keyword:"false",atomValue:!1},ct={keyword:"in",binop:7,beforeExpr:!0},ut={"break":Br,"case":Mr,"catch":zr,"continue":Xr,"debugger":Nr,"default":Wr,"do":Jr,"else":Pr,"finally":$r,"for":_r,"function":Gr,"if":Hr,"return":Kr,"switch":Qr,"throw":Yr,"try":Zr,"var":et,"while":rt,"with":tt,"null":ot,"true":it,"false":st,"new":nt,"in":ct,"instanceof":{keyword:"instanceof",binop:7,beforeExpr:!0},"this":at,"typeof":{keyword:"typeof",prefix:!0,beforeExpr:!0},"void":{keyword:"void",prefix:!0,beforeExpr:!0},"delete":{keyword:"delete",prefix:!0,beforeExpr:!0}},lt={type:"[",beforeExpr:!0},ft={type:"]"},pt={type:"{",beforeExpr:!0},dt={type:"}"},mt={type:"(",beforeExpr:!0},ht={type:")"},vt={type:",",beforeExpr:!0},bt={type:";",beforeExpr:!0},yt={type:":",beforeExpr:!0},gt={type:"."},xt={type:"?",beforeExpr:!0},kt={binop:10,beforeExpr:!0},wt={isAssign:!0,beforeExpr:!0},Ct={isAssign:!0,beforeExpr:!0},Et={binop:9,prefix:!0,beforeExpr:!0},At={postfix:!0,prefix:!0,isUpdate:!0},St={prefix:!0,beforeExpr:!0},It={binop:1,beforeExpr:!0},Lt={binop:2,beforeExpr:!0},Ut={binop:3,beforeExpr:!0},Rt={binop:4,beforeExpr:!0},Tt={binop:5,beforeExpr:!0},Vt={binop:6,beforeExpr:!0},qt={binop:7,beforeExpr:!0},Ot={binop:8,beforeExpr:!0},jt={binop:10,beforeExpr:!0};e.tokTypes={bracketL:lt,bracketR:ft,braceL:pt,braceR:dt,parenL:mt,parenR:ht,comma:vt,semi:bt,colon:yt,dot:gt,question:xt,slash:kt,eq:wt,name:Fr,eof:Dr,num:qr,regexp:Or,string:jr};for(var Ft in ut)e.tokTypes["_"+Ft]=ut[Ft];var Dt,Bt=n("abstract boolean byte char class double enum export extends final float goto implements import int interface long native package private protected public short static super synchronized throws transient volatile"),Mt=n("class enum extends super const export import"),zt=n("implements interface let package private protected public static yield"),Xt=n("eval arguments"),Nt=n("break case catch continue debugger default do else finally for function if return switch throw try var while with null true false instanceof typeof void delete new in this"),Wt=/[\u1680\u180e\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]/,Jt="\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0\u08a2-\u08ac\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e87\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa\u0eab\u0ead-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19c1-\u19c7\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fcc\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790-\ua793\ua7a0-\ua7aa\ua7f8-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa80-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc",Pt="\u0300-\u036f\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u0620-\u0649\u0672-\u06d3\u06e7-\u06e8\u06fb-\u06fc\u0730-\u074a\u0800-\u0814\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0840-\u0857\u08e4-\u08fe\u0900-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962-\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09d7\u09df-\u09e0\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2-\u0ae3\u0ae6-\u0aef\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b56\u0b57\u0b5f-\u0b60\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c01-\u0c03\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62-\u0c63\u0c66-\u0c6f\u0c82\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2-\u0ce3\u0ce6-\u0cef\u0d02\u0d03\u0d46-\u0d48\u0d57\u0d62-\u0d63\u0d66-\u0d6f\u0d82\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0df2\u0df3\u0e34-\u0e3a\u0e40-\u0e45\u0e50-\u0e59\u0eb4-\u0eb9\u0ec8-\u0ecd\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f41-\u0f47\u0f71-\u0f84\u0f86-\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u1000-\u1029\u1040-\u1049\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u170e-\u1710\u1720-\u1730\u1740-\u1750\u1772\u1773\u1780-\u17b2\u17dd\u17e0-\u17e9\u180b-\u180d\u1810-\u1819\u1920-\u192b\u1930-\u193b\u1951-\u196d\u19b0-\u19c0\u19c8-\u19c9\u19d0-\u19d9\u1a00-\u1a15\u1a20-\u1a53\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1b46-\u1b4b\u1b50-\u1b59\u1b6b-\u1b73\u1bb0-\u1bb9\u1be6-\u1bf3\u1c00-\u1c22\u1c40-\u1c49\u1c5b-\u1c7d\u1cd0-\u1cd2\u1d00-\u1dbe\u1e01-\u1f15\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2d81-\u2d96\u2de0-\u2dff\u3021-\u3028\u3099\u309a\ua640-\ua66d\ua674-\ua67d\ua69f\ua6f0-\ua6f1\ua7f8-\ua800\ua806\ua80b\ua823-\ua827\ua880-\ua881\ua8b4-\ua8c4\ua8d0-\ua8d9\ua8f3-\ua8f7\ua900-\ua909\ua926-\ua92d\ua930-\ua945\ua980-\ua983\ua9b3-\ua9c0\uaa00-\uaa27\uaa40-\uaa41\uaa4c-\uaa4d\uaa50-\uaa59\uaa7b\uaae0-\uaae9\uaaf2-\uaaf3\uabc0-\uabe1\uabec\uabed\uabf0-\uabf9\ufb20-\ufb28\ufe00-\ufe0f\ufe20-\ufe26\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f",$t=new RegExp("["+Jt+"]"),_t=new RegExp("["+Jt+Pt+"]"),Gt=/[\n\r\u2028\u2029]/,Ht=/\r\n|[\n\r\u2028\u2029]/g,Kt=e.isIdentifierStart=function(e){return 65>e?36===e:91>e?!0:97>e?95===e:123>e?!0:e>=170&&$t.test(String.fromCharCode(e))},Qt=e.isIdentifierChar=function(e){return 48>e?36===e:58>e?!0:65>e?!1:91>e?!0:97>e?95===e:123>e?!0:e>=170&&_t.test(String.fromCharCode(e))},Yt={kind:"loop"},Zt={kind:"switch"}});
+
+	var binaryOperators = {
+		'+': '_add',
+		'-': '_subtract',
+		'*': '_multiply',
+		'/': '_divide',
+		'%': '_modulo',
+		'==': 'equals',
+		'!=': 'equals'
+	};
+
+	var unaryOperators = {
+		'-': '_negate',
+		'+': null
+	};
+
+	var fields = Base.each(
+		'add,subtract,multiply,divide,modulo,negate'.split(','),
+		function(name) {
+			this['_' + name] = '#' + name;
+		},
+		{}
+	);
+	paper.Point.inject(fields);
+	paper.Size.inject(fields);
+	paper.Color.inject(fields);
+
+	function _$_(left, operator, right) {
+		var handler = binaryOperators[operator];
+		if (left && left[handler]) {
+			var res = left[handler](right);
+			return operator === '!=' ? !res : res;
+		}
+		switch (operator) {
+		case '+': return left + right;
+		case '-': return left - right;
+		case '*': return left * right;
+		case '/': return left / right;
+		case '%': return left % right;
+		case '==': return left == right;
+		case '!=': return left != right;
+		}
+	}
+
+	function $_(operator, value) {
+		var handler = unaryOperators[operator];
+		if (handler && value && value[handler])
+			return value[handler]();
+		switch (operator) {
+		case '+': return +value;
+		case '-': return -value;
+		}
+	}
+
+	function compile(code) {
+
+		var insertions = [];
+
+		function getOffset(offset) {
+			for (var i = 0, l = insertions.length; i < l; i++) {
+				var insertion = insertions[i];
+				if (insertion[0] >= offset)
+					break;
+				offset += insertion[1];
+			}
+			return offset;
+		}
+
+		function getCode(node) {
+			return code.substring(getOffset(node.range[0]),
+					getOffset(node.range[1]));
+		}
+
+		function replaceCode(node, str) {
+			var start = getOffset(node.range[0]),
+				end = getOffset(node.range[1]);
+			var insert = 0;
+			for (var i = insertions.length - 1; i >= 0; i--) {
+				if (start > insertions[i][0]) {
+					insert = i + 1;
+					break;
+				}
+			}
+			insertions.splice(insert, 0, [start, str.length - end + start]);
+			code = code.substring(0, start) + str + code.substring(end);
+		}
+
+		function walkAst(node) {
+			if (!node || node.type === 'MemberExpression' && node.computed)
+				return;
+			for (var key in node) {
+				if (key === 'range')
+					continue;
+				var value = node[key];
+				if (Array.isArray(value)) {
+					for (var i = 0, l = value.length; i < l; i++)
+						walkAst(value[i]);
+				} else if (value && typeof value === 'object') {
+					walkAst(value);
+				}
+			}
+			switch (node && node.type) {
+			case 'BinaryExpression':
+				if (node.operator in binaryOperators
+						&& node.left.type !== 'Literal') {
+					var left = getCode(node.left),
+						right = getCode(node.right);
+					replaceCode(node, '_$_(' + left + ', "' + node.operator
+							+ '", ' + right + ')');
+				}
+				break;
+			case 'AssignmentExpression':
+				if (/^.=$/.test(node.operator)
+						&& node.left.type !== 'Literal') {
+					var left = getCode(node.left),
+						right = getCode(node.right);
+					replaceCode(node, left + ' = _$_(' + left + ', "'
+							+ node.operator[0] + '", ' + right + ')');
+				}
+				break;
+			case 'UpdateExpression':
+				if (!node.prefix) {
+					var arg = getCode(node.argument);
+					replaceCode(node, arg + ' = _$_(' + arg + ', "'
+							+ node.operator[0] + '", 1)');
+				}
+				break;
+			case 'UnaryExpression':
+				if (node.operator in unaryOperators
+						&& node.argument.type !== 'Literal') {
+					var arg = getCode(node.argument);
+					replaceCode(node, '$_("' + node.operator + '", '
+							+ arg + ')');
+				}
+				break;
+			}
+		}
+		walkAst(acorn.parse(code, { ranges: true }));
+		return code;
+	}
+
+	function evaluate(code, scope) {
+		paper = scope;
+		var view = scope.project && scope.project.view,
+			res;
+		with (scope) {
+			(function() {
+				var onActivate, onDeactivate, onEditOptions,
+					onMouseDown, onMouseUp, onMouseDrag, onMouseMove,
+					onKeyDown, onKeyUp, onFrame, onResize;
+				res = eval(compile(code));
+				if (/on(?:Key|Mouse)(?:Up|Down|Move|Drag)/.test(code)) {
+					Base.each(paper.Tool.prototype._events, function(key) {
+						var value = eval(key);
+						if (value) {
+							scope.getTool()[key] = value;
+						}
+					});
+				}
+				if (view) {
+					view.setOnResize(onResize);
+					view.fire('resize', {
+						size: view.size,
+						delta: new Point()
+					});
+					view.setOnFrame(onFrame);
+					view.draw();
+				}
+			}).call(scope);
+		}
+		return res;
+	}
+
+	function request(url, scope) {
+		var xhr = new (window.ActiveXObject || XMLHttpRequest)(
+				'Microsoft.XMLHTTP');
+		xhr.open('GET', url, true);
+		if (xhr.overrideMimeType)
+			xhr.overrideMimeType('text/plain');
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState === 4) {
+				return evaluate(xhr.responseText, scope);
+			}
+		};
+		return xhr.send(null);
+	}
+
+	function load() {
+		var scripts = document.getElementsByTagName('script');
+		for (var i = 0, l = scripts.length; i < l; i++) {
+			var script = scripts[i];
+			if (/^text\/(?:x-|)paperscript$/.test(script.type)
+					&& !script.getAttribute('data-paper-ignore')) {
+				var canvas = PaperScope.getAttribute(script, 'canvas'),
+					scope = PaperScope.get(canvas)
+							|| new PaperScope(script).setup(canvas);
+				if (script.src) {
+					request(script.src, scope);
+				} else {
+					evaluate(script.innerHTML, scope);
+				}
+				script.setAttribute('data-paper-ignore', true);
+			}
+		}
+	}
+
+	if (document.readyState === 'complete') {
+		setTimeout(load);
+	} else {
+		paper.DomEvent.add(window, { load: load });
+	}
+
+	return {
+		compile: compile,
+		evaluate: evaluate,
+		load: load
+	};
+
+};
+
+define('forces/weightInteraction',[
+	'../lib/helpers',
+], function(helper) {
+
+	window.state || (window.state = {});
+	window.state.WEIGHT_INTERACTIVE = {
+		SPEED: 100,
+		xDiff: 0,
+		yDiff: 0,
+		CESSNA_SIN_MULTIPLIER: 4,
+		CESSNA_SIN_ADDITIVE: 0.04
+	}
+
+	return {
+		setup: function(canvas) {
+			canvas.id = 'weightInteraction';
+			canvas.setAttribute('data-paper-resize', 'true');
+			canvas.classList.add('hardware-hack');
+			canvas.style.position = 'absolute';
+			canvas.style.backgroundColor = '#000';
+			canvas.style.top =
+				canvas.style.left =
+				canvas.style.right =
+				0;
+			canvas.style.zIndex = 2;
+		},
+
+		paperScript: paperScript
+	}
+
+	function intro(callback) {
+		// Code ported to Paper.js from http://the389.com/9/1/
+		// with permission.
+
+		var values = {
+			friction: 0.8,
+			timeStep: 0.01,
+			amount: 15,
+			mass: 2,
+			count: 0
+		};
+		values.invMass = 1 / values.mass;
+
+		var path, springs;
+		var size = view.size * [1.2, 1];
+
+		var Spring = function(a, b, strength, restLength) {
+			this.a = a;
+			this.b = b;
+			this.restLength = restLength || 80;
+			this.strength = strength ? strength : 0.55;
+			this.mamb = values.invMass * values.invMass;
+		};
+
+		Spring.prototype.update = function() {
+			var delta = this.b - this.a;
+			var dist = delta.length;
+			var normDistStrength = (dist - this.restLength) /
+					(dist * this.mamb) * this.strength;
+			delta.y *= normDistStrength * values.invMass * 0.2;
+			if (!this.a.fixed)
+				this.a.y += delta.y;
+			if (!this.b.fixed)
+				this.b.y -= delta.y;
+		};
+
+
+		function createPath(strength) {
+			var path = new Path({
+				fillColor: 'red'
+			});
+			springs = [];
+			for (var i = 0; i <= values.amount; i++) {
+				var segment = path.add(new Point(i / values.amount, 0.5) * size);
+				var point = segment.point;
+				if (i == 0 || i == values.amount)
+					point.y += size.height;
+				point.px = point.x;
+				point.py = point.y;
+				// The first two and last two points are fixed:
+				point.fixed = i < 2 || i > values.amount - 2;
+				if (i > 0) {
+					var spring = new Spring(segment.previous.point, point, strength);
+					springs.push(spring);
+				}
+			}
+			path.position.x -= size.width / 4;
+			return path;
+		}
+
+		function onResize() {
+			if (path)
+				path.remove();
+			size = view.bounds.size * [2, 1];
+			path = createPath(0.1);
+		}
+
+		function onMouseMove(event) {
+			var location = path.getNearestLocation(event.point);
+			var segment = location.segment;
+			var point = segment.point;
+
+			if (!point.fixed && location.distance < size.height / 4) {
+				var y = event.point.y;
+				point.y += (y - point.y) / 6;
+				if (segment.previous && !segment.previous.fixed) {
+					var previous = segment.previous.point;
+					previous.y += (y - previous.y) / 24;
+				}
+				if (segment.next && !segment.next.fixed) {
+					var next = segment.next.point;
+					next.y += (y - next.y) / 24;
+				}
+			}
+		}
+
+		function onFrame(event) {
+			updateWave(path);
+		}
+
+		function updateWave(path) {
+			var force = 1 - values.friction * values.timeStep * values.timeStep;
+			for (var i = 0, l = path.segments.length; i < l; i++) {
+				var point = path.segments[i].point;
+				var dy = (point.y - point.py) * force;
+				point.py = point.y;
+				point.y = Math.max(point.y + dy, 0);
+			}
+
+			for (var j = 0, l = springs.length; j < l; j++) {
+				springs[j].update();
+			}
+			path.smooth();
+		}
+
+		function onKeyDown(event) {
+			if (event.key == 'space') {
+				path.fullySelected = !path.fullySelected;
+				path.fillColor = path.fullySelected ? null : 'black';
+			}
+		}
+	}
+
+	function paperScript() {
+		var w = view.element.width;
+
+		var numberOfLines = Math.floor(w / 50);
+		var lines = [], line;
+		var top = new Point(0, 0);
+		var bottom = new Point(0, view.element.height);
+		var offset, color;
+
+		while (numberOfLines--) {
+			offset = state.rand(10, 40);
+			top.x -= offset;
+			bottom.x -= offset;
+			line = new Path.Line(top, bottom);
+			line.speed = state.rand(2, 7);
+			color = state.rand(250, 255);
+			line.strokeColor = new Color(color, color, color);
+			line.strokeWidth = Math.floor(state.rand(4, 20) / line.speed);
+			lines.push(line);
+		}
+
+		var cessna = project.importSVG(document.getElementById('cessna-elevation'));
+
+		cessna.position.x = 400;
+		cessna.position.y = 400;
+		window.cessna = cessna;
+
+		var angle = -Math.PI;
+		var frame = 0
+
+		function onFrame(event) {
+			if (!lines) return;
+			if (config.fps) config.fps(event.delta);
+
+			var w = view._element.width;
+			lines.forEach(function(l) {
+				l.position.x += l.speed * 50 / state.WEIGHT_INTERACTIVE.SPEED;
+				if (l.position.x > w) l.position.x = -10;
+			});
+
+			cessna.position.y = Math.floor(state.WEIGHT_INTERACTIVE.CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
+			if (frame > 100) frame = 0;
+			frame += state.WEIGHT_INTERACTIVE.CESSNA_SIN_ADDITIVE;
+		};
+
+		function resize() {
+			w = view.element.width;
+		}
+	}
+});
+
 define('forces/weight',[
 	'../lib/section',
 	'../lib/animations',
+	'../lib/helpers',
 	'paper',
-], function(Section, draw, paper) {
+	'./weightInteraction'
+], function(Section, draw, helper, paper, WeightInteraction) {
 
 	var html = [
 		'<div class="card">',
+			'<h1>', i18n.weight.title, '</h1>',
 			'<div class="card-primary">',
-				'<h1>', i18n.weight.title, '</h1>',
-				'<p>', i18n.weight.description, '</p>',
+				'<div>',
+					'<div class="col col-equation" style="width: 20%">', i18n.weight.equation, '</div>',
+					'<div class="col" style="width: 80%">', i18n.weight.equationDescription, '</div>',
+				'</div>',
+				'<div>',
+					'<div class="col col-equation" style="width: 20%">', '<img src="images/', i18n.weight.historicalFigure, '" />', '</div>',
+					'<div class="col" style="width: 80%">', i18n.weight.historicalDescription, '</div>',
+				'</div>',
 			'</div>',
 			'<div class="card-secondary">',
-				'<button class="column column-golden-large" data-action="play">Play Film</button>',
-				'<div class="column column-golden-small" data-action="play"><img src="images/weight-weight-button.png"></div>',
-				'<button data-action="startInteraction"><img src="images/weight-elevation.png"></button>',
+				'<button class="btn btn-weight-interaction" data-action="startInteraction"><img src="images/weight-elevation.png"></button>',
 			'</div>',
 		'</div>'
 	].join('');
 
 	function Weight() {
 		Section.call(this);
+		var card = this.card = helper.createDomNode(html);
+		WeightInteraction.setup(this.canvas);
 	}
 
 	Weight.prototype = Object.create(Section.prototype);
@@ -17893,34 +18375,31 @@ define('forces/weight',[
 	Weight.prototype.activate = function() {
 		Section.prototype.activate.call(this);
 		var page = this;
-		var card = this.element = config.createDomNode(html);
-		card.style.position = 'absolute';
-		card.style.bottom = '1.5em';
-		card.style.right = '1.5em';
-		card.style.width = '60%';
-		card.classList.remove('slideDownAndFadeOut');
-		card.classList.add('slideUpAndFadeIn');
-		this._page.element.appendChild(card, this._page.element.firstChild);
-		Hammer(this._page.element).on('tap', function handleTap(e) {
+
+		this.card.classList.remove('slideDownAndFadeOut');
+		this.card.classList.add('slideUpAndFadeIn');
+
+		Hammer(this.card).on('tap', function handleTap(e) {
 			var action = e.target.getAttribute('data-action') || e.target.parentNode.getAttribute('data-action');
 			if (!action) return false;
 
 			page[action] && page[action]();
-		}, false);
+		});
 	};
 
 	Weight.prototype.deactivate = function() {
-		Section.prototype.activate.call(this);
-		this._page.element.removeChild(this.element);
+		Section.prototype.deactivate.call(this);
+		this.paperScope.clear();
+		Hammer(this.card).off('tap');
 	};
 
 	Weight.prototype.startInteraction = function() {
 		Section.prototype.startInteraction.call(this);
-		this.element.classList.remove('slideUpAndFadeIn');
-		this.element.classList.add('slideDownAndFadeOut');
-		this.element.appendChild(this.canvas);
-		paper.setup(this.canvas);
-		project.importSVG(document.getElementById('cessna-elevation'));
+		this.card.classList.remove('slideUpAndFadeIn');
+		this.card.classList.add('slideDownAndFadeOut');
+
+		this.paperScope = helper.createPaperScript(this.canvas, WeightInteraction.paperScript)
+		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
 
 	return new Weight();
@@ -17972,12 +18451,16 @@ define('pages/forces',[
 	'../forces/drag',
 	'../forces/thrust',
 	'../lib/animations',
+	'../lib/helpers',
 	'paper',
-], function(Page, weight, lift, drag, thrust, draw, paper) {
+], function(Page, weight, lift, drag, thrust, draw, helper, paper) {
 
-	var NUMBER_OF_PARTICLES = 30;
-	var CESSNA_SIN_MULTIPLIER = 40;
-	var CESSNA_SIN_ADDITIVE = 0.04;
+	window.state || (window.state = {});
+	window.state.FORCES = {
+		NUMBER_OF_PARTICLES: 30,
+		CESSNA_SIN_MULTIPLIER: 40,
+		CESSNA_SIN_ADDITIVE: 0.04,
+	};
 
 	var image = '<img src="images/cessna-isometric.svg" style="position:relative;z-index:1;-webkit-transform: translate(0,0)">';
 	var card = [
@@ -18002,13 +18485,10 @@ define('pages/forces',[
 	Forces.prototype.constructor = Forces;
 	Forces.prototype.init = function() {
 		Page.prototype.init.call(this);
-		this.card = config.createDomNode(card);
-		this.card.style.position = 'absolute';
-		this.card.style.marginTop = '1.5em';
-		this.card.style.width = '50%';
-		this.card.style.zIndex = '10';
+		this.card = helper.createDomNode(card);
+		this.card.classList.add('card-main')
 		this.element.appendChild(this.card);
-		this.element.appendChild(config.createDomNode(image));
+		this.element.appendChild(helper.createDomNode(image));
 
 		var canvas = this.canvas = document.createElement('canvas');
 		canvas.setAttribute('data-paper-resize', 'true');
@@ -18040,54 +18520,98 @@ define('pages/forces',[
 		Page.prototype.activate.call(this);
 		this.element.appendChild(this.canvas);
 
-		if (window.view && view._element === this.canvas) return;
-
-		paper.install(window);
-		paper.setup(this.canvas);
-
-		var num = NUMBER_OF_PARTICLES;
-		circles = new Array(num);
-		while (num--)
-			circles[num] = new paper.Path.Circle({
-					center: [rand(-10, config.width), rand(-10, config.height)],
-					radius: rand(3, 6),
-					fillColor: new paper.Color(255,255,255),
-					// opacity greatly reduces frame rate on tablets
-					// strokeColor: new paper.Color(255,255,255,0.3), strokeWidth: 5
-				});
-
-		//var cessna = project.importSVG(document.getElementById('cessna-isometric'));
-		//cessna.position.x = 500;
-
-		view.onFrame = onFrame;
-		var w = view.viewSize.width;
-		var h = view.viewSize.height;
-		var angle = -Math.PI;
-		var frame = 0
-		function onFrame(event) {
-			if (config.fps) config.fps(event.delta);
-			//cessna.position.y = Math.floor(CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
-			//if (frame > 100) frame = 0;
-			//frame += CESSNA_SIN_ADDITIVE;
-
-			circles.forEach(function(c, i) {
-				if (c.position.x > w) c.position.x = -10;
-				if (c.position.y < 0) c.position.y = h + 10;
-				c.position.x += rand(2, 4);
-				c.position.y -= rand(1, 3);
-			});
-		}
+		var scope = helper.createPaperScript(this.canvas, paperScript)
+		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
 
 	Forces.prototype.deactivate = function() {
 		Page.prototype.deactivate.call(this);
-		project.remove();
+		//paper.clear();
 		this.element.removeChild(this.canvas);
 	};
 
-	function rand(min, max, isFloat) {
-		var rand = Math.random();
-		return Math.floor(max * rand) + min;
+
+	function paperScript() {
+		var num = state.FORCES.NUMBER_OF_PARTICLES;
+		var w = view.viewSize.width;
+		var h = view.viewSize.height;
+		var white = new Color(255, 255, 255);
+		var weight, lift, drag, thrust;
+
+		lift = createArrow('north');
+		weight = createArrow('south');
+		drag = createArrow('east');
+		thrust = createArrow('west');
+
+		circles = new Array(num);
+		while (num--)
+			circles[num] = new Path.Circle({
+					center: [state.rand(-10, config.width), state.rand(-10, config.height)],
+					radius: state.rand(3, 6),
+					fillColor: white,
+					// opacity greatly reduces frame rate on tablets
+					// strokeColor: new Color(255,255,255,0.3), strokeWidth: 5
+				});
+
+		function onFrame(event) {
+			if (config.fps) config.fps(event.delta);
+
+			circles.forEach(function(c, i) {
+				if (c.position.x > w) c.position.x = -10;
+				if (c.position.y < 0) c.position.y = h + 10;
+				c.position.x += state.rand(2, 4);
+				c.position.y -= state.rand(1, 3);
+			});
+		}
+
+		function onResize() {
+			w = view.viewSize.width;
+			h = view.viewSize.height;
+		}
+
+		function createArrow(direction) {
+			var p1, ps, line, triangle;
+
+			switch (direction) {
+			case 'north':
+				p1 = new Point(375, 50);
+				p2 = new Point(375, 125);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p1, 3, 7);
+				break;
+			case 'south':
+				p1 = new Point(375, 350);
+				p2 = new Point(375, 425);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p2, 3, 7);
+				triangle.rotate(180)
+				break;
+			case 'east':
+				p1 = new Point(575, 150);
+				p2 = new Point(670, 150);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p2, 3, 7);
+				triangle.position.y += 2;
+				triangle.rotate(90)
+				break;
+			case 'west':
+				p1 = new Point(100, 350);
+				p2 = new Point(200, 350);
+			  line = new Path.Line(p1, p2);
+				triangle = new Path.RegularPolygon(p1, 3, 7);
+				triangle.position.y += 1;
+				triangle.rotate(-90)
+				break;
+			}
+			window.triangle = triangle;
+
+			line.strokeWidth = 2;
+			line.fillColor = white;
+			line.strokeColor = white;
+			triangle.fillColor = white;
+			var g = new Group([line, triangle]);
+			return g
+		}
 	}
 
 	return new Forces();
@@ -29314,7 +29838,7 @@ require.config({
     paths: {
         jquery: '../bower_components/jquery/jquery',
         lodash: '../bower_components/lodash/lodash',
-        paper: '../bower_components/paper/dist/paper-core',
+        paper: '../bower_components/paper/dist/paper-full',
         hammer: '../bower_components/hammerjs/dist/hammer',
     },
     shim: {
@@ -29344,6 +29868,13 @@ require([
 	console.log('Running Hammerjs %s', (hammer || Hammer).VERSION);
 	console.groupEnd();
 
+	window.state = window.state || {}
+	window.state.rand = function rand(min, max, isFloat) {
+		var rand = Math.random();
+		return Math.floor(max * rand) + min;
+	};
+
+	paper.install(window);
 	app.init();
 
 	// select the first page....sort of

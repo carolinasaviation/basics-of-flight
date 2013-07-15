@@ -15,7 +15,7 @@ define([
 					'<div class="col" style="width: 80%">', i18n.weight.equationDescription, '</div>',
 				'</div>',
 				'<div>',
-					'<div class="col col-equation" style="width: 20%">', '<img src="/images/', i18n.weight.historicalFigure, '" />', '</div>',
+					'<div class="col col-equation" style="width: 20%">', '<img src="images/', i18n.weight.historicalFigure, '" />', '</div>',
 					'<div class="col" style="width: 80%">', i18n.weight.historicalDescription, '</div>',
 				'</div>',
 			'</div>',
