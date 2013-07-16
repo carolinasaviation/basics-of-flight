@@ -63,14 +63,30 @@ h1{color:#feec09;text-transform:uppercase;letter-spacing:1px}
 .column-golden-large{width:62%}
 .column-golden-small{width:38%}
 .btn{display:inline-block}
-.btn-weight-interaction{background:#0f0f0f;-webkit-border-radius:0;border-radius:0;border:0}
+.btn-weight-interaction{background:transparent;-webkit-border-radius:0;border-radius:0;border:0}
 .hardware-hack{-webkit-font-smoothing:antialiased;-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);-o-transform:translate3d(0,0,0);-ms-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+#btn-cessna-elevation polyline,#btn-cessna-elevation path,#btn-cessna-elevation line{fill:transparent;-webkit-animation-duration:1s;-moz-animation-duration:1s;-o-animation-duration:1s;-ms-animation-duration:1s;animation-duration:1s;-webkit-animation-name:flashActionableSvg;-moz-animation-name:flashActionableSvg;-o-animation-name:flashActionableSvg;-ms-animation-name:flashActionableSvg;animation-name:flashActionableSvg;-webkit-animation-iteration-count:infinite;-moz-animation-iteration-count:infinite;-o-animation-iteration-count:infinite;-ms-animation-iteration-count:infinite;animation-iteration-count:infinite}
 #weightInteraction{height:100%;width:100%}
 .slideUpAndFadeOut{-webkit-animation-duration:1s;-moz-animation-duration:1s;-o-animation-duration:1s;-ms-animation-duration:1s;animation-duration:1s;-webkit-animation-name:slideUpAndFadeOut;-moz-animation-name:slideUpAndFadeOut;-o-animation-name:slideUpAndFadeOut;-ms-animation-name:slideUpAndFadeOut;animation-name:slideUpAndFadeOut;-webkit-animation-iteration-count:1;-moz-animation-iteration-count:1;-o-animation-iteration-count:1;-ms-animation-iteration-count:1;animation-iteration-count:1;-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;-o-animation-fill-mode:forwards;-ms-animation-fill-mode:forwards;animation-fill-mode:forwards}
 .slideDownAndFadeIn{-webkit-animation-duration:1s;-moz-animation-duration:1s;-o-animation-duration:1s;-ms-animation-duration:1s;animation-duration:1s;-webkit-animation-name:slideDownAndFadeIn;-moz-animation-name:slideDownAndFadeIn;-o-animation-name:slideDownAndFadeIn;-ms-animation-name:slideDownAndFadeIn;animation-name:slideDownAndFadeIn;-webkit-animation-direction:alternate;-moz-animation-direction:alternate;-o-animation-direction:alternate;-ms-animation-direction:alternate;animation-direction:alternate;-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;-o-animation-fill-mode:forwards;-ms-animation-fill-mode:forwards;animation-fill-mode:forwards}
 .slideDownAndFadeOut{-webkit-animation-duration:1s;-moz-animation-duration:1s;-o-animation-duration:1s;-ms-animation-duration:1s;animation-duration:1s;-webkit-animation-name:slideDownAndFadeOut;-moz-animation-name:slideDownAndFadeOut;-o-animation-name:slideDownAndFadeOut;-ms-animation-name:slideDownAndFadeOut;animation-name:slideDownAndFadeOut;-webkit-animation-iteration-count:1;-moz-animation-iteration-count:1;-o-animation-iteration-count:1;-ms-animation-iteration-count:1;animation-iteration-count:1;-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;-o-animation-fill-mode:forwards;-ms-animation-fill-mode:forwards;animation-fill-mode:forwards}
 .slideUpAndFadeIn{-webkit-animation-duration:1s;-moz-animation-duration:1s;-o-animation-duration:1s;-ms-animation-duration:1s;animation-duration:1s;-webkit-animation-name:slideUpAndFadeIn;-moz-animation-name:slideUpAndFadeIn;-o-animation-name:slideUpAndFadeIn;-ms-animation-name:slideUpAndFadeIn;animation-name:slideUpAndFadeIn;-webkit-animation-direction:alternate;-moz-animation-direction:alternate;-o-animation-direction:alternate;-ms-animation-direction:alternate;animation-direction:alternate;-webkit-animation-fill-mode:forwards;-moz-animation-fill-mode:forwards;-o-animation-fill-mode:forwards;-ms-animation-fill-mode:forwards;animation-fill-mode:forwards}
-@-moz-keyframes slideUpAndFadeOut{0%{-webkit-transform:translateY(0);-moz-transform:translateY(0);-o-transform:translateY(0);-ms-transform:translateY(0);transform:translateY(0);opacity:1;-ms-filter:none;filter:none}
+@-moz-keyframes flashActionableSvg{0%{stroke:#f0402a}
+50%{stroke:#00f}
+100%{stroke:#f0402a}
+}@-webkit-keyframes flashActionableSvg{0%{stroke:#f0402a}
+50%{stroke:#00f}
+100%{stroke:#f0402a}
+}@-o-keyframes flashActionableSvg{0%{stroke:#f0402a}
+50%{stroke:#00f}
+100%{stroke:#f0402a}
+}@-ms-keyframes flashActionableSvg{0%{stroke:#f0402a}
+50%{stroke:#00f}
+100%{stroke:#f0402a}
+}@keyframes flashActionableSvg{0%{stroke:#f0402a}
+50%{stroke:#00f}
+100%{stroke:#f0402a}
+}@-moz-keyframes slideUpAndFadeOut{0%{-webkit-transform:translateY(0);-moz-transform:translateY(0);-o-transform:translateY(0);-ms-transform:translateY(0);transform:translateY(0);opacity:1;-ms-filter:none;filter:none}
 100%{-webkit-transform:translateY(-16em);-moz-transform:translateY(-16em);-o-transform:translateY(-16em);-ms-transform:translateY(-16em);transform:translateY(-16em);opacity:0;filter:alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"}
 }@-webkit-keyframes slideUpAndFadeOut{0%{-webkit-transform:translateY(0);-moz-transform:translateY(0);-o-transform:translateY(0);-ms-transform:translateY(0);transform:translateY(0);opacity:1;-ms-filter:none;filter:none}
 100%{-webkit-transform:translateY(-16em);-moz-transform:translateY(-16em);-o-transform:translateY(-16em);-ms-transform:translateY(-16em);transform:translateY(-16em);opacity:0;filter:alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"}

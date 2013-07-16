@@ -417,7 +417,7 @@ define('i18n/en',{
 		equation: 'W = mg',
 		equationDescription: 'The weight of an object is equal to the mass of an object multiplied by the force of gravity.',
 		historicalFigure: 'throwaway-newton.jpg',
-		historicalDescription: 'Newton&rsquo;s third law of motino states something or another. The png wireframes are much too small to read. This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane.'
+		historicalDescription: 'Newton&rsquo;s third law of motion states something or another. The png wireframes are much too small to read. This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane.'
 	}
 });
 
@@ -18342,6 +18342,9 @@ define('forces/weight',[
 	'paper',
 	'./weightInteraction'
 ], function(Section, draw, helper, paper, WeightInteraction) {
+	var toArray = function(n) {
+		return Array.prototype.slice.call(n, 0);
+	};
 
 	var html = [
 		'<div class="card">',
@@ -18357,7 +18360,7 @@ define('forces/weight',[
 				'</div>',
 			'</div>',
 			'<div class="card-secondary">',
-				'<button class="btn btn-weight-interaction" data-action="startInteraction"><img src="images/weight-elevation.png"></button>',
+				'<button class="btn btn-weight-interaction" data-action="startInteraction"></button>',
 			'</div>',
 		'</div>'
 	].join('');
@@ -18365,6 +18368,10 @@ define('forces/weight',[
 	function Weight() {
 		Section.call(this);
 		var card = this.card = helper.createDomNode(html);
+		var btn = card.querySelector('.btn-weight-interaction');
+		var svg = document.getElementById('cessna-elevation').cloneNode(true)
+		svg.id = 'btn-cessna-elevation';
+		btn.appendChild(svg);
 		WeightInteraction.setup(this.canvas);
 	}
 
@@ -18380,8 +18387,13 @@ define('forces/weight',[
 		this.card.classList.add('slideUpAndFadeIn');
 
 		Hammer(this.card).on('tap', function handleTap(e) {
-			var action = e.target.getAttribute('data-action') || e.target.parentNode.getAttribute('data-action');
-			if (!action) return false;
+			var matches = toArray(page.card.querySelectorAll('[data-action]'))
+				.filter(function(el) {
+					return el.contains(e.target);
+				});
+
+			if (!matches[0]) return false;
+			action = matches[0].getAttribute('data-action');
 
 			page[action] && page[action]();
 		});
@@ -18508,9 +18520,9 @@ define('pages/forces',[
 		var element = this.element.querySelector('img');
 		draw.createAnimation(element, '3s linear infinite', [
 			[0, '-webkit-transform: translate(0,0);'],
-			[27, '-webkit-transform: translate(0,30px);'],
+			[27, '-webkit-transform: translate(0, -30px);'],
 			[50, '-webkit-transform: translate(0,0);'],
-			[73, '-webkit-transform: translate(0,-30px);']
+			[73, '-webkit-transform: translate(0, 30px);']
 		]);
 		// temp!
 		this.activate();
@@ -18540,8 +18552,13 @@ define('pages/forces',[
 
 		lift = createArrow('north');
 		weight = createArrow('south');
-		drag = createArrow('east');
 		thrust = createArrow('west');
+		drag = createArrow('east');
+
+		var liftYOffset = lift.position.y;
+		var weightYOffset = weight.position.y;
+		var thrustYOffset = thrust.position.y;
+		var dragYOffset = drag.position.y;
 
 		circles = new Array(num);
 		while (num--)
@@ -18562,6 +18579,33 @@ define('pages/forces',[
 				c.position.x += state.rand(2, 4);
 				c.position.y -= state.rand(1, 3);
 			});
+
+			//console.log('onFrame', lift);
+			var xOffset = Math.cos(event.time / 2) / 4;
+			var yOffset = 20 * Math.sin(event.time);
+			var longitudalRotation = Math.cos(event.time / 2) * Math.atan2(lift.children[0].position.y, lift.children[0].position.x);
+			var latitudalRotation = longitudalRotation / 4;
+
+			lift.children[0]._segments[0].point.x += xOffset
+			lift.children[1].position.x += xOffset
+			lift.children[1].rotate(longitudalRotation);
+			lift.position.y = yOffset + liftYOffset;
+
+			weight.children[0]._segments[1].point.x += xOffset
+			weight.children[1].position.x += xOffset
+			weight.children[1].rotate(-longitudalRotation);
+			weight.position.y = yOffset + weightYOffset;
+
+			thrust.children[0]._segments[1].point.y = -yOffset + thrustYOffset;
+			thrust.children[0]._segments[0].point.x += xOffset / 2;
+			thrust.children[1].position.x += xOffset / 2;
+			thrust.children[1].rotate(latitudalRotation);
+
+			drag.children[0]._segments[1].point.y = -yOffset + dragYOffset;
+			drag.children[0]._segments[0].point.x += xOffset / 2;
+			drag.children[1].position.y = -yOffset + dragYOffset;
+			//drag.children[1].position.x += xOffset / 2;
+			drag.children[1].rotate(latitudalRotation);
 		}
 
 		function onResize() {
@@ -18603,7 +18647,6 @@ define('pages/forces',[
 				triangle.rotate(-90)
 				break;
 			}
-			window.triangle = triangle;
 
 			line.strokeWidth = 2;
 			line.fillColor = white;
