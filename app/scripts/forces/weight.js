@@ -5,6 +5,9 @@ define([
 	'paper',
 	'./weightInteraction'
 ], function(Section, draw, helper, paper, WeightInteraction) {
+	var toArray = function(n) {
+		return Array.prototype.slice.call(n, 0);
+	};
 
 	var html = [
 		'<div class="card">',
@@ -20,7 +23,7 @@ define([
 				'</div>',
 			'</div>',
 			'<div class="card-secondary">',
-				'<button class="btn btn-weight-interaction" data-action="startInteraction"><img src="images/weight-elevation.png"></button>',
+				'<button class="btn btn-weight-interaction" data-action="startInteraction"></button>',
 			'</div>',
 		'</div>'
 	].join('');
@@ -28,6 +31,10 @@ define([
 	function Weight() {
 		Section.call(this);
 		var card = this.card = helper.createDomNode(html);
+		var btn = card.querySelector('.btn-weight-interaction');
+		var svg = document.getElementById('cessna-elevation').cloneNode(true)
+		svg.id = 'btn-cessna-elevation';
+		btn.appendChild(svg);
 		WeightInteraction.setup(this.canvas);
 	}
 
@@ -43,8 +50,13 @@ define([
 		this.card.classList.add('slideUpAndFadeIn');
 
 		Hammer(this.card).on('tap', function handleTap(e) {
-			var action = e.target.getAttribute('data-action') || e.target.parentNode.getAttribute('data-action');
-			if (!action) return false;
+			var matches = toArray(page.card.querySelectorAll('[data-action]'))
+				.filter(function(el) {
+					return el.contains(e.target);
+				});
+
+			if (!matches[0]) return false;
+			action = matches[0].getAttribute('data-action');
 
 			page[action] && page[action]();
 		});
