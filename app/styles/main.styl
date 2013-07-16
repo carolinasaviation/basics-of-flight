@@ -153,7 +153,7 @@ h1
 	display inline-block
 
 .btn-weight-interaction
-	background #0f0f0f
+	background transparent
 	border-radius 0
 	border 0
 
@@ -162,11 +162,31 @@ h1
 	font-smoothing antialiased
 	transform translate3d(0,0,0);
 
+
+#btn-cessna-elevation
+	polyline,
+	path,
+	line
+		fill: transparent
+		//animation-timing-function ease-in
+		animation-duration 1s
+		animation-name flashActionableSvg
+		animation-iteration-count infinite
+
 #weightInteraction
 	height 100%
 	width 100%
 
 // {{{ animations
+
+@keyframes flashActionableSvg
+	from
+		stroke #f0402a
+	50%
+		//stroke #c44438
+		stroke blue
+	to
+		stroke #f0402a
 
 @keyframes slideUpAndFadeOut
 	from
