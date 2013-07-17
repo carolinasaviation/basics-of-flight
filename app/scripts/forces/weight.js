@@ -35,6 +35,11 @@ define([
 		var svg = document.getElementById('cessna-elevation').cloneNode(true)
 		svg.id = 'btn-cessna-elevation';
 		btn.appendChild(svg);
+
+		btn = WeightInteraction.quiz.querySelector('.btn-weight-interaction');
+		svg = svg.cloneNode(true);
+		svg.id = 'btn-cessna-elevation-close';
+		btn.appendChild(svg);
 	}
 
 	Weight.prototype = Object.create(Section.prototype);
@@ -56,7 +61,7 @@ define([
 		arrows.appendChild(arrow);
 		arrows.appendChild(arrow.cloneNode());
 		arrows.appendChild(arrow.cloneNode());
-		
+
 		this.page().element.appendChild(arrows);
 
 		draw.createAnimation(arrows, '3s linear infinite', [
@@ -66,7 +71,7 @@ define([
 			[73, '-webkit-transform: translate(0, -30px);']
 		]);
 
-		Hammer(this.card).on('tap', function handleTap(e) {
+		Hammer(this.page().element).on('tap', function handleTap(e) {
 			var matches = toArray(page.card.querySelectorAll('[data-action]'))
 				.filter(function(el) {
 					return el.contains(e.target);
@@ -88,11 +93,25 @@ define([
 	Weight.prototype.startInteraction = function() {
 		Section.prototype.startInteraction.call(this);
 		WeightInteraction.setup(this.canvas);
+
+		this.page().element.appendChild(WeightInteraction.quiz);
 		this.card.classList.remove('slideUpAndFadeIn');
 		this.card.classList.add('slideDownAndFadeOut');
 
+		WeightInteraction.quiz.classList.remove('slideDownAndFadeOut');
+		WeightInteraction.quiz.classList.add('slideUpAndFadeIn');
+
 		this.paperScope = helper.createPaperScript(this.canvas, WeightInteraction.paperScript)
 		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
+	};
+
+	Weight.prototype.stopInteraction = function() {
+		console.log('stopInteraction');
+		WeightInteraction.quiz.classList.remove('slideUpAndFadeIn');
+		WeightInteraction.quiz.classList.add('slideDownAndFadeOut');
+
+		this.card.classList.remove('slideDownAndFadeOut');
+		this.card.classList.add('slideUpAndFadeIn');
 	};
 
 	return new Weight();
