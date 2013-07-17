@@ -11,12 +11,37 @@ define([
 		CESSNA_SIN_ADDITIVE: 0.04
 	}
 
+	var quiz = [
+		'<div class="card">',
+			'<div class="card-primary">',
+				'<div>',
+					'<div class="col col-equation" style="width: 20%">',
+						'<h3>', i18n.quiz.correctAnswers, '</h3>',
+						'<span data-bind="correctAnswers"></span>',
+					'</div>',
+					'<div class="col question" style="width:80%">',
+						'<p>What must the pilot do to bring the aircraft back to a balanced flight speed?</p>',
+						'<ol>',
+							'<li>Increase thrust</li>',
+							'<li>Slow down</li>',
+							'<li>Point the aircraft downwards</li>',
+						'</ol>',
+					'</div>',
+				'</div>',
+			'</div>',
+			'<div class="card-secondary">',
+				'<button class="btn btn-weight-interaction" data-action="stopInteraction"></button>',
+			'</div>',
+		'</div>'
+	].join('');
+
+
 	return {
+		quiz: helper.createDomNode(quiz),
 		setup: function(canvas) {
 			canvas.id = 'weightInteraction';
 			canvas.setAttribute('data-paper-resize', 'true');
 			canvas.classList.add('hardware-hack');
-			canvas.style.position = 'absolute';
 			canvas.style.backgroundColor = '#000';
 			canvas.style.top =
 				canvas.style.left =
@@ -144,21 +169,21 @@ define([
 	function paperScript() {
 		var w = view.element.width;
 
-		var numberOfLines = Math.floor(w / 50);
 		var lines = [], line;
 		var top = new Point(0, 0);
 		var bottom = new Point(0, view.element.height);
-		var offset, color;
+		var offset = 0;
+		var color;
 
-		while (numberOfLines--) {
-			offset = state.rand(10, 40);
-			top.x -= offset;
-			bottom.x -= offset;
+		while (offset < w) {
+			offset += 20;
+			top.x = offset;
+			bottom.x = offset;
 			line = new Path.Line(top, bottom);
-			line.speed = state.rand(2, 7);
-			color = state.rand(250, 255);
+			line.speed = 4;
+			color = state.rand(50, 135) / 255;
 			line.strokeColor = new Color(color, color, color);
-			line.strokeWidth = Math.floor(state.rand(4, 20) / line.speed);
+			line.strokeWidth = 2;
 			lines.push(line);
 		}
 
