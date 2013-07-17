@@ -74,13 +74,14 @@ define([
 		Page.prototype.activate.call(this);
 		this.element.appendChild(this.canvas);
 
-		var scope = helper.createPaperScript(this.canvas, paperScript)
+	  helper.createPaperScript(this.canvas, paperScript)
+
 		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
 
 	Forces.prototype.deactivate = function() {
 		Page.prototype.deactivate.call(this);
-		//paper.clear();
+		paper.clear();
 		this.element.removeChild(this.canvas);
 	};
 

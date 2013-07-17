@@ -38,6 +38,10 @@ body
 	vertical-align top
 	padding-bottom 1.333em
 
+.btn
+	display inline-block
+
+
 /* general }}} */
 // {{{ nav
 .nav
@@ -149,8 +153,6 @@ h1
 	width 38%
 
 // cards }}}
-.btn
-	display inline-block
 
 .btn-weight-interaction
 	background transparent
@@ -162,14 +164,13 @@ h1
 	font-smoothing antialiased
 	transform translate3d(0,0,0);
 
-
 #btn-cessna-elevation
 	polyline,
 	path,
 	line
 		fill: transparent
 		//animation-timing-function ease-in
-		animation-duration 1s
+		animation-duration 2s
 		animation-name flashActionableSvg
 		animation-iteration-count infinite
 
@@ -177,14 +178,36 @@ h1
 	height 100%
 	width 100%
 
+.arrows
+	position absolute
+	left 40%
+	top 10%
+	z-index 1
+	.arrow
+		background YELLOW
+		position relative
+		display inline-block
+		margin 0 20px
+		height 60px
+		width 2px
+		transform: skewX(13deg);
+		&:after
+			transform: skewX(13deg);
+			absolute bottom
+			left -4px
+			border-left 5px solid transparent
+			border-right 5px solid transparent
+			border-top 5px solid YELLOW
+			content ''
+
+
 // {{{ animations
 
 @keyframes flashActionableSvg
 	from
 		stroke #f0402a
 	50%
-		//stroke #c44438
-		stroke blue
+		stroke darken(#f0402a, 40%)
 	to
 		stroke #f0402a
 

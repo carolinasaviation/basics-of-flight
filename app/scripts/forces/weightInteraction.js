@@ -16,7 +16,6 @@ define([
 			canvas.id = 'weightInteraction';
 			canvas.setAttribute('data-paper-resize', 'true');
 			canvas.classList.add('hardware-hack');
-			canvas.style.position = 'absolute';
 			canvas.style.backgroundColor = '#000';
 			canvas.style.top =
 				canvas.style.left =

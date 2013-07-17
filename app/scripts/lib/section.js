@@ -3,11 +3,13 @@ define([], function() {
 	function Section() {
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
 		this.canvas = document.createElement('canvas');
+		this.canvas.style.position = 'absolute';
 	}
 
 	Section.prototype = {
 		card: document.createElement('div'),
 		paperScope: undefined,
+		_page: undefined,
 
 		page: function page(page) {
 			if (page) this._page = page;

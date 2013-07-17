@@ -35,7 +35,6 @@ define([
 		var svg = document.getElementById('cessna-elevation').cloneNode(true)
 		svg.id = 'btn-cessna-elevation';
 		btn.appendChild(svg);
-		WeightInteraction.setup(this.canvas);
 	}
 
 	Weight.prototype = Object.create(Section.prototype);
@@ -48,6 +47,24 @@ define([
 
 		this.card.classList.remove('slideDownAndFadeOut');
 		this.card.classList.add('slideUpAndFadeIn');
+
+		var arrows = document.createElement('div');
+		arrows.classList.add('arrows');
+		arrows.classList.add('weight-index');
+		var arrow = document.createElement('div');
+		arrow.classList.add('arrow');
+		arrows.appendChild(arrow);
+		arrows.appendChild(arrow.cloneNode());
+		arrows.appendChild(arrow.cloneNode());
+		
+		this.page().element.appendChild(arrows);
+
+		draw.createAnimation(arrows, '3s linear infinite', [
+			[0, '-webkit-transform: translate(0,0);'],
+			[27, '-webkit-transform: translate(0, 30px);'],
+			[50, '-webkit-transform: translate(0,0);'],
+			[73, '-webkit-transform: translate(0, -30px);']
+		]);
 
 		Hammer(this.card).on('tap', function handleTap(e) {
 			var matches = toArray(page.card.querySelectorAll('[data-action]'))
@@ -64,12 +81,13 @@ define([
 
 	Weight.prototype.deactivate = function() {
 		Section.prototype.deactivate.call(this);
-		this.paperScope.clear();
+		//this.paperScope.clear();
 		Hammer(this.card).off('tap');
 	};
 
 	Weight.prototype.startInteraction = function() {
 		Section.prototype.startInteraction.call(this);
+		WeightInteraction.setup(this.canvas);
 		this.card.classList.remove('slideUpAndFadeIn');
 		this.card.classList.add('slideDownAndFadeOut');
 

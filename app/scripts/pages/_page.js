@@ -59,6 +59,7 @@ define([
 		onLoad: function onLoad() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 			this.isLoaded = true;
+			this.activate();
 		},
 
 		beforeUnload: function beforeUnload() {
@@ -101,7 +102,6 @@ define([
 			section = _.findWhere(this.sections, { name: active.textContent });
 			if (section) {
 				section.deactivate();
-				this.activate();
 			}
 			active.classList.remove(NAV_ACTIVE_CLASS);
 		},
