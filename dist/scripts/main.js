@@ -418,6 +418,10 @@ define('i18n/en',{
 		equationDescription: 'The weight of an object is equal to the mass of an object multiplied by the force of gravity.',
 		historicalFigure: 'throwaway-newton.jpg',
 		historicalDescription: 'Newton&rsquo;s third law of motion states something or another. The png wireframes are much too small to read. This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane.'
+	},
+
+	quiz: {
+		correctAnswers: 'Correct Answers'
 	}
 });
 
@@ -6521,6 +6525,7 @@ define('pages/_page',[
 		onLoad: function onLoad() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 			this.isLoaded = true;
+			this.activate();
 		},
 
 		beforeUnload: function beforeUnload() {
@@ -6563,7 +6568,6 @@ define('pages/_page',[
 			section = _.findWhere(this.sections, { name: active.textContent });
 			if (section) {
 				section.deactivate();
-				this.activate();
 			}
 			active.classList.remove(NAV_ACTIVE_CLASS);
 		},
@@ -6599,11 +6603,13 @@ define('lib/section',[], function() {
 	function Section() {
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
 		this.canvas = document.createElement('canvas');
+		this.canvas.style.position = 'absolute';
 	}
 
 	Section.prototype = {
 		card: document.createElement('div'),
 		paperScope: undefined,
+		_page: undefined,
 
 		page: function page(page) {
 			if (page) this._page = page;
@@ -18154,12 +18160,37 @@ define('forces/weightInteraction',[
 		CESSNA_SIN_ADDITIVE: 0.04
 	}
 
+	var quiz = [
+		'<div class="card">',
+			'<div class="card-primary">',
+				'<div>',
+					'<div class="col col-equation" style="width: 20%">',
+						'<h3>', i18n.quiz.correctAnswers, '</h3>',
+						'<span data-bind="correctAnswers"></span>',
+					'</div>',
+					'<div class="col question" style="width:80%">',
+						'<p>What must the pilot do to bring the aircraft back to a balanced flight speed?</p>',
+						'<ol>',
+							'<li>Increase thrust</li>',
+							'<li>Slow down</li>',
+							'<li>Point the aircraft downwards</li>',
+						'</ol>',
+					'</div>',
+				'</div>',
+			'</div>',
+			'<div class="card-secondary">',
+				'<button class="btn btn-weight-interaction" data-action="stopInteraction"></button>',
+			'</div>',
+		'</div>'
+	].join('');
+
+
 	return {
+		quiz: helper.createDomNode(quiz),
 		setup: function(canvas) {
 			canvas.id = 'weightInteraction';
 			canvas.setAttribute('data-paper-resize', 'true');
 			canvas.classList.add('hardware-hack');
-			canvas.style.position = 'absolute';
 			canvas.style.backgroundColor = '#000';
 			canvas.style.top =
 				canvas.style.left =
@@ -18287,21 +18318,21 @@ define('forces/weightInteraction',[
 	function paperScript() {
 		var w = view.element.width;
 
-		var numberOfLines = Math.floor(w / 50);
 		var lines = [], line;
 		var top = new Point(0, 0);
 		var bottom = new Point(0, view.element.height);
-		var offset, color;
+		var offset = 0;
+		var color;
 
-		while (numberOfLines--) {
-			offset = state.rand(10, 40);
-			top.x -= offset;
-			bottom.x -= offset;
+		while (offset < w) {
+			offset += 20;
+			top.x = offset;
+			bottom.x = offset;
 			line = new Path.Line(top, bottom);
-			line.speed = state.rand(2, 7);
-			color = state.rand(250, 255);
+			line.speed = 4;
+			color = state.rand(50, 135) / 255;
 			line.strokeColor = new Color(color, color, color);
-			line.strokeWidth = Math.floor(state.rand(4, 20) / line.speed);
+			line.strokeWidth = 2;
 			lines.push(line);
 		}
 
@@ -18372,7 +18403,11 @@ define('forces/weight',[
 		var svg = document.getElementById('cessna-elevation').cloneNode(true)
 		svg.id = 'btn-cessna-elevation';
 		btn.appendChild(svg);
-		WeightInteraction.setup(this.canvas);
+
+		btn = WeightInteraction.quiz.querySelector('.btn-weight-interaction');
+		svg = svg.cloneNode(true);
+		svg.id = 'btn-cessna-elevation-close';
+		btn.appendChild(svg);
 	}
 
 	Weight.prototype = Object.create(Section.prototype);
@@ -18386,7 +18421,25 @@ define('forces/weight',[
 		this.card.classList.remove('slideDownAndFadeOut');
 		this.card.classList.add('slideUpAndFadeIn');
 
-		Hammer(this.card).on('tap', function handleTap(e) {
+		var arrows = document.createElement('div');
+		arrows.classList.add('arrows');
+		arrows.classList.add('weight-index');
+		var arrow = document.createElement('div');
+		arrow.classList.add('arrow');
+		arrows.appendChild(arrow);
+		arrows.appendChild(arrow.cloneNode());
+		arrows.appendChild(arrow.cloneNode());
+
+		this.page().element.appendChild(arrows);
+
+		draw.createAnimation(arrows, '3s linear infinite', [
+			[0, '-webkit-transform: translate(0,0);'],
+			[27, '-webkit-transform: translate(0, 30px);'],
+			[50, '-webkit-transform: translate(0,0);'],
+			[73, '-webkit-transform: translate(0, -30px);']
+		]);
+
+		Hammer(this.page().element).on('tap', function handleTap(e) {
 			var matches = toArray(page.card.querySelectorAll('[data-action]'))
 				.filter(function(el) {
 					return el.contains(e.target);
@@ -18401,17 +18454,32 @@ define('forces/weight',[
 
 	Weight.prototype.deactivate = function() {
 		Section.prototype.deactivate.call(this);
-		this.paperScope.clear();
+		//this.paperScope.clear();
 		Hammer(this.card).off('tap');
 	};
 
 	Weight.prototype.startInteraction = function() {
 		Section.prototype.startInteraction.call(this);
+		WeightInteraction.setup(this.canvas);
+
+		this.page().element.appendChild(WeightInteraction.quiz);
 		this.card.classList.remove('slideUpAndFadeIn');
 		this.card.classList.add('slideDownAndFadeOut');
 
+		WeightInteraction.quiz.classList.remove('slideDownAndFadeOut');
+		WeightInteraction.quiz.classList.add('slideUpAndFadeIn');
+
 		this.paperScope = helper.createPaperScript(this.canvas, WeightInteraction.paperScript)
 		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
+	};
+
+	Weight.prototype.stopInteraction = function() {
+		console.log('stopInteraction');
+		WeightInteraction.quiz.classList.remove('slideUpAndFadeIn');
+		WeightInteraction.quiz.classList.add('slideDownAndFadeOut');
+
+		this.card.classList.remove('slideDownAndFadeOut');
+		this.card.classList.add('slideUpAndFadeIn');
 	};
 
 	return new Weight();
@@ -18532,13 +18600,14 @@ define('pages/forces',[
 		Page.prototype.activate.call(this);
 		this.element.appendChild(this.canvas);
 
-		var scope = helper.createPaperScript(this.canvas, paperScript)
+	  helper.createPaperScript(this.canvas, paperScript)
+
 		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
 
 	Forces.prototype.deactivate = function() {
 		Page.prototype.deactivate.call(this);
-		//paper.clear();
+		paper.clear();
 		this.element.removeChild(this.canvas);
 	};
 
