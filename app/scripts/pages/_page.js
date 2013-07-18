@@ -108,6 +108,7 @@ define([
 		},
 
 		subnavListener: function(e) {
+			if (e.target.matches('.subnav')) return;
 			e.preventDefault();
 			this.deselectActiveSection();
 
