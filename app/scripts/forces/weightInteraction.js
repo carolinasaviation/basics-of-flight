@@ -191,10 +191,57 @@ define([
 
 		cessna.position.x = 400;
 		cessna.position.y = 400;
-		window.cessna = cessna;
+
+		var point = new Point(0, 548);
+		var size = new Size(320, 40);
+		var weightBar = new Shape.Rectangle(point, size);
+		weightBar.fillColor = '#f0402a';
+
+		var wbBg = new Shape.Rectangle(point, new Size(520, 40));
+		wbBg.fillColor = '#fff';
+
+		var weightBarGroup = new Group();
+		weightBarGroup.addChild(wbBg);
+		weightBarGroup.addChild(weightBar);
 
 		var angle = -Math.PI;
-		var frame = 0
+		var frame = 0;
+
+		var textGroup = new Group();
+		var text = [];
+		[
+			i18n.altitude,
+			i18n.speed,
+			i18n.gravity
+		].map(function(s) { return s.toUpperCase(); })
+		.forEach(function(title, i) {
+			var t = new PointText(new Point(0, 32 * i));
+			text.push(new Point(100, 32 * i));
+			t.content = title;
+			t.fillColor = '#fff';
+			t.fontSize = 14;
+			textGroup.addChild(t);
+		});
+
+		var currentAltitude = new PointText(text[0]);
+		var currentSpeed = new PointText(text[1]);
+		var currentGravity = new PointText(text[2]);
+
+		[currentAltitude, currentSpeed, currentGravity].forEach(function(t, i) {
+			t.fillColor = '#fff';
+			t.fontWeight = 'bold';
+			t.fontSize = 16;
+			textGroup.addChild(t);
+		});
+
+		var currentWeight = new PointText(new Point(100, text[2] + 32));
+		currentWeight.fillColor = '#feec09';
+		currentWeight.fontSize = 18;
+		currentWeight.fontWeight = 'bold';
+		textGroup.addChild(currentWeight);
+
+		textGroup.position.x = w - 200;
+		textGroup.position.y = 500;
 
 		function onFrame(event) {
 			if (!lines) return;
@@ -209,6 +256,11 @@ define([
 			cessna.position.y = Math.floor(state.WEIGHT_INTERACTIVE.CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
 			if (frame > 100) frame = 0;
 			frame += state.WEIGHT_INTERACTIVE.CESSNA_SIN_ADDITIVE;
+
+			currentAltitude.content = '7,500 ft';
+			currentSpeed.content = '200m/hr';
+			currentGravity.content = '3920 Newtons';
+			currentWeight.content = '990Lbs';
 		};
 
 		function resize() {

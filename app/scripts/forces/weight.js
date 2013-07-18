@@ -110,7 +110,6 @@ define([
 	};
 
 	Weight.prototype.stopInteraction = function() {
-		console.log('stopInteraction');
 
 		helper.cleanupPaperScript(this)
 		WeightInteraction.quiz.classList.remove('slideUpAndFadeIn');
