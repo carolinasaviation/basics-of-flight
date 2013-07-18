@@ -71,17 +71,19 @@ define([
 	};
 
 	Forces.prototype.activate = function() {
+		if (this.isActive) return;
 		Page.prototype.activate.call(this);
 		this.element.appendChild(this.canvas);
 
-	  helper.createPaperScript(this.canvas, paperScript)
+	  helper.createPaperScript(this, this.canvas, paperScript)
 
 		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
 
 	Forces.prototype.deactivate = function() {
+		if (!this.isActive) return;
 		Page.prototype.deactivate.call(this);
-		paper.clear();
+		helper.cleanupPaperScript(this);
 		this.element.removeChild(this.canvas);
 	};
 

@@ -13,6 +13,11 @@ define({
 
 	quiz: {
 		correctAnswers: 'Correct Answers'
-	}
+	},
+
+	altitude: 'Altitude',
+	speed: 'Speed',
+	gravity: 'Gravity'
+
 });
 

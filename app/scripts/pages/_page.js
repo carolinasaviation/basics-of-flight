@@ -16,7 +16,8 @@ define([
 
 	Page.prototype = {
 		card: document.createElement('div'),
-		movie: -1,
+		paperProject: undefined,
+		paperView: undefined,
 
 		init: function init() {
 			if (this.isInit) return;
@@ -107,6 +108,7 @@ define([
 		},
 
 		subnavListener: function(e) {
+			if (e.target.matches('.subnav')) return;
 			e.preventDefault();
 			this.deselectActiveSection();
 

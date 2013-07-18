@@ -9,6 +9,8 @@ define([], function() {
 	Section.prototype = {
 		card: document.createElement('div'),
 		paperScope: undefined,
+		paperProject: undefined,
+		paperView: undefined,
 		_page: undefined,
 
 		page: function page(page) {

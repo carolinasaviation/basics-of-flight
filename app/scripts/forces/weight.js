@@ -30,8 +30,8 @@ define([
 
 	function Weight() {
 		Section.call(this);
-		var card = this.card = helper.createDomNode(html);
-		var btn = card.querySelector('.btn-weight-interaction');
+		this.card = helper.createDomNode(html);
+		var btn = this.card.querySelector('.btn-weight-interaction');
 		var svg = document.getElementById('cessna-elevation').cloneNode(true)
 		svg.id = 'btn-cessna-elevation';
 		btn.appendChild(svg);
@@ -40,6 +40,8 @@ define([
 		svg = svg.cloneNode(true);
 		svg.id = 'btn-cessna-elevation-close';
 		btn.appendChild(svg);
+
+		this.handleTap = this.handleTap.bind(this);
 	}
 
 	Weight.prototype = Object.create(Section.prototype);
@@ -48,7 +50,6 @@ define([
 
 	Weight.prototype.activate = function() {
 		Section.prototype.activate.call(this);
-		var page = this;
 
 		this.card.classList.remove('slideDownAndFadeOut');
 		this.card.classList.add('slideUpAndFadeIn');
@@ -71,23 +72,26 @@ define([
 			[73, '-webkit-transform: translate(0, -30px);']
 		]);
 
-		Hammer(this.page().element).on('tap', function handleTap(e) {
-			var matches = toArray(page.card.querySelectorAll('[data-action]'))
-				.filter(function(el) {
-					return el.contains(e.target);
-				});
-
-			if (!matches[0]) return false;
-			action = matches[0].getAttribute('data-action');
-
-			page[action] && page[action]();
-		});
+		Hammer(this.page().element).on('tap', this.handleTap);
 	};
+
+	Weight.prototype.handleTap = function(e) {
+		var matches = toArray(this.card.querySelectorAll('[data-action]'))
+			.filter(function(el) {
+				return el.contains(e.target);
+			});
+
+		if (!matches[0]) return false;
+		action = matches[0].getAttribute('data-action');
+
+		if (this[action])
+			this[action]();
+	}
 
 	Weight.prototype.deactivate = function() {
 		Section.prototype.deactivate.call(this);
-		//this.paperScope.clear();
-		Hammer(this.card).off('tap');
+		this.stopInteraction();
+		Hammer(this.page().element).off('tap', this.handleTap);
 	};
 
 	Weight.prototype.startInteraction = function() {
@@ -101,12 +105,13 @@ define([
 		WeightInteraction.quiz.classList.remove('slideDownAndFadeOut');
 		WeightInteraction.quiz.classList.add('slideUpAndFadeIn');
 
-		this.paperScope = helper.createPaperScript(this.canvas, WeightInteraction.paperScript)
+		helper.createPaperScript(this, this.canvas, WeightInteraction.paperScript)
 		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
 
 	Weight.prototype.stopInteraction = function() {
-		console.log('stopInteraction');
+
+		helper.cleanupPaperScript(this)
 		WeightInteraction.quiz.classList.remove('slideUpAndFadeIn');
 		WeightInteraction.quiz.classList.add('slideDownAndFadeOut');
 
