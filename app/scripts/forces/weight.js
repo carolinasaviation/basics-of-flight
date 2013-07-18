@@ -86,7 +86,7 @@ define([
 
 	Weight.prototype.deactivate = function() {
 		Section.prototype.deactivate.call(this);
-		//this.paperScope.clear();
+		this.stopInteraction();
 		Hammer(this.card).off('tap');
 	};
 
@@ -101,12 +101,14 @@ define([
 		WeightInteraction.quiz.classList.remove('slideDownAndFadeOut');
 		WeightInteraction.quiz.classList.add('slideUpAndFadeIn');
 
-		this.paperScope = helper.createPaperScript(this.canvas, WeightInteraction.paperScript)
+		helper.createPaperScript(this, this.canvas, WeightInteraction.paperScript)
 		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
 
 	Weight.prototype.stopInteraction = function() {
 		console.log('stopInteraction');
+
+		helper.cleanupPaperScript(this)
 		WeightInteraction.quiz.classList.remove('slideUpAndFadeIn');
 		WeightInteraction.quiz.classList.add('slideDownAndFadeOut');
 
