@@ -20,8 +20,10 @@ define(function() {
 	}
 
 	function cleanupPaperScript(module) {
-		module.paperProject.remove();
-		module.paperView.remove();
+		if (module.paperProject) {
+			module.paperProject.remove();
+			module.paperView.remove();
+		}
 	}
 
 	return {

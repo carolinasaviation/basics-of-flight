@@ -63,7 +63,8 @@ h1{color:#feec09;text-transform:uppercase;letter-spacing:1px}
 .card-primary,.card-secondary,.column{display:inline-block;vertical-align:top}
 .column-golden-large{width:62%}
 .column-golden-small{width:38%}
-.btn-weight-interaction{background:transparent;-webkit-border-radius:0;border-radius:0;border:0}
+.btn-weight-interaction{background:transparent;-webkit-border-radius:0;border-radius:0;border:0;}
+.btn-weight-interaction svg{max-width:100%}
 .hardware-hack{-webkit-font-smoothing:antialiased;-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);-o-transform:translate3d(0,0,0);-ms-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
 #btn-cessna-elevation polyline,#btn-cessna-elevation path,#btn-cessna-elevation line{fill:transparent;-webkit-animation-duration:2s;-moz-animation-duration:2s;-o-animation-duration:2s;-ms-animation-duration:2s;animation-duration:2s;-webkit-animation-name:flashActionableSvg;-moz-animation-name:flashActionableSvg;-o-animation-name:flashActionableSvg;-ms-animation-name:flashActionableSvg;animation-name:flashActionableSvg;-webkit-animation-iteration-count:infinite;-moz-animation-iteration-count:infinite;-o-animation-iteration-count:infinite;-ms-animation-iteration-count:infinite;animation-iteration-count:infinite}
 #weightInteraction{height:100%;width:100%}

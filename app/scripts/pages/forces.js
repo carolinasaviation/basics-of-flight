@@ -8,6 +8,7 @@ define([
 	'../lib/helpers',
 	'paper',
 ], function(Page, weight, lift, drag, thrust, draw, helper, paper) {
+	window.paper || (window.paper = paper);
 
 	window.state || (window.state = {});
 	window.state.FORCES = {

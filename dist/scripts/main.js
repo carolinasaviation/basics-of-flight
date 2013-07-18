@@ -422,7 +422,12 @@ define('i18n/en',{
 
 	quiz: {
 		correctAnswers: 'Correct Answers'
-	}
+	},
+
+	altitude: 'Altitude',
+	speed: 'Speed',
+	gravity: 'Gravity'
+
 });
 
 
@@ -6482,7 +6487,8 @@ define('pages/_page',[
 
 	Page.prototype = {
 		card: document.createElement('div'),
-		movie: -1,
+		paperProject: undefined,
+		paperView: undefined,
 
 		init: function init() {
 			if (this.isInit) return;
@@ -6573,6 +6579,7 @@ define('pages/_page',[
 		},
 
 		subnavListener: function(e) {
+			if (e.target.matches('.subnav')) return;
 			e.preventDefault();
 			this.deselectActiveSection();
 
@@ -6609,6 +6616,8 @@ define('lib/section',[], function() {
 	Section.prototype = {
 		card: document.createElement('div'),
 		paperScope: undefined,
+		paperProject: undefined,
+		paperView: undefined,
 		_page: undefined,
 
 		page: function page(page) {
@@ -6723,23 +6732,35 @@ define('lib/animations',[],function() {
 
 define('lib/helpers',[],function() {
 
-	function createPaperScript(canvas, paperScriptFunction) {
+	function createPaperScript(module, canvas, paperScriptFunction) {
 		if (paper.view && paper.view._element === canvas) {
 		 	return paper.PaperScope.get(canvas);
 		}
 
-		var scope = paper.PaperScope.get(canvas) || new paper.PaperScope().setup(canvas);
+		/* TODO: reuse a paperscope object once I know how to setup the view
+		 * paper.PaperScope.get(canvas) || */
+		var scope = new paper.PaperScope().setup(canvas);
 		var code = paperScriptFunction.toString().replace(/^function[\w\s()]*{/, '').replace(/}$/, '')
 		canvas.id = scope._id;
 
 		scope.PaperScript.evaluate(code, scope);
 
+		module.paperProject = window.paper.project;
+		module.paperView = window.paper.view;
+		module.paperScope = scope;
 		return scope;
 	}
 
+	function cleanupPaperScript(module) {
+		if (module.paperProject) {
+			module.paperProject.remove();
+			module.paperView.remove();
+		}
+	}
 
 	return {
 		createPaperScript: createPaperScript,
+		cleanupPaperScript: cleanupPaperScript,
 
 		createDomNode: function(str, tmpElement) {
 			tmpElement = document.createElement(tmpElement || 'div');
@@ -18340,10 +18361,57 @@ define('forces/weightInteraction',[
 
 		cessna.position.x = 400;
 		cessna.position.y = 400;
-		window.cessna = cessna;
+
+		var point = new Point(0, 548);
+		var size = new Size(320, 40);
+		var weightBar = new Shape.Rectangle(point, size);
+		weightBar.fillColor = '#f0402a';
+
+		var wbBg = new Shape.Rectangle(point, new Size(520, 40));
+		wbBg.fillColor = '#fff';
+
+		var weightBarGroup = new Group();
+		weightBarGroup.addChild(wbBg);
+		weightBarGroup.addChild(weightBar);
 
 		var angle = -Math.PI;
-		var frame = 0
+		var frame = 0;
+
+		var textGroup = new Group();
+		var text = [];
+		[
+			i18n.altitude,
+			i18n.speed,
+			i18n.gravity
+		].map(function(s) { return s.toUpperCase(); })
+		.forEach(function(title, i) {
+			var t = new PointText(new Point(0, 32 * i));
+			text.push(new Point(100, 32 * i));
+			t.content = title;
+			t.fillColor = '#fff';
+			t.fontSize = 14;
+			textGroup.addChild(t);
+		});
+
+		var currentAltitude = new PointText(text[0]);
+		var currentSpeed = new PointText(text[1]);
+		var currentGravity = new PointText(text[2]);
+
+		[currentAltitude, currentSpeed, currentGravity].forEach(function(t, i) {
+			t.fillColor = '#fff';
+			t.fontWeight = 'bold';
+			t.fontSize = 16;
+			textGroup.addChild(t);
+		});
+
+		var currentWeight = new PointText(new Point(100, text[2] + 32));
+		currentWeight.fillColor = '#feec09';
+		currentWeight.fontSize = 18;
+		currentWeight.fontWeight = 'bold';
+		textGroup.addChild(currentWeight);
+
+		textGroup.position.x = w - 200;
+		textGroup.position.y = 500;
 
 		function onFrame(event) {
 			if (!lines) return;
@@ -18358,6 +18426,11 @@ define('forces/weightInteraction',[
 			cessna.position.y = Math.floor(state.WEIGHT_INTERACTIVE.CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
 			if (frame > 100) frame = 0;
 			frame += state.WEIGHT_INTERACTIVE.CESSNA_SIN_ADDITIVE;
+
+			currentAltitude.content = '7,500 ft';
+			currentSpeed.content = '200m/hr';
+			currentGravity.content = '3920 Newtons';
+			currentWeight.content = '990Lbs';
 		};
 
 		function resize() {
@@ -18398,8 +18471,8 @@ define('forces/weight',[
 
 	function Weight() {
 		Section.call(this);
-		var card = this.card = helper.createDomNode(html);
-		var btn = card.querySelector('.btn-weight-interaction');
+		this.card = helper.createDomNode(html);
+		var btn = this.card.querySelector('.btn-weight-interaction');
 		var svg = document.getElementById('cessna-elevation').cloneNode(true)
 		svg.id = 'btn-cessna-elevation';
 		btn.appendChild(svg);
@@ -18408,6 +18481,8 @@ define('forces/weight',[
 		svg = svg.cloneNode(true);
 		svg.id = 'btn-cessna-elevation-close';
 		btn.appendChild(svg);
+
+		this.handleTap = this.handleTap.bind(this);
 	}
 
 	Weight.prototype = Object.create(Section.prototype);
@@ -18416,7 +18491,6 @@ define('forces/weight',[
 
 	Weight.prototype.activate = function() {
 		Section.prototype.activate.call(this);
-		var page = this;
 
 		this.card.classList.remove('slideDownAndFadeOut');
 		this.card.classList.add('slideUpAndFadeIn');
@@ -18439,23 +18513,26 @@ define('forces/weight',[
 			[73, '-webkit-transform: translate(0, -30px);']
 		]);
 
-		Hammer(this.page().element).on('tap', function handleTap(e) {
-			var matches = toArray(page.card.querySelectorAll('[data-action]'))
-				.filter(function(el) {
-					return el.contains(e.target);
-				});
-
-			if (!matches[0]) return false;
-			action = matches[0].getAttribute('data-action');
-
-			page[action] && page[action]();
-		});
+		Hammer(this.page().element).on('tap', this.handleTap);
 	};
+
+	Weight.prototype.handleTap = function(e) {
+		var matches = toArray(this.card.querySelectorAll('[data-action]'))
+			.filter(function(el) {
+				return el.contains(e.target);
+			});
+
+		if (!matches[0]) return false;
+		action = matches[0].getAttribute('data-action');
+
+		if (this[action])
+			this[action]();
+	}
 
 	Weight.prototype.deactivate = function() {
 		Section.prototype.deactivate.call(this);
-		//this.paperScope.clear();
-		Hammer(this.card).off('tap');
+		this.stopInteraction();
+		Hammer(this.page().element).off('tap', this.handleTap);
 	};
 
 	Weight.prototype.startInteraction = function() {
@@ -18469,12 +18546,13 @@ define('forces/weight',[
 		WeightInteraction.quiz.classList.remove('slideDownAndFadeOut');
 		WeightInteraction.quiz.classList.add('slideUpAndFadeIn');
 
-		this.paperScope = helper.createPaperScript(this.canvas, WeightInteraction.paperScript)
+		helper.createPaperScript(this, this.canvas, WeightInteraction.paperScript)
 		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
 
 	Weight.prototype.stopInteraction = function() {
-		console.log('stopInteraction');
+
+		helper.cleanupPaperScript(this)
 		WeightInteraction.quiz.classList.remove('slideUpAndFadeIn');
 		WeightInteraction.quiz.classList.add('slideDownAndFadeOut');
 
@@ -18534,6 +18612,7 @@ define('pages/forces',[
 	'../lib/helpers',
 	'paper',
 ], function(Page, weight, lift, drag, thrust, draw, helper, paper) {
+	window.paper || (window.paper = paper);
 
 	window.state || (window.state = {});
 	window.state.FORCES = {
@@ -18597,17 +18676,19 @@ define('pages/forces',[
 	};
 
 	Forces.prototype.activate = function() {
+		if (this.isActive) return;
 		Page.prototype.activate.call(this);
 		this.element.appendChild(this.canvas);
 
-	  helper.createPaperScript(this.canvas, paperScript)
+	  helper.createPaperScript(this, this.canvas, paperScript)
 
 		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
 
 	Forces.prototype.deactivate = function() {
+		if (!this.isActive) return;
 		Page.prototype.deactivate.call(this);
-		paper.clear();
+		helper.cleanupPaperScript(this);
 		this.element.removeChild(this.canvas);
 	};
 
