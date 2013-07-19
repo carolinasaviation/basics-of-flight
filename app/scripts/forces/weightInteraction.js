@@ -30,7 +30,7 @@ define([
 				'</div>',
 			'</div>',
 			'<div class="card-secondary">',
-				'<button class="btn btn-weight-interaction" data-action="stopInteraction"></button>',
+				'<button class="btn btn-interaction" data-action="stopInteraction"></button>',
 			'</div>',
 		'</div>'
 	].join('');

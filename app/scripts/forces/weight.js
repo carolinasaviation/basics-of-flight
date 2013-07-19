@@ -23,36 +23,33 @@ define([
 				'</div>',
 			'</div>',
 			'<div class="card-secondary">',
-				'<button class="btn btn-weight-interaction" data-action="startInteraction"></button>',
+				'<button class="btn btn-interaction" data-action="startInteraction"></button>',
 			'</div>',
 		'</div>'
 	].join('');
-
-	function Weight() {
-		Section.call(this);
-		this.card = helper.createDomNode(html);
-		var btn = this.card.querySelector('.btn-weight-interaction');
-		var svg = document.getElementById('cessna-elevation').cloneNode(true)
-		svg.id = 'btn-cessna-elevation';
-		btn.appendChild(svg);
-
-		btn = WeightInteraction.quiz.querySelector('.btn-weight-interaction');
-		svg = svg.cloneNode(true);
-		svg.id = 'btn-cessna-elevation-close';
-		btn.appendChild(svg);
-
-		this.handleTap = this.handleTap.bind(this);
+	
+	function Weight(html) {
+		Section.call(this, html);
 	}
 
 	Weight.prototype = Object.create(Section.prototype);
 
 	Weight.prototype.constructor = Weight;
 
+	Weight.prototype.init = function() {
+		var btn = this.card.querySelector('.btn-interaction');
+		var svg = document.getElementById('cessna-elevation').cloneNode(true)
+		svg.id = 'btn-cessna-elevation';
+		btn.appendChild(svg);
+
+		btn = WeightInteraction.quiz.querySelector('.btn-interaction');
+		svg = svg.cloneNode(true);
+		svg.id = 'btn-cessna-elevation-close';
+		btn.appendChild(svg);
+	};
+
 	Weight.prototype.activate = function() {
 		Section.prototype.activate.call(this);
-
-		this.card.classList.remove('slideDownAndFadeOut');
-		this.card.classList.add('slideUpAndFadeIn');
 
 		var arrows = document.createElement('div');
 		arrows.classList.add('arrows');
@@ -63,7 +60,7 @@ define([
 		arrows.appendChild(arrow.cloneNode());
 		arrows.appendChild(arrow.cloneNode());
 
-		this.page().element.appendChild(arrows);
+		this._page.element.appendChild(arrows);
 
 		draw.createAnimation(arrows, '3s linear infinite', [
 			[0, '-webkit-transform: translate(0,0);'],
@@ -71,8 +68,13 @@ define([
 			[50, '-webkit-transform: translate(0,0);'],
 			[73, '-webkit-transform: translate(0, -30px);']
 		]);
+	};
 
-		Hammer(this.page().element).on('tap', this.handleTap);
+	Weight.prototype.deactivate = function() {
+		Section.prototype.deactivate.call(this);
+		var arrows = this._page.element.querySelector('.weight-index.arrows');
+		this._page.element.removeChild(arrows);
+		this.stopInteraction();
 	};
 
 	Weight.prototype.handleTap = function(e) {
@@ -87,12 +89,6 @@ define([
 		if (this[action])
 			this[action]();
 	}
-
-	Weight.prototype.deactivate = function() {
-		Section.prototype.deactivate.call(this);
-		this.stopInteraction();
-		Hammer(this.page().element).off('tap', this.handleTap);
-	};
 
 	Weight.prototype.startInteraction = function() {
 		Section.prototype.startInteraction.call(this);
@@ -110,7 +106,6 @@ define([
 	};
 
 	Weight.prototype.stopInteraction = function() {
-
 		helper.cleanupPaperScript(this)
 		WeightInteraction.quiz.classList.remove('slideUpAndFadeIn');
 		WeightInteraction.quiz.classList.add('slideDownAndFadeOut');
@@ -119,5 +114,5 @@ define([
 		this.card.classList.add('slideUpAndFadeIn');
 	};
 
-	return new Weight();
+	return new Weight(html);
 });
