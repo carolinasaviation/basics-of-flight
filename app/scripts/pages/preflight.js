@@ -1,4 +1,5 @@
 define(['./_page'], function(Page) {
+	'use strict';
 
 	function Preflight() {
 		Page.call(this);

@@ -1,4 +1,5 @@
-define([], function() {
+define(['lodash'], function(_) {
+	'use strict';
 
 	var index = [
 		'<div class="page">',

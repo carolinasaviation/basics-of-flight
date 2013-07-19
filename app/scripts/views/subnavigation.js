@@ -1,4 +1,6 @@
 define(['lodash'], function(_) {
+	'use strict';
+
 	// Use mustache-style templating in underscore (escaping by default)
 	// evaluate: {[ for (var key in obj) { ]}
 	// interpolate: {! firstName !}
