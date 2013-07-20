@@ -1,13 +1,17 @@
 define([
 	'../lib/helpers',
-], function(helper) {
+	'../views/sectionCard',
+	'../config',
+], function(helper, card, config) {
 
-	function Section(html) {
+	function Section() {
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
 		this.canvas = document.createElement('canvas');
 		this.canvas.style.position = 'absolute';
 
-		this.card = helper.createDomNode(html);
+		var tmp = document.createElement('div');
+		tmp.innerHTML = card(i18n[this.name.toLowerCase()]);
+		this.card = tmp.firstChild;
 		this.handleTap = this.handleTap.bind(this);
 		this.init();
 	}
@@ -17,8 +21,7 @@ define([
 		paperProject: undefined,
 		paperView: undefined,
 		_page: undefined,
-		handleTap: function(){},
-		init: function(){},
+		init: function init(){},
 
 		page: function page(page) {
 			if (page) this._page = page;
@@ -65,6 +68,19 @@ define([
 		stopInteraction: function stopIntetraction() {
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
+		},
+
+		handleTap: function(e) {
+			var matches = helper.toArray(this.card.querySelectorAll('[data-action]'))
+				.filter(function(el) {
+					return el.contains(e.target);
+				});
+
+			if (!matches[0]) return false;
+			action = matches[0].getAttribute('data-action');
+
+			if (this[action])
+				this[action]();
 		}
 	};
 

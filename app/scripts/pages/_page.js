@@ -1,6 +1,8 @@
 define([
 	'../views/subnavigation',
-], function(viewSubnav) {
+	'../views/pageCard',
+	'../lib/helpers',
+], function(viewSubnav, viewCard, helper) {
 	var NAV_ACTIVE_CLASS = 'subnav-item-active';
 
 	function Page() {
@@ -22,9 +24,14 @@ define([
 		init: function init() {
 			if (this.isInit) return;
 
+
 			this.element = document.createElement('div');
 			this.element.classList.add('page');
 			this.element.setAttribute('id', 'page-' + this.name.toLowerCase());
+
+			this.card = helper.createDomNode(viewCard(i18n[this.name.toLowerCase()]));
+			this.card.classList.add('card-main')
+			this.element.appendChild(this.card);
 
 			var nav = this.subnav({ sections: this.sections });
 			var tmp = document.createElement('div');
@@ -32,7 +39,11 @@ define([
 			this.subnav = tmp.firstChild;
 			this.element.insertBefore(this.subnav, this.element.firstChild);
 
+			function giveThis(s) { s.page(this); }
+			this.sections.forEach(giveThis.bind(this));
+
 			this.isInit = true;
+
 			if (config.logger.pageLifeCycle)
 				config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
 		},

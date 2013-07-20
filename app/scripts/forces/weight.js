@@ -5,31 +5,10 @@ define([
 	'paper',
 	'./weightInteraction'
 ], function(Section, draw, helper, paper, WeightInteraction) {
-	var toArray = function(n) {
-		return Array.prototype.slice.call(n, 0);
-	};
+	'use strict';
 
-	var html = [
-		'<div class="card">',
-			'<h1>', i18n.weight.title, '</h1>',
-			'<div class="card-primary">',
-				'<div>',
-					'<div class="col col-equation" style="width: 20%">', i18n.weight.equation, '</div>',
-					'<div class="col" style="width: 80%">', i18n.weight.equationDescription, '</div>',
-				'</div>',
-				'<div>',
-					'<div class="col col-equation" style="width: 20%">', '<img src="images/', i18n.weight.historicalFigure, '" />', '</div>',
-					'<div class="col" style="width: 80%">', i18n.weight.historicalDescription, '</div>',
-				'</div>',
-			'</div>',
-			'<div class="card-secondary">',
-				'<button class="btn btn-interaction" data-action="startInteraction"></button>',
-			'</div>',
-		'</div>'
-	].join('');
-	
-	function Weight(html) {
-		Section.call(this, html);
+	function Weight() {
+		Section.call(this);
 	}
 
 	Weight.prototype = Object.create(Section.prototype);
@@ -37,6 +16,8 @@ define([
 	Weight.prototype.constructor = Weight;
 
 	Weight.prototype.init = function() {
+		Section.prototype.init.call(this);
+
 		var btn = this.card.querySelector('.btn-interaction');
 		var svg = document.getElementById('cessna-elevation').cloneNode(true)
 		svg.id = 'btn-cessna-elevation';
@@ -78,10 +59,10 @@ define([
 	};
 
 	Weight.prototype.handleTap = function(e) {
-		var matches = toArray(this.card.querySelectorAll('[data-action]'))
+		var matches = helper.toArray(this.card.querySelectorAll('[data-action]'))
 			.filter(function(el) {
 				return el.contains(e.target);
-			});
+			}), action;
 
 		if (!matches[0]) return false;
 		action = matches[0].getAttribute('data-action');
@@ -114,5 +95,5 @@ define([
 		this.card.classList.add('slideUpAndFadeIn');
 	};
 
-	return new Weight(html);
+	return new Weight();
 });

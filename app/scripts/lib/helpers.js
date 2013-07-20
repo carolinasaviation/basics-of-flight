@@ -34,6 +34,10 @@ define(function() {
 			tmpElement = document.createElement(tmpElement || 'div');
 			tmpElement.innerHTML = str;
 			return tmpElement.firstChild;
+		},
+
+		toArray: function(n) {
+			return Array.prototype.slice.call(n, 0);
 		}
 	}
 });

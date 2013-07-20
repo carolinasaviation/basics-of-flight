@@ -6,9 +6,8 @@ define([
 	'../forces/thrust',
 	'../lib/animations',
 	'../lib/helpers',
-	'paper',
+	'paper'
 ], function(Page, weight, lift, drag, thrust, draw, helper, paper) {
-	window.paper || (window.paper = paper);
 
 	window.state || (window.state = {});
 	window.state.FORCES = {
@@ -18,14 +17,6 @@ define([
 	};
 
 	var image = '<img src="images/cessna-isometric.svg" style="position:relative;z-index:1;-webkit-transform: translate(0,0)">';
-	var card = [
-		'<div class="card">',
-			'<div class="card-primary">',
-				'<h1>', i18n.forces.title, '</h1>',
-				'<p>', i18n.forces.description, '</p>',
-			'</div>',
-		'</div>'
-	].join('');
 
 	function Forces() {
 		Page.call(this);
@@ -40,9 +31,6 @@ define([
 	Forces.prototype.constructor = Forces;
 	Forces.prototype.init = function() {
 		Page.prototype.init.call(this);
-		this.card = helper.createDomNode(card);
-		this.card.classList.add('card-main')
-		this.element.appendChild(this.card);
 		this.element.appendChild(helper.createDomNode(image));
 
 		var canvas = this.canvas = document.createElement('canvas');

@@ -1,11 +1,18 @@
-define(['./_page'], function(Page) {
+define([
+	'./_page',
+	'../preflight/outside',
+	'../preflight/inside',
+	'../lib/animations',
+	'../lib/helpers',
+	'paper'
+], function(Page, outside, inside, draw, helper, paper) {
 	'use strict';
 
 	function Preflight() {
 		Page.call(this);
 
 		this.sections = [
-			'outside', 'inside'
+			outside, inside
 		];
 	}
 
