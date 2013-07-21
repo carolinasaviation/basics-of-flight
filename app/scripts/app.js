@@ -28,7 +28,15 @@ define([
 		},
 
 		render: function() {
-			var nav = viewNavigation({ pages: this.pages.map(function(page) { return page.name; }) })
+			function getName(t) { return t.name; }
+			var pages = this.pages.map(function(page) {
+					return {
+						name: getName(page),
+						sections: page.sections.map(getName)
+					};
+				})
+
+			var nav = viewNavigation({ pages: pages });
 			var tmp = document.createElement('div');
 			tmp.innerHTML = nav;
 			document.body.insertBefore(tmp.firstChild, document.body.firstChild);

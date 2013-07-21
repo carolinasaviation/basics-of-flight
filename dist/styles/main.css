@@ -45,13 +45,15 @@ body{background:#191919;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
 .fakepad{position:absolute;top:50%;left:50%;margin-left:-512px;margin-top:-384px;height:768px;width:1024px}
 .col{display:inline-block;vertical-align:top;padding-bottom:1.333em}
 .btn{display:inline-block}
-.nav{position:absolute;top:0;left:0;bottom:0;width:6em;z-index:11}
-.nav-item{background:#131313;color:#fff;display:block;padding:1em;position:relative;text-decoration:none;height:33.333%}
-.nav-item-active{background:#feec09;color:#000}
+.nav>ul{position:absolute;top:0;bottom:0;left:0;width:6em;z-index:11;margin:0;padding:0;list-style:none}
+.nav-item-container{height:33.333%;position:relative}
+.nav-item{background:#131313;color:#464646;display:block;height:100%;padding:1em;position:relative;overflow:hidden;text-decoration:none;border-right:solid 3px #feec09;-webkit-transition:background ease .5s;-moz-transition:background ease .5s;-o-transition:background ease .5s;-ms-transition:background ease .5s;transition:background ease .5s}
+.nav-item-active{background:#feec09;border-right-color:transparent;color:#131313}
 .nav-image{display:block;margin:0 auto;max-width:96%;line-height:100%}
 .nav-text{position:absolute;left:50%;top:50%;margin-left:-5em;margin-top:-.5em;width:10em;-webkit-transform-origin:50% 50%;-moz-transform-origin:50% 50%;-o-transform-origin:50% 50%;-ms-transform-origin:50% 50%;transform-origin:50% 50%;-webkit-transform:rotate(-90deg);-moz-transform:rotate(-90deg);-o-transform:rotate(-90deg);-ms-transform:rotate(-90deg);transform:rotate(-90deg);font-size:2em;font-weight:bold;display:block;text-align:center;text-transform:uppercase}
-.subnav{position:absolute;top:0;bottom:0;left:-7em;width:7em;z-index:20;background:#191919}
-.subnav-item{color:#f0f0f0;display:block;font-weight:bold;letter-spacing:1px;padding:.41666em 1em;text-decoration:none;text-transform:uppercase}
+.subnav{position:absolute;top:0;bottom:0;left:6em;width:7em;z-index:20;background:#191919;list-style:none;margin:0;padding:0}
+.subnav-item{color:#404040;display:block;font-weight:bold;letter-spacing:1px;padding:.41666em 1em;text-decoration:none;text-transform:uppercase;-webkit-transition:color ease .5s;-moz-transition:color ease .5s;-o-transition:color ease .5s;-ms-transition:color ease .5s;transition:color ease .5s}
+.nav-item-active + .subnav .subnav-item{color:#f0f0f0}
 .subnav-item-active{background:#f2ec59;color:#000}
 h1{color:#feec09;text-transform:uppercase;letter-spacing:1px}
 .page{height:100%;padding:3em 1.5em 1.5em 9.5em;position:relative}

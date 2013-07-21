@@ -44,24 +44,35 @@ body
 
 /* general }}} */
 // {{{ nav
-.nav
-	absolute top 0 left 0
-	bottom 0
+.nav>ul
+	absolute top bottom
+	left 0
 	width 6em
 	z-index 11
+	margin 0
+	padding 0
+	list-style none
+
+.nav-item-container
+	height 33.333%
+	position relative
 
 .nav-item
 	background #131313
-	color #fff
+	color #464646
 	display block
+	height 100%
 	padding 1em
 	position relative
+	overflow hidden
 	text-decoration none
-	height 33.333%
+	border-right solid 3px YELLOW
+	transition background ease 0.5s
 
 .nav-item-active
 	background YELLOW
-	color #000
+	border-right-color transparent
+	color #131313
 
 .nav-image
 	display block
@@ -88,19 +99,27 @@ body
 // {{{ subnav
 .subnav
 	absolute top bottom
-	left -7em
+	left 6em
 	width 7em
 	z-index 20
 	background #191919
+	list-style none
+	margin 0
+	padding 0
 
 .subnav-item
-	color #f0f0f0
+	color #404040
 	display block
 	font-weight bold
 	letter-spacing 1px
 	padding: 0.41666em 1em
 	text-decoration none
 	text-transform uppercase
+	transition color ease 0.5s
+
+// TODO add more classes via javascript and clean up these selectors
+.nav-item-active + .subnav .subnav-item
+	color #f0f0f0
 
 .subnav-item-active
 	background #f2ec59

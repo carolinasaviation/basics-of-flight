@@ -1,8 +1,9 @@
 define([
-	'../views/subnavigation',
 	'../views/pageCard',
 	'../lib/helpers',
-], function(viewSubnav, viewCard, helper) {
+], function(viewCard, helper) {
+	'use strict';
+
 	var NAV_ACTIVE_CLASS = 'subnav-item-active';
 
 	function Page() {
@@ -10,20 +11,19 @@ define([
 		this.isLoaded = false;
 		this.isActive = false;
 		this.sections = [];
-		this.subnav = viewSubnav;
-		this.subnavListener = this.subnavListener.bind(this);
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
+		this.subnavListener = this.subnavListener.bind(this);
 		this.activatedSection = false;
 	}
 
 	Page.prototype = {
+		subnav: document.createElement('ul'),
 		card: document.createElement('div'),
 		paperProject: undefined,
 		paperView: undefined,
 
 		init: function init() {
 			if (this.isInit) return;
-
 
 			this.element = document.createElement('div');
 			this.element.classList.add('page');
@@ -33,29 +33,28 @@ define([
 			this.card.classList.add('card-main')
 			this.element.appendChild(this.card);
 
-			var nav = this.subnav({ sections: this.sections });
-			var tmp = document.createElement('div');
-			tmp.innerHTML = nav;
-			this.subnav = tmp.firstChild;
-			this.element.insertBefore(this.subnav, this.element.firstChild);
-
 			function giveThis(s) { s.page(this); }
 			this.sections.forEach(giveThis.bind(this));
+
+			var name = this.name;
+			this.subnav = helper.toArray(document.querySelectorAll('.nav-item')).filter(function(el, index, array) {
+				return el.textContent === name;
+			})[0].parentNode.querySelector('.subnav');
 
 			this.isInit = true;
 
 			if (config.logger.pageLifeCycle)
-				config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
+				config.logger.pageLifeCycleFn.call(this, 'init');
 		},
 
 		beforeLoad: function beforeLoad() {
 			if (config.logger.pageLifeCycle)
-				config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
+				config.logger.pageLifeCycleFn.call(this, 'beforeLoad');
 
 			document.body.insertBefore(this.element, document.body.firstChild.nextSibling);
 
 			this.deselectActiveSection();
-			Hammer(this.element.querySelector('.subnav')).on('tap', this.subnavListener);
+			Hammer(this.subnav).on('tap', this.subnavListener);
 		},
 
 		load: function load() {
@@ -64,30 +63,31 @@ define([
 			this.card.classList.remove('slideDownAndFadeOut');
 			this.card.classList.add('slideUpAndFadeIn');
 
-			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'load');
+
 			this.onLoad();
 		},
 
 		onLoad: function onLoad() {
-			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'onload');
 			this.isLoaded = true;
 			this.activate();
 		},
 
 		beforeUnload: function beforeUnload() {
-			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'beforeUnload');
 		},
 
 		unload: function unload() {
-			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'unload');
 			this.isLoaded = false;
 
 			this.onunload();
 		},
 
 		onunload: function onUnload() {
-			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
-			Hammer(this.element.querySelector('.subnav')).off('tap', this.subnavListener);
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'onUnload');
+			Hammer(this.subnav).off('tap', this.subnavListener);
 			this.element.parentNode.removeChild(this.element);
 			this.activatedSection = false;
 		},
@@ -95,13 +95,13 @@ define([
 		// event listeners
 
 		activate: function activate() {
-			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'activate');
 			paper || (paper = window.paper);
 			this.isActive = true;
 		},
 
 		deactivate: function deactivate() {
-			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, arguments.callee.name);
+			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'deactivate');
 			this.card.classList.remove('slideUpAndFadeIn');
 			this.card.classList.add('slideDownAndFadeOut');
 			this.isActive = false;
@@ -111,16 +111,17 @@ define([
 			var active = document.querySelector('.subnav .' + NAV_ACTIVE_CLASS);
 			if (!active) return;
 
-			section = _.findWhere(this.sections, { name: active.textContent });
-			if (section) {
+			var section = _.findWhere(this.sections, { name: active.textContent });
+			if (section)
 				section.deactivate();
-			}
+
 			active.classList.remove(NAV_ACTIVE_CLASS);
 		},
 
 		subnavListener: function(e) {
 			if (e.target.matches('.subnav')) return;
 			e.preventDefault();
+			e.stopPropagation();
 			this.deselectActiveSection();
 
 			if (!this.activatedSection)
@@ -138,6 +139,8 @@ define([
 			section = _.findWhere(this.sections, { name: node.textContent });
 			if (section)
 				section.activate();
+
+			return false;
 		}
 	}
 
