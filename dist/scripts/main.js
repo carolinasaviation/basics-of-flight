@@ -6731,6 +6731,7 @@ define('lib/animations',[],function() {
 
 
 define('lib/helpers',[],function() {
+	window.paper = paper;
 
 	function createPaperScript(module, canvas, paperScriptFunction) {
 		if (paper.view && paper.view._element === canvas) {
