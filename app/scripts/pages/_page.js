@@ -17,8 +17,7 @@ define([
 	}
 
 	Page.prototype = {
-		subnav: document.createElement('ul'),
-		card: document.createElement('div'),
+		card: undefined,
 		paperProject: undefined,
 		paperView: undefined,
 
@@ -37,9 +36,11 @@ define([
 			this.sections.forEach(giveThis.bind(this));
 
 			var name = this.name;
-			this.subnav = helper.toArray(document.querySelectorAll('.nav-item')).filter(function(el, index, array) {
+			var subnav = helper.toArray(document.querySelectorAll('.nav-item')).filter(function(el, index, array) {
 				return el.textContent === name;
 			})[0].parentNode.querySelector('.subnav');
+
+			Hammer(subnav).on('tap', this.subnavListener);
 
 			this.isInit = true;
 
@@ -54,7 +55,6 @@ define([
 			document.body.insertBefore(this.element, document.body.firstChild.nextSibling);
 
 			this.deselectActiveSection();
-			Hammer(this.subnav).on('tap', this.subnavListener);
 		},
 
 		load: function load() {
@@ -87,7 +87,6 @@ define([
 
 		onunload: function onUnload() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'onUnload');
-			Hammer(this.subnav).off('tap', this.subnavListener);
 			this.element.parentNode.removeChild(this.element);
 			this.activatedSection = false;
 		},
