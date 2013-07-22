@@ -198,6 +198,37 @@ h1
 	height 100%
 	width 100%
 
+.cessna
+	.arrow
+		background YELLOW
+		position absolute
+		display inline-block
+		margin 0 20px
+		height 60px
+		width 2px
+		&:after
+			absolute bottom -2px
+			left -6px
+			border-left 7px solid transparent
+			border-right 7px solid transparent
+			border-top 7px solid YELLOW
+			content ''
+
+	.arrow-n
+		left 40%
+		top 10%
+		transform rotate(180deg)
+	.arrow-s
+		left 37%
+		top 70%
+	.arrow-w
+		bottom 25%
+		transform rotate(65deg)
+	.arrow-e
+		top 10%
+		left 80%
+		transform rotate(-115deg)
+
 .arrows
 	position absolute
 	left 40%

@@ -8,6 +8,7 @@ define([
 	'../lib/helpers',
 	'paper'
 ], function(Page, weight, lift, drag, thrust, draw, helper, paper) {
+	'use strict';
 
 	window.state || (window.state = {});
 	window.state.FORCES = {
@@ -16,7 +17,7 @@ define([
 		CESSNA_SIN_ADDITIVE: 0.04,
 	};
 
-	var image = '<img src="images/cessna-isometric.svg" style="position:relative;z-index:1;-webkit-transform: translate(0,0)">';
+	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"><div class="arrow arrow-n"></div><div class="arrow arrow-s"></div><div class="arrow arrow-w"></div><div class="arrow arrow-e"></div><img src="images/cessna-isometric.svg"></div>';
 
 	function Forces() {
 		Page.call(this);
@@ -48,7 +49,7 @@ define([
 	Forces.prototype.onLoad = function() {
 		Page.prototype.onLoad.call(this);
 
-		var element = this.element.querySelector('img');
+		var element = this.element.querySelector('.cessna');
 		draw.createAnimation(element, '3s linear infinite', [
 			[0, '-webkit-transform: translate(0,0);'],
 			[27, '-webkit-transform: translate(0, -30px);'],
@@ -82,17 +83,6 @@ define([
 		var w = view.viewSize.width;
 		var h = view.viewSize.height;
 		var white = new Color(255, 255, 255);
-		var weight, lift, drag, thrust;
-
-		lift = createArrow('north');
-		weight = createArrow('south');
-		thrust = createArrow('west');
-		drag = createArrow('east');
-
-		var liftYOffset = lift.position.y;
-		var weightYOffset = weight.position.y;
-		var thrustYOffset = thrust.position.y;
-		var dragYOffset = drag.position.y;
 
 		circles = new Array(num);
 		while (num--)
@@ -113,81 +103,11 @@ define([
 				c.position.x += state.rand(2, 4);
 				c.position.y -= state.rand(1, 3);
 			});
-
-			//console.log('onFrame', lift);
-			var xOffset = Math.cos(event.time / 2) / 4;
-			var yOffset = 20 * Math.sin(event.time);
-			var longitudalRotation = Math.cos(event.time / 2) * Math.atan2(lift.children[0].position.y, lift.children[0].position.x);
-			var latitudalRotation = longitudalRotation / 4;
-
-			lift.children[0]._segments[0].point.x += xOffset
-			lift.children[1].position.x += xOffset
-			lift.children[1].rotate(longitudalRotation);
-			lift.position.y = yOffset + liftYOffset;
-
-			weight.children[0]._segments[1].point.x += xOffset
-			weight.children[1].position.x += xOffset
-			weight.children[1].rotate(-longitudalRotation);
-			weight.position.y = yOffset + weightYOffset;
-
-			thrust.children[0]._segments[1].point.y = -yOffset + thrustYOffset;
-			thrust.children[0]._segments[0].point.x += xOffset / 2;
-			thrust.children[1].position.x += xOffset / 2;
-			thrust.children[1].rotate(latitudalRotation);
-
-			drag.children[0]._segments[1].point.y = -yOffset + dragYOffset;
-			drag.children[0]._segments[0].point.x += xOffset / 2;
-			drag.children[1].position.y = -yOffset + dragYOffset;
-			//drag.children[1].position.x += xOffset / 2;
-			drag.children[1].rotate(latitudalRotation);
 		}
 
 		function onResize() {
 			w = view.viewSize.width;
 			h = view.viewSize.height;
-		}
-
-		function createArrow(direction) {
-			var p1, ps, line, triangle;
-
-			switch (direction) {
-			case 'north':
-				p1 = new Point(375, 50);
-				p2 = new Point(375, 125);
-			  line = new Path.Line(p1, p2);
-				triangle = new Path.RegularPolygon(p1, 3, 7);
-				break;
-			case 'south':
-				p1 = new Point(375, 350);
-				p2 = new Point(375, 425);
-			  line = new Path.Line(p1, p2);
-				triangle = new Path.RegularPolygon(p2, 3, 7);
-				triangle.rotate(180)
-				break;
-			case 'east':
-				p1 = new Point(575, 150);
-				p2 = new Point(670, 150);
-			  line = new Path.Line(p1, p2);
-				triangle = new Path.RegularPolygon(p2, 3, 7);
-				triangle.position.y += 2;
-				triangle.rotate(90)
-				break;
-			case 'west':
-				p1 = new Point(100, 350);
-				p2 = new Point(200, 350);
-			  line = new Path.Line(p1, p2);
-				triangle = new Path.RegularPolygon(p1, 3, 7);
-				triangle.position.y += 1;
-				triangle.rotate(-90)
-				break;
-			}
-
-			line.strokeWidth = 2;
-			line.fillColor = white;
-			line.strokeColor = white;
-			triangle.fillColor = white;
-			var g = new Group([line, triangle]);
-			return g
 		}
 	}
 
