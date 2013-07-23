@@ -18,7 +18,7 @@ define([
 	};
 
 	var ARROWS_SELECTOR = '.forces-arrows';
-	var arrows = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow arrow-n"></div><div class="arrow arrow-s"></div><div class="arrow arrow-w"></div><div class="arrow arrow-e"></div></div>';
+	var arrows = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow-n"><div class="arrow"></div></div><div class="arrow-s"><div class="arrow"></div></div><div class="arrow-w"><div class="arrow"></div></div><div class="arrow-e"><div class="arrow"></div></div></div>';
 	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"><img src="images/cessna-isometric.svg"></div>';
 
 	function Forces() {
@@ -68,6 +68,7 @@ define([
 		Page.prototype.activate.call(this);
 
 		this.element.querySelector('.cessna').appendChild(helper.createDomNode(arrows));
+
 		this.element.appendChild(this.canvas);
 
 		helper.createPaperScript(this, this.canvas, paperScript)
@@ -80,6 +81,7 @@ define([
 		Page.prototype.deactivate.call(this);
 
 		var arrows = this.element.querySelector(ARROWS_SELECTOR);
+
 		this.element.querySelector('.cessna').removeChild(arrows);
 
 		helper.cleanupPaperScript(this);

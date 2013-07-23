@@ -207,9 +207,8 @@ h1
 		z-index 1
 	.arrow
 		background YELLOW
-		position absolute
+		position relative
 		display inline-block
-		margin 0 20px
 		height 60px
 		width 2px
 		&:after
@@ -220,20 +219,45 @@ h1
 			border-top 7px solid YELLOW
 			content ''
 
+.forces-arrows
+	.arrow
+		animation-timing-function ease
+		animation-duration 0.666s
+		animation-iteration-count infinite
+		animation-direction alternate
+		animation-name forcesArrow
+	.arrow-n,
+	.arrow-s,
+	.arrow-w,
+	.arrow-e
+		position absolute
+		height 0
+		width 0
+
 	.arrow-n
 		left 40%
-		top 10%
+		top 20%
 		transform rotate(180deg)
 	.arrow-s
 		left 37%
-		top 70%
+		top 66%
 	.arrow-w
-		bottom 25%
+		bottom 36%
+		left 11%
 		transform rotate(65deg)
 	.arrow-e
-		top 10%
-		left 80%
+		top 22%
+		left 76%
 		transform rotate(-115deg)
+
+
+@keyframes forcesArrow
+	from
+		transform translateY(0em)
+		opacity 1
+	to
+		transform  translateY(1em)
+		opacity 0.6
 
 .weight-arrows
 	position absolute
