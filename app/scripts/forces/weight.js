@@ -7,6 +7,9 @@ define([
 ], function(Section, draw, helper, paper, WeightInteraction) {
 	'use strict';
 
+	var ARROWS_SELECTOR = '.weight-arrows';
+	var image = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow arrow-s"></div><div class="arrow arrow-s"></div><div class="arrow arrow-s"></div></div>';
+
 	function Weight() {
 		Section.call(this);
 	}
@@ -32,29 +35,23 @@ define([
 	Weight.prototype.activate = function() {
 		Section.prototype.activate.call(this);
 
-		var arrows = document.createElement('div');
-		arrows.classList.add('arrows');
-		arrows.classList.add('weight-index');
-		var arrow = document.createElement('div');
-		arrow.classList.add('arrow');
-		arrows.appendChild(arrow);
-		arrows.appendChild(arrow.cloneNode());
-		arrows.appendChild(arrow.cloneNode());
+		var cessna = this._page.element.querySelector('.cessna');
+		var arrows = helper.createDomNode(image);
+		cessna.appendChild(arrows);
 
-		this._page.element.appendChild(arrows);
-
-		draw.createAnimation(arrows, '3s linear infinite', [
-			[0, '-webkit-transform: translate(0,0);'],
-			[27, '-webkit-transform: translate(0, 30px);'],
-			[50, '-webkit-transform: translate(0,0);'],
-			[73, '-webkit-transform: translate(0, -30px);']
+		draw.createAnimation(arrows, '1s linear infinite', [
+			[0, '-webkit-transform: translate(0,0) skewX(13deg);'],
+			[27, '-webkit-transform: translate(0, -10px) skewX(13deg);'],
+			[50, '-webkit-transform: translate(0,0) skewX(13deg);'],
+			[73, '-webkit-transform: translate(3px, 10px) skewX(15deg);']
 		]);
 	};
 
 	Weight.prototype.deactivate = function() {
 		Section.prototype.deactivate.call(this);
-		var arrows = this._page.element.querySelector('.weight-index.arrows');
-		this._page.element.removeChild(arrows);
+		var cessna = this._page.element.querySelector('.cessna');
+		var arrows = cessna.querySelector(ARROWS_SELECTOR);
+		cessna.removeChild(arrows);
 		this.stopInteraction();
 	};
 

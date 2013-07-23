@@ -39,6 +39,10 @@ body
 .btn
 	display inline-block
 
+.hardware-hack
+	// http://blog.alexmaccaw.com/css-transitions
+	font-smoothing antialiased
+	transform translate3d(0,0,0);
 
 /* general }}} */
 // {{{ nav
@@ -170,8 +174,9 @@ h1
 	width 38%
 
 // cards }}}
+// {{{ sections
 
-.btn-weight-interaction
+.btn-interaction
 	background transparent
 	border-radius 0
 	border 0
@@ -179,10 +184,8 @@ h1
 	svg
 		max-width 100%
 
-.hardware-hack
-	// http://blog.alexmaccaw.com/css-transitions
-	font-smoothing antialiased
-	transform translate3d(0,0,0);
+// sections }}}
+// {{{ Forces::weight
 
 #btn-cessna-elevation
 	polyline,
@@ -199,6 +202,9 @@ h1
 	width 100%
 
 .cessna
+	img
+		position relative
+		z-index 1
 	.arrow
 		background YELLOW
 		position absolute
@@ -229,11 +235,11 @@ h1
 		left 80%
 		transform rotate(-115deg)
 
-.arrows
+.weight-arrows
 	position absolute
-	left 40%
-	top 10%
-	z-index 1
+	left 20%
+	bottom 15%
+	transform: skewX(13deg);
 	.arrow
 		background YELLOW
 		position relative
@@ -241,9 +247,7 @@ h1
 		margin 0 20px
 		height 60px
 		width 2px
-		transform: skewX(13deg);
 		&:after
-			transform: skewX(13deg);
 			absolute bottom
 			left -4px
 			border-left 5px solid transparent
@@ -251,7 +255,7 @@ h1
 			border-top 5px solid YELLOW
 			content ''
 
-
+// Forces::weight }}}
 // {{{ animations
 
 @keyframes flashActionableSvg

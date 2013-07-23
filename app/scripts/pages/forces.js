@@ -17,7 +17,9 @@ define([
 		CESSNA_SIN_ADDITIVE: 0.04,
 	};
 
-	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"><div class="arrow arrow-n"></div><div class="arrow arrow-s"></div><div class="arrow arrow-w"></div><div class="arrow arrow-e"></div><img src="images/cessna-isometric.svg"></div>';
+	var ARROWS_SELECTOR = '.forces-arrows';
+	var arrows = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow arrow-n"></div><div class="arrow arrow-s"></div><div class="arrow arrow-w"></div><div class="arrow arrow-e"></div></div>';
+	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"><img src="images/cessna-isometric.svg"></div>';
 
 	function Forces() {
 		Page.call(this);
@@ -56,6 +58,7 @@ define([
 			[50, '-webkit-transform: translate(0,0);'],
 			[73, '-webkit-transform: translate(0, 30px);']
 		]);
+
 		// temp!
 		this.activate();
 	};
@@ -63,9 +66,11 @@ define([
 	Forces.prototype.activate = function() {
 		if (this.isActive) return;
 		Page.prototype.activate.call(this);
+
+		this.element.querySelector('.cessna').appendChild(helper.createDomNode(arrows));
 		this.element.appendChild(this.canvas);
 
-	  helper.createPaperScript(this, this.canvas, paperScript)
+		helper.createPaperScript(this, this.canvas, paperScript)
 
 		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
 	};
@@ -73,6 +78,10 @@ define([
 	Forces.prototype.deactivate = function() {
 		if (!this.isActive) return;
 		Page.prototype.deactivate.call(this);
+
+		var arrows = this.element.querySelector(ARROWS_SELECTOR);
+		this.element.querySelector('.cessna').removeChild(arrows);
+
 		helper.cleanupPaperScript(this);
 		this.element.removeChild(this.canvas);
 	};
