@@ -52,6 +52,7 @@ define([
 		var cessna = this._page.element.querySelector('.cessna');
 		var arrows = cessna.querySelector(ARROWS_SELECTOR);
 		cessna.removeChild(arrows);
+
 		this.stopInteraction();
 	};
 
@@ -84,6 +85,7 @@ define([
 	};
 
 	Weight.prototype.stopInteraction = function() {
+		Section.prototype.stopInteraction.call(this);
 		helper.cleanupPaperScript(this)
 		WeightInteraction.quiz.classList.remove('slideUpAndFadeIn');
 		WeightInteraction.quiz.classList.add('slideDownAndFadeOut');

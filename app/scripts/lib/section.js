@@ -37,7 +37,6 @@ define([
 			Hammer(this._page.element).on('tap', this.handleTap);
 
 			this._page.element.appendChild(this.card, this._page.element.firstChild);
-			this._page.element.insertBefore(this.canvas, this._page.element.firstChild);
 
 			this.card.classList.remove('slideDownAndFadeOut');
 			this.card.classList.add('slideUpAndFadeIn');
@@ -56,16 +55,20 @@ define([
 				if (self._page.element.contains(self.card))
 					self._page.element.removeChild(self.card);
 			}, 300);
-			this._page.element.removeChild(this.canvas);
+
 			Hammer(this._page.element).off('tap', this.handleTap);
 		},
 
 		startInteraction: function startInteraction() {
+			this._page.element.insertBefore(this.canvas, this._page.element.firstChild);
+
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
 		},
 
 		stopInteraction: function stopIntetraction() {
+			this._page.element.removeChild(this.canvas);
+
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
 		},
