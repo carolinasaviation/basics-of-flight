@@ -2,7 +2,10 @@ define([
 	'../lib/helpers',
 	'../views/sectionCard',
 	'../config',
-], function(helper, card, config) {
+	'../i18n/en',
+], function(helper, card, config, i18n) {
+
+	window.i18n = i18n;
 
 	function Section() {
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
@@ -67,7 +70,8 @@ define([
 		},
 
 		stopInteraction: function stopIntetraction() {
-			this._page.element.removeChild(this.canvas);
+			if (this._page.element.contains(this.canvas))
+				this._page.element.removeChild(this.canvas);
 
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)

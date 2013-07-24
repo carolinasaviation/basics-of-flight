@@ -1,6 +1,5 @@
-define(['./i18n/en'], function(i18n) {
+define(function(i18n) {
 
-	window.i18n = i18n;
 	var dim = document.body.getBoundingClientRect();
 	var logger = {
 		colors: {

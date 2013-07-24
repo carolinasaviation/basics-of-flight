@@ -1,13 +1,17 @@
 /*global define */
 define([
 	'./config',
+	'./i18n/en',
 	'./pages/forces',
 	'./pages/controls',
 	'./pages/preflight',
 	'./views/navigation',
-], function (config, forces, controls, preflight, viewNavigation) {
+	'lodash',
+], function (config, i18n, forces, controls, preflight, viewNavigation, _) {
 	'use strict';
+
 	window.config = config;
+	window.i18n = i18n;
 
 	var NAV_ACTIVE_CLASS = 'nav-item-active';
 

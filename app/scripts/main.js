@@ -38,6 +38,7 @@ require([
 		return Math.floor(max * rand) + min;
 	};
 
+	window.paper = paper;
 	paper.install(window);
 	app.init();
 
