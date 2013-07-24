@@ -295,9 +295,11 @@ module.exports = function (grunt) {
 				'stylus'
 			],
 			dist: [
+				'useminPrepare',
 				'stylus:dist',
 				'imagemin',
-				'svgmin'
+				'svgmin',
+				'requirejs:almond'
 			]
 		},
 		bower: {
@@ -312,7 +314,7 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('server', function (target) {
 		if (target === 'dist') {
-			return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
+			return grunt.task.run([/*'build',*/ 'open', 'connect:dist:keepalive']);
 		}
 
 		grunt.task.run([
@@ -338,9 +340,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('build', [
 		'clean:dist',
 		'jade:dist',
-		'useminPrepare',
 		'concurrent:dist',
-		'requirejs:almond',
 		'copy',
 		//'rev',
 		'usemin',
