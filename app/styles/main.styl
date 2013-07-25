@@ -60,7 +60,6 @@ body
 	position relative
 
 .nav-item
-	background #131313
 	color #464646
 	display block
 	height 100%
@@ -68,13 +67,19 @@ body
 	position relative
 	overflow hidden
 	text-decoration none
-	border-right solid 3px YELLOW
-	transition background ease 0.5s
+	&:after
+		transition width ease 0.5s
+		absolute top bottom
+		background YELLOW
+		right 0
+		width 3px
+		content ' '
+		z-index 0
 
 .nav-item-active
-	background YELLOW
-	border-right-color transparent
 	color #131313
+	&:after
+		width 100%
 
 .nav-image
 	display block
@@ -82,9 +87,12 @@ body
 	//max-height 6em
 	max-width 96%
 	line-height 100%
+	position relative
+	z-index 2
 
 .nav-text
 	absolute left 50% top 50%
+	z-index 2
 	margin-left -5em
 	margin-top -0.5em
 	width 10em
@@ -104,10 +112,17 @@ body
 	left 6em
 	width 7em
 	z-index 10
-	background #191919
 	list-style none
 	margin 0
 	padding 0
+
+	background #919191
+	transform rotateY(45deg)
+	transform-origin 0 50%
+	transition all 0.4s ease
+
+.subnav-item-container
+	position relative
 
 .subnav-item
 	color #404040
@@ -117,15 +132,26 @@ body
 	padding: 0.41666em 1em
 	text-decoration none
 	text-transform uppercase
-	transition color ease 0.5s
+	&:after
+		content ' '
+		absolute top bottom
+		left 0
+		width 0%
+		background YELLOW
+		transition width ease 0.5s
+		z-index -1
 
 // TODO add more classes via javascript and clean up these selectors
-.nav-item-active + .subnav .subnav-item
-	color #f0f0f0
+.nav-item-active + .subnav
+	background #191919
+	transform rotateY(0)
+	.subnav-item
+		color #f0f0f0
 
 .subnav-item-active
-	background YELLOW
 	color #131313 !important
+	&:after
+		width 100%
 
 // subnav }}}
 // {{{ cards
