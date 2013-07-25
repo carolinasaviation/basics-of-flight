@@ -1,6 +1,7 @@
 define([
 	'../lib/helpers',
-], function(helper) {
+	'../i18n/en',
+], function(helper, i18n) {
 
 	window.state || (window.state = {});
 	window.state.WEIGHT_INTERACTIVE = {
