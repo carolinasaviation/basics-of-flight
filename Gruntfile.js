@@ -288,8 +288,8 @@ module.exports = function (grunt) {
 		},
 		concurrent: {
 			server: [
-				'stylus',
-				'jade'
+				'stylus:compile',
+				'jade:comile'
 			],
 			test: [
 				'stylus'
@@ -319,7 +319,9 @@ module.exports = function (grunt) {
 
 		grunt.task.run([
 			'clean:server',
-			'concurrent:server',
+			//'concurrent:server',
+			'stylus:compile',
+			'jade:compile',
 			'connect:livereload',
 			'open',
 			'watch'
