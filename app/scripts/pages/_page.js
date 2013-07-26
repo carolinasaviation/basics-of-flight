@@ -118,18 +118,23 @@ define([
 		},
 
 		subnavListener: function(e) {
+			if (!this.isLoaded) return;
 			if (e.target.matches('.subnav')) return;
 			e.preventDefault();
 			e.stopPropagation();
+
+			var node = e.target;
+			var section;
+
+			var active = document.querySelector('.subnav .' + NAV_ACTIVE_CLASS);
+			if (active && active.contains(node)) return;
+
 			this.deselectActiveSection();
 
 			if (!this.activatedSection)
 				this.deactivate();
 
 			this.activatedSection = true;
-
-			var node = e.target;
-			var section;
 
 			while (!node.matches('.subnav-item'))
 				node = node.parentNode;

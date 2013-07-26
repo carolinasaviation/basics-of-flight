@@ -58,6 +58,8 @@ define([
 			var active = document.querySelector('.nav .' + NAV_ACTIVE_CLASS);
 			var node = e.target;
 
+			if (active && active.contains(node)) return
+
 			// since all subnavs are visible before events are necessarily bound,
 			// we bail out if the handler should be handled by the subnavListener
 			while (!node.matches('.nav-item'))
