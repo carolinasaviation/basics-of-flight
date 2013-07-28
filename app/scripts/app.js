@@ -57,8 +57,7 @@ define([
 		_onNavigationAction: function(e) {
 			var active = document.querySelector('.nav .' + NAV_ACTIVE_CLASS);
 			var node = e.target;
-
-			if (active && active.contains(node)) return
+			var page;
 
 			// since all subnavs are visible before events are necessarily bound,
 			// we bail out if the handler should be handled by the subnavListener
@@ -69,13 +68,23 @@ define([
 
 			if (active) {
 				page = _.findWhere(this.pages, { name: active.textContent });
+
+				if (page.activatedSection &&
+						page.name.toLowerCase() === node.innerText.toLowerCase()) {
+					page.deselectActiveSection();
+					page.load();
+					return;
+				}
+
+				if (active.contains(node)) return;
+
 				page.unload();
 				active.classList.remove(NAV_ACTIVE_CLASS);
 			}
 
 
 			node.classList.add(NAV_ACTIVE_CLASS);
-			var page = _.findWhere(this.pages, { name: node.textContent });
+			page = _.findWhere(this.pages, { name: node.textContent });
 			page.load();
 		}
 	}

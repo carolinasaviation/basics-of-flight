@@ -130,9 +130,7 @@ define([
 			if (active && active.contains(node)) return;
 
 			this.deselectActiveSection();
-
-			if (!this.activatedSection)
-				this.deactivate();
+			this.deactivate();
 
 			this.activatedSection = true;
 
