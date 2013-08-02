@@ -184,7 +184,7 @@ h1
 	absolute left right
 	bottom 0
 	padding 0.75em
-	z-index 10
+	height 250px
 	h1
 		margin-top 0
 
@@ -286,7 +286,6 @@ h1
 		left 76%
 		transform rotate(-115deg)
 
-
 @keyframes forcesArrow
 	from
 		transform translateY(0em)
@@ -326,60 +325,62 @@ h1
 	to
 		stroke #f0402a
 
-@keyframes slideUpAndFadeOut
+@keyframes slideOut
 	from
+		//transform rotateX(0deg) translateZ(0px)
+		//transform translate3d( 0px, 0px, 0px ) rotateX( 0deg )
 		transform translateY(0)
-		opacity 1
 	to
-		transform translateY(-16em)
-		opacity 0
+		transform translateY(100%)
+		//transform rotateX(90deg) translateZ(100px)
+		//transform translate3d( 0px, 0px, -250px ) rotateX( 90deg )
 
-@keyframes slideDownAndFadeIn
+@keyframes slideIn
 	from
-		transform translateY(-16em)
-		opacity 0
-	to
-		transform translateY(0)
-		opacity 1
-
-.slideUpAndFadeOut
-	animation-duration: 1s
-	animation-name: slideUpAndFadeOut
-	animation-iteration-count: 1
-	animation-fill-mode: forwards
-
-.slideDownAndFadeIn
-	animation-duration: 1s
-	animation-name: slideDownAndFadeIn
-	animation-direction: alternate
-	animation-fill-mode: forwards
-
-@keyframes slideDownAndFadeOut
-	from
-		transform translateY(0)
-		opacity 1
-	to
-		transform translateY(16em)
-		opacity 0
-
-@keyframes slideUpAndFadeIn
-	from
-		transform translateY(16em)
-		opacity 0
+		transform translateY(100%)
+		//transform translateZ(100px) rotateX(-90deg)
+		//transform translate3d( 0px, 0px, 250px ) rotateX( 90deg );
 	to
 		transform translateY(0)
-		opacity 1
+		//transform translateZ(0px) rotateX(0deg)
+		//transform translate3d( 0px, 0px, 0px ) rotateX( 0deg );
 
+/*
 .slideDownAndFadeOut
 	animation-duration: 1s
 	animation-name: slideDownAndFadeOut
 	animation-iteration-count: 1
 	animation-fill-mode: forwards
+	z-index 0
 
 .slideUpAndFadeIn
 	animation-duration: 1s
 	animation-name: slideUpAndFadeIn
 	animation-direction: alternate
 	animation-fill-mode: forwards
+	z-index 5
+*/
+
+.card
+	animation-duration: 1s
+	animation-direction: alternate
+	animation-fill-mode: forwards
+
+.card-in
+	animation-name slideIn
+	z-index 5
+
+.card-out
+	animation-name slideOut
+	z-index 0
 
 // animations }}}
+
+.card-stage
+	absolute left right
+	bottom 0
+	transform-style preserve-3d
+	perspective 1000
+	z-index 10
+
+

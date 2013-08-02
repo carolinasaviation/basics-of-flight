@@ -5,6 +5,8 @@ define([
 	'use strict';
 
 	var NAV_ACTIVE_CLASS = 'subnav-item-active';
+	var CARD_TRANSITION_IN = 'card-in';
+	var CARD_TRANSITION_OUT = 'card-out';
 
 	function Page() {
 		this.isInit = false;
@@ -14,6 +16,11 @@ define([
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
 		this.subnavListener = this.subnavListener.bind(this);
 		this.activatedSection = false;
+
+		this.element =
+		this.cardStage =
+		this.card =
+		undefined;
 	}
 
 	Page.prototype = {
@@ -30,7 +37,11 @@ define([
 
 			this.card = helper.createDomNode(viewCard(i18n[this.name.toLowerCase()]));
 			this.card.classList.add('card-main')
-			this.element.appendChild(this.card);
+
+			this.cardStage = document.createElement('div');
+			this.cardStage.classList.add('card-stage');
+			this.cardStage.classList.add(CARD_TRANSITION_OUT);
+			this.cardStage.appendChild(this.card);
 
 			function giveThis(s) { s.page(this); }
 			this.sections.forEach(giveThis.bind(this));
@@ -60,8 +71,9 @@ define([
 		load: function load() {
 			if (this.isInit === false) this.init();
 			this.beforeLoad();
-			this.card.classList.remove('slideDownAndFadeOut');
-			this.card.classList.add('slideUpAndFadeIn');
+			this.card.classList.remove(CARD_TRANSITION_OUT);
+			this.card.classList.add(CARD_TRANSITION_IN);
+			this.element.appendChild(this.cardStage);
 
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'load');
 
@@ -80,6 +92,9 @@ define([
 
 		unload: function unload() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'unload');
+			this.sections.forEach(function(s) {
+				s.deactivate();
+			});
 			this.isLoaded = false;
 
 			this.onunload();
@@ -101,8 +116,8 @@ define([
 
 		deactivate: function deactivate() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'deactivate');
-			this.card.classList.remove('slideUpAndFadeIn');
-			this.card.classList.add('slideDownAndFadeOut');
+			this.card.classList.remove(CARD_TRANSITION_IN);
+			this.card.classList.add(CARD_TRANSITION_OUT);
 			this.isActive = false;
 		},
 

@@ -33,6 +33,7 @@ define([
 	};
 
 	Weight.prototype.activate = function() {
+		if (this.isActive) return;
 		Section.prototype.activate.call(this);
 
 		var cessna = this._page.element.querySelector('.cessna');
@@ -48,7 +49,9 @@ define([
 	};
 
 	Weight.prototype.deactivate = function() {
+		if (!this.isActive) return;
 		Section.prototype.deactivate.call(this);
+
 		var cessna = this._page.element.querySelector('.cessna');
 		var arrows = cessna.querySelector(ARROWS_SELECTOR);
 		cessna.removeChild(arrows);

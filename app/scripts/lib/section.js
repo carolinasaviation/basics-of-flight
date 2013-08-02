@@ -7,6 +7,9 @@ define([
 
 	window.i18n = i18n;
 
+	var CARD_TRANSITION_IN = 'card-in';
+	var CARD_TRANSITION_OUT = 'card-out';
+
 	function Section() {
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
 		this.canvas = document.createElement('canvas');
@@ -15,7 +18,9 @@ define([
 		var tmp = document.createElement('div');
 		tmp.innerHTML = card(i18n[this.name.toLowerCase()]);
 		this.card = tmp.firstChild;
+		this.card.classList.add(CARD_TRANSITION_OUT);
 		this.handleTap = this.handleTap.bind(this);
+		this.isActive = false;
 		this.init();
 	}
 
@@ -27,11 +32,16 @@ define([
 		init: function init(){},
 
 		page: function page(page) {
-			if (page) this._page = page;
+			if (page) {
+				this._page = page;
+				page.cardStage.appendChild(this.card);
+			}
 			return this._page;
 		},
 
 		activate: function activate() {
+			if (this.isActive) return false;
+
 			if (config.logger.sectionLifeCycle)
 			 	config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
 
@@ -39,27 +49,26 @@ define([
 
 			Hammer(this._page.element).on('tap', this.handleTap);
 
-			this._page.element.appendChild(this.card, this._page.element.firstChild);
+			//this._page.element.appendChild(this.card, this._page.element.firstChild);
 
-			this.card.classList.remove('slideDownAndFadeOut');
-			this.card.classList.add('slideUpAndFadeIn');
+			this.card.classList.remove(CARD_TRANSITION_OUT);
+			this.card.classList.add(CARD_TRANSITION_IN);
+			this.isActive = true;
 		},
 
 		deactivate: function deactivate() {
+			if (!this.isActive) return false;
+
 			if (config.logger.sectionLifeCycle)
 			 	config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
 
 			if (!(this._page && this._page.element)) return;
 
-			this.card.classList.remove('slideUpAndFadeIn');
-			this.card.classList.add('slideDownAndFadeOut');
-			var self = this;
-			setTimeout(function() {
-				if (self._page.element.contains(self.card))
-					self._page.element.removeChild(self.card);
-			}, 300);
+			this.card.classList.remove(CARD_TRANSITION_IN);
+			this.card.classList.add(CARD_TRANSITION_OUT);
 
 			Hammer(this._page.element).off('tap', this.handleTap);
+			this.isActive = false;
 		},
 
 		startInteraction: function startInteraction() {
@@ -69,7 +78,7 @@ define([
 				config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
 		},
 
-		stopInteraction: function stopIntetraction() {
+		stopInteraction: function stopInteraction() {
 			if (this._page.element.contains(this.canvas))
 				this._page.element.removeChild(this.canvas);
 
