@@ -5,8 +5,6 @@ define([
 	'use strict';
 
 	var NAV_ACTIVE_CLASS = 'subnav-item-active';
-	var CARD_TRANSITION_IN = 'card-in';
-	var CARD_TRANSITION_OUT = 'card-out';
 
 	function Page() {
 		this.isInit = false;
@@ -17,8 +15,10 @@ define([
 		this.subnavListener = this.subnavListener.bind(this);
 		this.activatedSection = false;
 
+		this.cardRotation = 0;
 		this.element =
 		this.cardStage =
+		this.cardRotator =
 		this.card =
 		undefined;
 	}
@@ -38,10 +38,12 @@ define([
 			this.card = helper.createDomNode(viewCard(i18n[this.name.toLowerCase()]));
 			this.card.classList.add('card-main')
 
+			this.cardRotator = document.createElement('div');
+			this.cardRotator.classList.add('card-rotator');
+
 			this.cardStage = document.createElement('div');
 			this.cardStage.classList.add('card-stage');
-			this.cardStage.classList.add(CARD_TRANSITION_OUT);
-			this.cardStage.appendChild(this.card);
+			this.cardStage.appendChild(this.cardRotator);
 
 			function giveThis(s) { s.page(this); }
 			this.sections.forEach(giveThis.bind(this));
@@ -71,8 +73,7 @@ define([
 		load: function load() {
 			if (this.isInit === false) this.init();
 			this.beforeLoad();
-			this.card.classList.remove(CARD_TRANSITION_OUT);
-			this.card.classList.add(CARD_TRANSITION_IN);
+
 			this.element.appendChild(this.cardStage);
 
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'load');
@@ -111,13 +112,14 @@ define([
 		activate: function activate() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'activate');
 			paper || (paper = window.paper);
+			this.rotateIn(this.card, 'south');
 			this.isActive = true;
 		},
 
 		deactivate: function deactivate() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'deactivate');
-			this.card.classList.remove(CARD_TRANSITION_IN);
-			this.card.classList.add(CARD_TRANSITION_OUT);
+			//this.card.classList.remove(CARD_TRANSITION_IN);
+			//this.card.classList.add(CARD_TRANSITION_OUT);
 			this.isActive = false;
 		},
 
@@ -158,7 +160,50 @@ define([
 				section.activate();
 
 			return false;
+		},
+
+		_rotate: function() {
+
+		},
+
+		rotateIn: function(el, dir) {
+			var pos = 1;
+			if (dir === 'south') {
+				pos = -1;
+			}
+
+			var elRotation = pos * 90 + this.cardRotation;
+
+			if (Math.abs(elRotation % 180) === 90 && Math.abs(this.cardRotation % 360) !== 0) {
+				elRotation = this.cardRotation - 90;
+			}
+
+			el.style.webkitTransform = 'rotateX(' + elRotation + 'deg) translate3d(0, 0, 125px)';
+
+			var prevChild = this.cardRotator.firstElementChild;
+
+			if (!prevChild) {
+				this.cardRotator.appendChild(el);
+				this.cardRotation -= pos * 90;
+				this.cardRotator.style.webkitTransform = 'rotateX(' + this.cardRotation + 'deg)';
+				return;
+			}
+
+			this.cardRotator.appendChild(el);
+			this.cardRotation += pos * 90;
+			this.cardRotator.style.webkitTransform = 'rotateX(' + this.cardRotation + 'deg)';
+			this.cardStage.addEventListener('webkitTransitionEnd', function end(e) {
+				//console.log('webkitTransitionEnd', prevChild);
+				if (prevChild && prevChild.parentNode && prevChild.parentNode.children.length > 1
+						&& prevChild !== el)
+					prevChild.parentNode.removeChild(prevChild);
+			}, false);
+		},
+
+		rotateOut: function() {
+			//debugger;
 		}
+
 	}
 
 	return Page;

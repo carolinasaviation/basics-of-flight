@@ -7,9 +7,6 @@ define([
 
 	window.i18n = i18n;
 
-	var CARD_TRANSITION_IN = 'card-in';
-	var CARD_TRANSITION_OUT = 'card-out';
-
 	function Section() {
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
 		this.canvas = document.createElement('canvas');
@@ -18,7 +15,6 @@ define([
 		var tmp = document.createElement('div');
 		tmp.innerHTML = card(i18n[this.name.toLowerCase()]);
 		this.card = tmp.firstChild;
-		this.card.classList.add(CARD_TRANSITION_OUT);
 		this.handleTap = this.handleTap.bind(this);
 		this.isActive = false;
 		this.init();
@@ -34,7 +30,7 @@ define([
 		page: function page(page) {
 			if (page) {
 				this._page = page;
-				page.cardStage.appendChild(this.card);
+				//page.cardRotator.appendChild(this.card);
 			}
 			return this._page;
 		},
@@ -49,10 +45,7 @@ define([
 
 			Hammer(this._page.element).on('tap', this.handleTap);
 
-			//this._page.element.appendChild(this.card, this._page.element.firstChild);
-
-			this.card.classList.remove(CARD_TRANSITION_OUT);
-			this.card.classList.add(CARD_TRANSITION_IN);
+			this._page.rotateIn(this.card, 'north');
 			this.isActive = true;
 		},
 
@@ -64,8 +57,7 @@ define([
 
 			if (!(this._page && this._page.element)) return;
 
-			this.card.classList.remove(CARD_TRANSITION_IN);
-			this.card.classList.add(CARD_TRANSITION_OUT);
+			this._page.rotateOut(this.card, 'south');
 
 			Hammer(this._page.element).off('tap', this.handleTap);
 			this.isActive = false;

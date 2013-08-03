@@ -325,50 +325,31 @@ h1
 	to
 		stroke #f0402a
 
-@keyframes slideOut
-	from
-		//transform translateY(0) translateZ(-200px)
-		transform-origin top center
-		transform translateZ(0px) rotateX(0deg)
-		//transform translate3d( 0px, 0px, 0px ) rotateX( 0deg )
-	to
-		//transform translateY(100%) translateZ(-200px)
-		transform translateZ(-100px) rotateX(90deg)
-		//transform translate3d( 0px, 0px, -250px ) rotateX( 90deg )
+// animations }}}
 
-@keyframes slideIn
-	from
-		//transform translateY(100%)
-		transform-origin bottom center
-		transform translateZ(-100px) rotateX(-90deg)
-		//transform translate3d( 0px, 0px, 250px ) rotateX( 90deg );
-	to
-		//transform translateY(0)
-		transform translateZ(0px) rotateX(0deg)
-		//transform translate3d( 0px, 0px, 0px ) rotateX( 0deg );
+.card-stage
+	absolute left right
+	bottom 0
+	perspective 1000
+	perspective-origin 50% 50%
+	z-index 10
+	height 250px
 
-/*
-.slideDownAndFadeOut
-	animation-duration: 1s
-	animation-name: slideDownAndFadeOut
-	animation-iteration-count: 1
-	animation-fill-mode: forwards
-	z-index 0
-
-.slideUpAndFadeIn
-	animation-duration: 1s
-	animation-name: slideUpAndFadeIn
-	animation-direction: alternate
-	animation-fill-mode: forwards
-	z-index 5
-*/
+.card-rotator
+	position relative
+	height 100%
+	width 100%
+	transform-origin 50% 50%
+	transform rotateX(0deg)
+	transition all 0.5s ease
+	transform-style preserve-3d
 
 .card
-	animation-duration: 1s
-	animation-direction: alternate
-	animation-fill-mode: forwards
-	transform-style: preserve-3d
+	transform rotateX(0deg) translate3d(0, 0, 125px);
+	transition border-top 0.25s ease
+	overflow hidden
 
+/*
 .card-in
 	animation-name slideIn
 	z-index 5
@@ -377,14 +358,7 @@ h1
 	animation-name slideOut
 	//visibility hidden
 	z-index 0
+*/
 
-// animations }}}
-
-.card-stage
-	absolute left right
-	bottom 0
-	transform-style preserve-3d
-	perspective 1000
-	z-index 10
 
 
