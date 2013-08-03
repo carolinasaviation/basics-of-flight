@@ -31,11 +31,11 @@ module.exports = function (grunt) {
 			},
 			stylus: {
 				files: ['<%= yeoman.app %>/styles/{,*/}*.styl'],
-				tasks: ['stylus']
+				tasks: ['stylus:compile']
 			},
 			jade: {
 				files: ['<%= yeoman.app %>/{,*/}*.jade'],
-				tasks: ['jade']
+				tasks: ['jade:compile']
 			},
 			livereload: {
 				options: {
