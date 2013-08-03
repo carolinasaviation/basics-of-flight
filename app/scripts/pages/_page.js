@@ -169,36 +169,29 @@ define([
 		rotateIn: function(el, dir) {
 			var pos = (dir === 'south') ? -1 : 1;
 
-			var elRotation = pos * 90 + this.cardRotation;
-
-			if (Math.abs(elRotation % 180) === 90 && Math.abs(this.cardRotation % 360) !== 0) {
-				elRotation = this.cardRotation - 90;
-			}
-
-			el.style.webkitTransform = 'rotateX(' + elRotation + 'deg) translate3d(0, 0, 125px)';
+			// this.cardRotation = 0 / 90 / 180 / 270 / 360 / 450 / ..
 
 			var prevChild = this.cardRotator.firstElementChild;
 
 			if (!prevChild) {
+				el.style.webkitTransform = 'rotateX(0deg) translate3d(0, 0, 125px)';
 				this.cardRotator.appendChild(el);
-				this.cardRotation -= pos * 90;
-				this.cardRotator.style.webkitTransform = 'rotateX(' + this.cardRotation + 'deg)';
+				this.cardRotator.style.webkitTransform = 'rotateX(-90deg)';
+				var r = this.cardRotator;
+				setTimeout(function() { r.style.webkitTransform = 'rotateX(0deg)'; }, 0);
 				return;
 			}
 
-			this.cardRotator.appendChild(el);
+			this.cardRotation = this.cardRotation + pos * 90;
+			el.style.webkitTransform = 'rotateX(' + (-this.cardRotation) + 'deg) translate3d(0, 0, 125px)';
 
-			this.cardRotation += pos * 90;
-			if (this.cardRotation > 360) this.cardRotation %= 360;
+			this.cardRotator.appendChild(el);
 
 			this.cardRotator.style.webkitTransform = 'rotateX(' + this.cardRotation + 'deg)';
 			this.cardStage.addEventListener('webkitTransitionEnd', function end(e) {
-				//console.log('webkitTransitionEnd', prevChild);
-				console.assert(prevChild !== el, 'grabbed the wrong child');
-				if (prevChild === el) return;
-				if (prevChild && prevChild.parentNode && prevChild.parentNode.children.length > 1
-						&& prevChild !== el)
+				if (prevChild && prevChild.parentNode)
 					prevChild.parentNode.removeChild(prevChild);
+				this.removeEventListener('webkitTransitionEnd', end);
 			}, false);
 		},
 

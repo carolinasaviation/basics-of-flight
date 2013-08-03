@@ -57,7 +57,7 @@ define([
 
 			if (!(this._page && this._page.element)) return;
 
-			this._page.rotateOut(this.card, 'south');
+			//this._page.rotateOut(this.card, 'south');
 
 			Hammer(this._page.element).off('tap', this.handleTap);
 			this.isActive = false;
