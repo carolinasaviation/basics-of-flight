@@ -60,7 +60,7 @@ define([
 	};
 
 	Weight.prototype.handleTap = function(e) {
-		var matches = helper.toArray(this.card.querySelectorAll('[data-action]'))
+		var matches = helper.toArray(this._page.cardStage.querySelectorAll('[data-action]'))
 			.filter(function(el) {
 				return el.contains(e.target);
 			}), action;
@@ -76,12 +76,9 @@ define([
 		Section.prototype.startInteraction.call(this);
 		WeightInteraction.setup(this.canvas);
 
-		this.page().element.appendChild(WeightInteraction.quiz);
-		this.card.classList.remove('slideUpAndFadeIn');
-		this.card.classList.add('slideDownAndFadeOut');
+		this._page.element.appendChild(WeightInteraction.quiz);
 
-		WeightInteraction.quiz.classList.remove('slideDownAndFadeOut');
-		WeightInteraction.quiz.classList.add('slideUpAndFadeIn');
+		this._page.rotateIn(WeightInteraction.quiz, 'south');
 
 		helper.createPaperScript(this, this.canvas, WeightInteraction.paperScript)
 		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
@@ -90,11 +87,8 @@ define([
 	Weight.prototype.stopInteraction = function() {
 		Section.prototype.stopInteraction.call(this);
 		helper.cleanupPaperScript(this)
-		WeightInteraction.quiz.classList.remove('slideUpAndFadeIn');
-		WeightInteraction.quiz.classList.add('slideDownAndFadeOut');
-
-		this.card.classList.remove('slideDownAndFadeOut');
-		this.card.classList.add('slideUpAndFadeIn');
+		if (this.isActive)
+			this._page.rotateIn(this.card, 'north');
 	};
 
 	return new Weight();
