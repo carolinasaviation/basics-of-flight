@@ -167,10 +167,7 @@ define([
 		},
 
 		rotateIn: function(el, dir) {
-			var pos = 1;
-			if (dir === 'south') {
-				pos = -1;
-			}
+			var pos = (dir === 'south') ? -1 : 1;
 
 			var elRotation = pos * 90 + this.cardRotation;
 
@@ -190,10 +187,15 @@ define([
 			}
 
 			this.cardRotator.appendChild(el);
+
 			this.cardRotation += pos * 90;
+			if (this.cardRotation > 360) this.cardRotation %= 360;
+
 			this.cardRotator.style.webkitTransform = 'rotateX(' + this.cardRotation + 'deg)';
 			this.cardStage.addEventListener('webkitTransitionEnd', function end(e) {
 				//console.log('webkitTransitionEnd', prevChild);
+				console.assert(prevChild !== el, 'grabbed the wrong child');
+				if (prevChild === el) return;
 				if (prevChild && prevChild.parentNode && prevChild.parentNode.children.length > 1
 						&& prevChild !== el)
 					prevChild.parentNode.removeChild(prevChild);
