@@ -2,6 +2,7 @@
 @import url('../bower_components/normalize-css/normalize.css')
 @import url('../bower_components/league-gothic/webfonts/stylesheet.css')
 YELLOW = #feec09
+RED = #f0402a
 
 /* general {{{ */
 *
@@ -173,7 +174,7 @@ h1
 
 .page
 	height 100%
-	padding 3em 1.5em 1.5em 9.5em
+	padding 0 0 250px
 	position relative
 
 .card
@@ -209,6 +210,32 @@ h1
 .column-golden-small
 	width 38%
 
+.card-stage
+	absolute left right
+	bottom 0
+	// this has to be a hack
+	perspective 300000
+	perspective-origin 50% 50%
+	z-index 10
+	height 250px
+
+.card-rotator
+	position relative
+	height 100%
+	width 100%
+	transform-origin 50% 50%
+	transform rotateX(0deg)
+	transition all 0.5s ease
+	transform-style preserve-3d
+
+.card
+	transform rotateX(0deg) translate3d(0, 0, 125px);
+	transition border-top 0.25s ease
+	overflow hidden
+
+
+
+
 // cards }}}
 // {{{ sections
 
@@ -223,7 +250,8 @@ h1
 // sections }}}
 // {{{ Forces::weight
 
-#btn-cessna-elevation
+#btn-cessna-elevation,
+#btn-cessna-elevation-close
 	polyline,
 	path,
 	line
@@ -233,9 +261,13 @@ h1
 		animation-name flashActionableSvg
 		animation-iteration-count infinite
 
+#btn-cessna-elevation-close
+	transform scaleX(-1)
+
 #weightInteraction
 	height 100%
 	width 100%
+
 
 .cessna
 	img
@@ -319,36 +351,30 @@ h1
 
 @keyframes flashActionableSvg
 	from
-		stroke #f0402a
+		stroke RED
 	50%
-		stroke darken(#f0402a, 40%)
+		stroke darken(RED, 40%)
 	to
-		stroke #f0402a
+		stroke RED
 
 // animations }}}
 
-.card-stage
-	absolute left right
-	bottom 0
-	// this has to be a hack
-	perspective 300000
-	perspective-origin 50% 50%
-	z-index 10
-	height 250px
+input[type="range"]
+	//-webkit-appearance none
+	-moz-appearance none
+	appearance none
+	height 24px
+	background RED
+	border-radius 0 12px 0 0
+	absolute left 0 bottom 250px
+	right 300px
+	z-index 5
 
-.card-rotator
-	position relative
-	height 100%
-	width 100%
-	transform-origin 50% 50%
-	transform rotateX(0deg)
-	transition all 0.5s ease
-	transform-style preserve-3d
-
-.card
-	transform rotateX(0deg) translate3d(0, 0, 125px);
-	transition border-top 0.25s ease
-	overflow hidden
-
-
+input[type="range"]::-webkit-slider-thumb
+	appearance none
+	width 24px
+	height 24px
+	border-radius 100%
+	border 4px solid darken(RED, 40%)
+	background darken(RED, 60%)
 

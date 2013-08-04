@@ -4,13 +4,25 @@ define([
 ], function(helper, i18n) {
 
 	window.state || (window.state = {});
+	var range = document.createElement('input');
+
 	window.state.WEIGHT_INTERACTIVE = {
 		SPEED: 100,
 		xDiff: 0,
 		yDiff: 0,
 		CESSNA_SIN_MULTIPLIER: 4,
-		CESSNA_SIN_ADDITIVE: 0.04
+		CESSNA_SIN_ADDITIVE: 0.04,
+		range: range
 	}
+
+	range.setAttribute('type', 'range');
+	range.setAttribute('min', 0);
+	range.setAttribute('max', 100);
+	range.setAttribute('step', 1);
+
+	range.addEventListener('change', function(e) {
+		console.log(this.value);
+	}, false);
 
 	var quiz = [
 		'<div class="card">',
@@ -170,6 +182,8 @@ define([
 	function paperScript() {
 		var w = view.element.width;
 
+		view.element.parentNode.insertBefore(window.state.WEIGHT_INTERACTIVE.range, view.element);
+
 		var lines = [], line;
 		var top = new Point(0, 0);
 		var bottom = new Point(0, view.element.height);
@@ -192,18 +206,6 @@ define([
 
 		cessna.position.x = 400;
 		cessna.position.y = 400;
-
-		var point = new Point(0, 548);
-		var size = new Size(320, 40);
-		var weightBar = new Shape.Rectangle(point, size);
-		weightBar.fillColor = '#f0402a';
-
-		var wbBg = new Shape.Rectangle(point, new Size(520, 40));
-		wbBg.fillColor = '#fff';
-
-		var weightBarGroup = new Group();
-		weightBarGroup.addChild(wbBg);
-		weightBarGroup.addChild(weightBar);
 
 		var angle = -Math.PI;
 		var frame = 0;
@@ -242,7 +244,7 @@ define([
 		textGroup.addChild(currentWeight);
 
 		textGroup.position.x = w - 200;
-		textGroup.position.y = 500;
+		textGroup.position.y = 450;
 
 		function onFrame(event) {
 			if (!lines) return;

@@ -4,13 +4,19 @@ define([
 	'../config',
 	'../i18n/en',
 ], function(helper, card, config, i18n) {
+	'use strict';
 
 	window.i18n = i18n;
 
 	function Section() {
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
+		this.interactive = document.createElement('div');
+		this.interactive.classList.add('interactive');
+
 		this.canvas = document.createElement('canvas');
 		this.canvas.style.position = 'absolute';
+
+		this.interactive.appendChild(this.canvas);
 
 		var tmp = document.createElement('div');
 		tmp.innerHTML = card(i18n[this.name.toLowerCase()]);
@@ -39,7 +45,7 @@ define([
 			if (this.isActive) return false;
 
 			if (config.logger.sectionLifeCycle)
-			 	config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
+			 	config.logger.sectionLifeCycleFn.call(this, activate);
 
 			if (!(this._page && this._page.element)) return;
 
@@ -53,29 +59,27 @@ define([
 			if (!this.isActive) return false;
 
 			if (config.logger.sectionLifeCycle)
-			 	config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
+			 	config.logger.sectionLifeCycleFn.call(this, deactivate);
 
 			if (!(this._page && this._page.element)) return;
-
-			//this._page.rotateOut(this.card, 'south');
 
 			Hammer(this._page.element).off('tap', this.handleTap);
 			this.isActive = false;
 		},
 
 		startInteraction: function startInteraction() {
-			this._page.element.insertBefore(this.canvas, this._page.element.firstChild);
+			this._page.element.insertBefore(this.interactive, this._page.element.firstChild);
 
 			if (config.logger.sectionLifeCycle)
-				config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
+				config.logger.sectionLifeCycleFn.call(this, startInteraction);
 		},
 
 		stopInteraction: function stopInteraction() {
-			if (this._page.element.contains(this.canvas))
-				this._page.element.removeChild(this.canvas);
+			if (this._page.element.contains(this.interactive))
+				this._page.element.removeChild(this.interactive);
 
 			if (config.logger.sectionLifeCycle)
-				config.logger.sectionLifeCycleFn.call(this, arguments.callee.name)
+				config.logger.sectionLifeCycleFn.call(this, stopInteraction);
 		},
 
 		handleTap: function(e) {

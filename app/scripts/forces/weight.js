@@ -76,8 +76,6 @@ define([
 		Section.prototype.startInteraction.call(this);
 		WeightInteraction.setup(this.canvas);
 
-		this._page.element.appendChild(WeightInteraction.quiz);
-
 		this._page.rotateIn(WeightInteraction.quiz, 'south');
 
 		helper.createPaperScript(this, this.canvas, WeightInteraction.paperScript)
