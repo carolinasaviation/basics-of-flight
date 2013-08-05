@@ -366,7 +366,7 @@ input[type="range"]
 	height 24px
 	background RED
 	border-radius 0 12px 0 0
-	absolute left 0 bottom 250px
+	absolute left bottom
 	right 300px
 	z-index 5
 
@@ -377,4 +377,23 @@ input[type="range"]::-webkit-slider-thumb
 	border-radius 100%
 	border 4px solid darken(RED, 40%)
 	background darken(RED, 60%)
+
+.interactive
+	absolute left right
+	top 0
+	bottom 250px
+
+.things
+	absolute bottom right
+	z-index 5
+
+table
+	tr:first-child th
+		border-top 0
+	th
+		color #aaa
+		text-align left
+		padding 0.333em
+		border-top 1px solid RED
+		text-transform uppercase
 

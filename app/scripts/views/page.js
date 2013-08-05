@@ -1,12 +1,12 @@
-define(['lodash'], function(_) {
+define(['./template'], function(template) {
 	'use strict';
 
-	var index = [
-		'<div class="page">',
+	var index = function() {/***
+		<div class="page">
+		</div>
+	***/
+	};
 
-		'</div>'
-	].join('');
-
-	return _.template(index);
+	return template(index);
 });
 

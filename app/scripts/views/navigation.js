@@ -1,26 +1,7 @@
-define(['lodash'], function(_) {
+define(['./template'], function(template) {
 	'use strict';
 
-	// Use mustache-style templating in underscore (escaping by default)
-	// evaluate: {[ for (var key in obj) { ]}
-	// interpolate: {! firstName !}
-	// escape: {{ firstName }}
-
-	_.templateSettings = {
-		evaluate : /\{\[([\s\S]+?)\]\}/g,
-		interpolate : /\{\!(.+?)\!\}/g,
-		escape: /\{\{(.+?)\}\}/g
-	};
-
-	var FN_REPLACER = /^function\W*{\/\s*\*{3}([^]*)\*{3}\//;
-	var TMPL_MINIFIER = /[>|}](\s+)[<|{]/gm;
-	function toString(fn) {
-		return fn.toString().match(FN_REPLACER)[1].replace(TMPL_MINIFIER, function(m, p1, i) {
-			return m.replace(p1, '');
-		}).trim();
-	}
-
-	var tmpl = toString(function() {/***
+	var tmpl = function() {/***
 		<nav class="nav">
 			<ul>
 				{[ _.forEach(pages, function(page) { ]}
@@ -38,7 +19,8 @@ define(['lodash'], function(_) {
 				{[ }); ]}
 			</ul>
 		</nav>
-	***/});
+	***/
+	};
 
-	return _.template(tmpl);
+	return template(tmpl);
 });

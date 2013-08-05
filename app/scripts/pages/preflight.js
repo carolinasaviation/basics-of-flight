@@ -5,7 +5,7 @@ define([
 	'../lib/animations',
 	'../lib/helpers',
 	'paper'
-], function(Page, outside, inside, draw, helper, paper) {
+], function(Page, outside, inside /*, draw, helper, paper */) {
 	'use strict';
 
 	function Preflight() {

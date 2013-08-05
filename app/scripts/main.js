@@ -19,8 +19,9 @@ require([
 	'lodash',
 	'paper',
 	'hammer',
+	'Bind',
 	'polyfills'
-], function (app, $, _, paper, hammer) {
+], function (app, $, _, paper, Bind, hammer) {
 	'use strict';
 	window.config = config;
 
@@ -30,6 +31,7 @@ require([
 	console.log('Running LoDash %s', _.VERSION);
 	console.log('Running Paper.js %s', paper.version);
 	console.log('Running Hammerjs %s', (hammer || Hammer).VERSION);
+	console.log('Running Bind %s', '0.0.1');
 	console.groupEnd();
 
 	window.state = window.state || {}
