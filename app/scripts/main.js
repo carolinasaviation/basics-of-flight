@@ -4,6 +4,7 @@ require.config({
         lodash: '../bower_components/lodash/lodash',
         paper: '../bower_components/paper/dist/paper-full',
         hammer: '../bower_components/hammerjs/dist/hammer',
+        Bind: '../bower_components/bind/bind',
     },
     shim: {
         bootstrap: {

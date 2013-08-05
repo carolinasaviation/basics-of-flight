@@ -1,5 +1,6 @@
 define(['./template'], function(template) {
 	'use strict';
+
 	var card = function() {/***
 		<div class="card">
 			<div class="card-primary">

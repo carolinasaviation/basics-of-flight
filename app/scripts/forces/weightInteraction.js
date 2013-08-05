@@ -1,10 +1,47 @@
 define([
 	'../lib/helpers',
 	'../i18n/en',
-], function(helper, i18n) {
+	'Bind',
+	'../views/display',
+	'../views/quiz',
+], function(helper, i18n, Bind, display, quiz) {
 
 	window.state || (window.state = {});
 	var range = document.createElement('input');
+
+	display = display.register({
+		prefix: 'weight-interaction',
+		options: [
+			{
+				title: 'Altitude',
+				value: 7500,
+				format: function() {
+					return this.value + ' ft'
+				}
+			},
+			{
+				title: 'Speed',
+				value: 3200,
+				format: function() {
+					return this.value + ' m/hr'
+				}
+			},
+			{
+				title: 'Gravity',
+				value: 700,
+				format: function() {
+					return this.value + ' Newtons'
+				}
+			},
+			{
+				title: 'Weight',
+				value: 990,
+				format: function() {
+					return this.value + ' lbs';
+				}
+			}
+		]
+	});
 
 	window.state.WEIGHT_INTERACTIVE = {
 		SPEED: 100,
@@ -12,45 +49,31 @@ define([
 		yDiff: 0,
 		CESSNA_SIN_MULTIPLIER: 4,
 		CESSNA_SIN_ADDITIVE: 0.04,
-		range: range
-	}
+		range: range,
+		isFirstTime: true,
+		displayEl: display.el,
+		data: display.data
+	};
 
 	range.setAttribute('type', 'range');
 	range.setAttribute('min', 0);
 	range.setAttribute('max', 100);
 	range.setAttribute('step', 1);
 
+	var oldValue = range.value;
 	range.addEventListener('change', function(e) {
-		console.log(this.value);
+		var s = window.state.WEIGHT_INTERACTIVE.data;
+		var d = 1
+		if (oldValue < this.value) d = -1;
+		d = d * 10;
+
+		s.altitude = parseInt(s.altitude, 10) + d;
+		s.speed = parseInt(s.altitude, 10) + d;
+		s.gravity = parseInt(s.gravity, 10) + d;
 	}, false);
 
-	var quiz = [
-		'<div class="card">',
-			'<div class="card-primary">',
-				'<div>',
-					'<div class="col col-equation" style="width: 20%">',
-						'<h3>', i18n.quiz.correctAnswers, '</h3>',
-						'<span data-bind="correctAnswers"></span>',
-					'</div>',
-					'<div class="col question" style="width:80%">',
-						'<p>What must the pilot do to bring the aircraft back to a balanced flight speed?</p>',
-						'<ol>',
-							'<li>Increase thrust</li>',
-							'<li>Slow down</li>',
-							'<li>Point the aircraft downwards</li>',
-						'</ol>',
-					'</div>',
-				'</div>',
-			'</div>',
-			'<div class="card-secondary">',
-				'<button class="btn btn-interaction" data-action="stopInteraction"></button>',
-			'</div>',
-		'</div>'
-	].join('');
-
-
 	return {
-		quiz: helper.createDomNode(quiz),
+		quiz: helper.createDomNode(quiz(i18n.quiz)),
 		setup: function(canvas) {
 			canvas.id = 'weightInteraction';
 			canvas.setAttribute('data-paper-resize', 'true');
@@ -182,7 +205,12 @@ define([
 	function paperScript() {
 		var w = view.element.width;
 
-		view.element.parentNode.insertBefore(window.state.WEIGHT_INTERACTIVE.range, view.element);
+		var s = window.state.WEIGHT_INTERACTIVE;
+		if (s.isFirstTime) {
+			s.isFirstTime = false;
+			view.element.parentNode.insertBefore(s.range, view.element);
+			view.element.parentNode.insertBefore(s.displayEl, view.element);
+		}
 
 		var lines = [], line;
 		var top = new Point(0, 0);
@@ -210,42 +238,6 @@ define([
 		var angle = -Math.PI;
 		var frame = 0;
 
-		var textGroup = new Group();
-		var text = [];
-		[
-			i18n.altitude,
-			i18n.speed,
-			i18n.gravity
-		].map(function(s) { return s.toUpperCase(); })
-		.forEach(function(title, i) {
-			var t = new PointText(new Point(0, 32 * i));
-			text.push(new Point(100, 32 * i));
-			t.content = title;
-			t.fillColor = '#fff';
-			t.fontSize = 14;
-			textGroup.addChild(t);
-		});
-
-		var currentAltitude = new PointText(text[0]);
-		var currentSpeed = new PointText(text[1]);
-		var currentGravity = new PointText(text[2]);
-
-		[currentAltitude, currentSpeed, currentGravity].forEach(function(t, i) {
-			t.fillColor = '#fff';
-			t.fontWeight = 'bold';
-			t.fontSize = 16;
-			textGroup.addChild(t);
-		});
-
-		var currentWeight = new PointText(new Point(100, text[2] + 32));
-		currentWeight.fillColor = '#feec09';
-		currentWeight.fontSize = 18;
-		currentWeight.fontWeight = 'bold';
-		textGroup.addChild(currentWeight);
-
-		textGroup.position.x = w - 200;
-		textGroup.position.y = 450;
-
 		function onFrame(event) {
 			if (!lines) return;
 			if (config.fps) config.fps(event.delta);
@@ -260,10 +252,6 @@ define([
 			if (frame > 100) frame = 0;
 			frame += state.WEIGHT_INTERACTIVE.CESSNA_SIN_ADDITIVE;
 
-			currentAltitude.content = '7,500 ft';
-			currentSpeed.content = '200m/hr';
-			currentGravity.content = '3920 Newtons';
-			currentWeight.content = '990Lbs';
 		};
 
 		function resize() {

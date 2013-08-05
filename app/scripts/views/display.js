@@ -1,0 +1,52 @@
+define([
+	'Bind',
+	'lodash',
+	'./template',
+], function(Bind, _, template) {
+
+	var a = document.createElement('div');
+	var tmpl = template(function() {/***
+		<table class="display">
+			{[ _.forEach(obj.options, function(opt) { ]}
+			<tr>
+				<th scope="row">{{ opt.title }}</th>
+				<td id="{{ obj.prefix }}-{{ opt.title }}">{{ opt.value }}</td>
+			</tr>
+			{[ }); ]}
+	 </table>
+	***/
+	});
+
+	function sync(prefix, value) {
+		console.log('syncing %s-%s: %s', prefix, this.title, value);
+		this.value = value;
+		var t = document.getElementById(prefix + '-' + this.title);
+		if (t)
+			t.textContent = this.format();
+	}
+
+	function register(data) {
+		var t = tmpl(data);
+		a.innerHTML = t;
+
+		var d = {};
+		var k = {};
+		data.options.forEach(function(opt) {
+			var t = opt.title.toLowerCase();
+			d[t] = opt.value;
+			k[t] = sync.bind(opt, data.prefix);
+		});
+		
+		var data = Bind(d, k);
+		window.abcd = data;
+
+		return {
+			el: a.firstChild,
+			data: data
+		};
+	}
+
+	return {
+		register: register
+	};
+});

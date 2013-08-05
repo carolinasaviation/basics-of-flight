@@ -45,7 +45,7 @@ define([
 			if (this.isActive) return false;
 
 			if (config.logger.sectionLifeCycle)
-			 	config.logger.sectionLifeCycleFn.call(this, activate);
+			 	config.logger.sectionLifeCycleFn.call(this, 'activate');
 
 			if (!(this._page && this._page.element)) return;
 
@@ -59,7 +59,7 @@ define([
 			if (!this.isActive) return false;
 
 			if (config.logger.sectionLifeCycle)
-			 	config.logger.sectionLifeCycleFn.call(this, deactivate);
+			 	config.logger.sectionLifeCycleFn.call(this, 'deactivate');
 
 			if (!(this._page && this._page.element)) return;
 
@@ -71,7 +71,7 @@ define([
 			this._page.element.insertBefore(this.interactive, this._page.element.firstChild);
 
 			if (config.logger.sectionLifeCycle)
-				config.logger.sectionLifeCycleFn.call(this, startInteraction);
+				config.logger.sectionLifeCycleFn.call(this, 'startInteraction');
 		},
 
 		stopInteraction: function stopInteraction() {
@@ -79,7 +79,7 @@ define([
 				this._page.element.removeChild(this.interactive);
 
 			if (config.logger.sectionLifeCycle)
-				config.logger.sectionLifeCycleFn.call(this, stopInteraction);
+				config.logger.sectionLifeCycleFn.call(this, 'stopInteraction');
 		},
 
 		handleTap: function(e) {
