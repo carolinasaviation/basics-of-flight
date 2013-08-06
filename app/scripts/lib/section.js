@@ -89,7 +89,7 @@ define([
 				});
 
 			if (!matches[0]) return false;
-			action = matches[0].getAttribute('data-action');
+			var action = matches[0].getAttribute('data-action');
 
 			if (this[action])
 				this[action]();

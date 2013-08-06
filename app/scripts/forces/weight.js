@@ -2,9 +2,8 @@ define([
 	'../lib/section',
 	'../lib/animations',
 	'../lib/helpers',
-	'paper',
 	'./weightInteraction'
-], function(Section, draw, helper, paper, WeightInteraction) {
+], function(Section, draw, helper, WeightInteraction) {
 	'use strict';
 
 	var ARROWS_SELECTOR = '.weight-arrows';
