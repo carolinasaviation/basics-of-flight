@@ -3,46 +3,70 @@ define([
 	'../i18n/en',
 	'../views/display',
 	'../views/quiz',
-], function(helper, i18n, display, quiz) {
+	'../lib/convert',
+], function(helper, i18n, display, quiz, convert) {
 
 	window.state || (window.state = {});
 	var range = document.createElement('input');
+
+	function limit(val, min, max) {
+		return Math.max(Math.min(val, max), min);
+	}
+
+	function scale(percentage, min, max) {
+		if (percentage > 1) percentage /= 100;
+		return limit((+percentage) * (max - min) + min, min, max);
+	}
 
 	display = display.register({
 		prefix: 'weight-interaction',
 		options: [
 			{
 				title: 'Altitude',
-				value: 7500,
-				format: function() {
-					return this.value + ' ft'
-				}
+				value: undefined,
+				calculate: function(p) { 
+					return scale(p, 5000, 10000);
+				},
+				format: function() { return ' ft' }
 			},
 			{
 				title: 'Speed',
-				value: 3200,
-				format: function() {
-					return this.value + ' m/hr'
-				}
+				value: undefined,
+				calculate: function(p) { return 3200; },
+				format: function() { return ' m/hr' }
 			},
+			/*
 			{
 				title: 'Gravity',
-				value: 700,
-				format: function() {
-					return this.value + ' Newtons'
-				}
+				value: undefined,
+				calculate: function(p) { return 700; },
+				format: function() { return ' Newtons' }
 			},
+		 */
 			{
 				title: 'Weight',
-				value: 990,
-				format: function() {
-					return this.value + ' lbs';
+				value: undefined,
+				calculate: function(p) {
+					return scale(p, 600, 1500);
+				},
+				format: function() { return ' lbs'; }
+			},
+			{
+				title: 'range',
+				value: undefined,
+				renderable: false,
+				sync: function(prefix, value) {
+					if (!s) return;
+					s.data.altitude =
+					s.data.speed =
+					s.data.gravity =
+					s.data.weight = value;
 				}
 			}
 		]
 	});
 
-	window.state.WEIGHT_INTERACTIVE = {
+	var s = window.state.WEIGHT_INTERACTIVE = {
 		SPEED: 100,
 		xDiff: 0,
 		yDiff: 0,
@@ -61,14 +85,7 @@ define([
 
 	var oldValue = range.value;
 	range.addEventListener('change', function(e) {
-		var s = window.state.WEIGHT_INTERACTIVE.data;
-		var d = 1
-		if (oldValue < this.value) d = -1;
-		d = d * 10;
-
-		s.altitude = parseInt(s.altitude, 10) + d;
-		s.speed = parseInt(s.altitude, 10) + d;
-		s.gravity = parseInt(s.gravity, 10) + d;
+		s.data.range = this.value;
 	}, false);
 
 	return {
@@ -116,13 +133,18 @@ define([
 			lines.push(line);
 		}
 
-		var cessna = project.importSVG(document.getElementById('cessna-elevation'));
+		var activeLayer = this.project.activeLayer;
+		//var cessnaLayer = new Layer();
+		//var cessna = project.importSVG(document.getElementById('cessna-elevation'));
 
-		cessna.position.x = 400;
-		cessna.position.y = 400;
+		//cessna.position.x = 400;
+		//cessna.position.y = 400;
 
 		var angle = -Math.PI;
 		var frame = 0;
+		this.project.activeLayer = activeLayer;
+
+		window.myPaperScript = this;
 
 		function onFrame(event) {
 			if (!lines) return;
@@ -134,9 +156,9 @@ define([
 				if (l.position.x > w) l.position.x = -10;
 			});
 
-			cessna.position.y = Math.floor(state.WEIGHT_INTERACTIVE.CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
-			if (frame > 100) frame = 0;
-			frame += state.WEIGHT_INTERACTIVE.CESSNA_SIN_ADDITIVE;
+			//cessna.position.y = Math.floor(state.WEIGHT_INTERACTIVE.CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
+			//if (frame > 100) frame = 0;
+			//frame += state.WEIGHT_INTERACTIVE.CESSNA_SIN_ADDITIVE;
 
 		};
 

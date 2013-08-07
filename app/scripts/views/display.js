@@ -8,6 +8,7 @@ define([
 	var tmpl = template(function() {/***
 		<table class="display">
 			{[ _.forEach(obj.options, function(opt) { ]}
+			{[ if (opt.renderable === false) return ''; ]}
 			<tr>
 				<th scope="row">{{ opt.title }}</th>
 				<td id="{{ obj.prefix }}-{{ opt.title }}">{{ opt.value }}</td>
@@ -22,7 +23,7 @@ define([
 		this.value = value;
 		var t = document.getElementById(prefix + '-' + this.title);
 		if (t)
-			t.textContent = this.format();
+			t.textContent = this.calculate(value) + this.format();
 	}
 
 	function register(data) {
@@ -34,9 +35,9 @@ define([
 		data.options.forEach(function(opt) {
 			var t = opt.title.toLowerCase();
 			d[t] = opt.value;
-			k[t] = sync.bind(opt, data.prefix);
+			k[t] = (opt.sync || sync).bind(opt, data.prefix);
 		});
-		
+
 		var data = Bind(d, k);
 		window.abcd = data;
 
