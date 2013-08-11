@@ -8,6 +8,7 @@ define([
 	'../lib/helpers',
 	'paper'
 ], function(Page, engine, flaps, ailerons, rudder, draw, helper, paper) {
+	'use strict';
 
 	window.state || (window.state = {});
 	window.state.CONTROLS = {
@@ -16,7 +17,7 @@ define([
 		CESSNA_SIN_ADDITIVE: 0.04,
 	};
 
-	var image = '<img src="images/cessna-isometric.svg" style="position:relative;z-index:1;-webkit-transform: translate(0,0)">';
+	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"><img src="images/cessna-isometric.svg"></div>';
 
 	function Controls() {
 		Page.call(this);
