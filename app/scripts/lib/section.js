@@ -86,10 +86,8 @@ define([
 			var matches = helper.toArray(this.card.querySelectorAll('[data-action]'))
 				.filter(function(el) {
 					return el.contains(e.target);
-				});
-
-			if (!matches[0]) return false;
-			var action = matches[0].getAttribute('data-action');
+				}),
+				action= (matches[0] || e.target).getAttribute('data-action');
 
 			if (this[action])
 				this[action]();

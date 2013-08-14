@@ -58,19 +58,6 @@ define([
 		this.stopInteraction();
 	};
 
-	Weight.prototype.handleTap = function(e) {
-		var matches = helper.toArray(this._page.cardStage.querySelectorAll('[data-action]'))
-			.filter(function(el) {
-				return el.contains(e.target);
-			}), action;
-
-		if (!matches[0]) return false;
-		action = matches[0].getAttribute('data-action');
-
-		if (this[action])
-			this[action]();
-	}
-
 	Weight.prototype.startInteraction = function() {
 		Section.prototype.startInteraction.call(this);
 		WeightInteraction.setup(this.canvas);
