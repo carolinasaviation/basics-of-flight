@@ -35,19 +35,19 @@ define([
 			if (n === spriteSheet.length) n = 0;
 			el.replaceChild(spriteSheet[n], spriteSheet[cur]);
 			cur = n;
-			setTimeout(next, 300);
+			setTimeout(next, 100);
 		}
 
 		next();
-
 	};
 
 	Ailerons.prototype.deactivate = function() {
 		if (!this.isActive) return;
 		Section.prototype.deactivate.call(this);
 
-		this._page.element.querySelector('.cessna').style.display = 'block';
-		this._page.element.removeChild(spriteSheet[cur]);
+		var cessna = this._page.element.querySelector('.cessna');
+		var arrows = cessna.querySelector(ARROWS_SELECTOR);
+		cessna.removeChild(arrows);
 
 		this.stopInteraction();
 	};

@@ -3,15 +3,15 @@ define(['./template'], function(template) {
 
 	var card = function() {/***
 		<div class="card">
-			<h1>{{ title }}</h1>
+			<h1>{! title !}</h1>
 			<div class="card-primary">
 				<div>
-					<div class="col col-equation" style="width: 20%">{{ equation }}</div>
-					<div class="col" style="width: 80%">{{ equationDescription }}</div>
+					<div class="col col-equation" style="width: 20%">{! equation !}</div>
+					<div class="col" style="width: 80%">{! equationDescription !}</div>
 				</div>
 				<div>
 					<div class="col col-equation" style="width: 20%">', '<img src="images/{{ historicalFigure }}" /></div>
-					<div class="col" style="width: 80%">{{ historicalDescription }}</div>
+					<div class="col" style="width: 80%">{! historicalDescription !}</div>
 				</div>
 			</div>
 			<div class="card-secondary">
