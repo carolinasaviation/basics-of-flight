@@ -9,14 +9,16 @@ define(['./template'], function(template) {
 						<h3>{{ obj.correctAnswers }}</h3>
 						<span data-bind="correctAnswers"></span>
 					</div>
-					<div class="col question" style="width:80%">
-						<p>What must the pilot do to bring the aircraft back to a balanced flight speed?</p>
-						<ol>
-							<li>Increase thrust</li>
-							<li>Slow down</li>
-							<li>Point the aircraft downwards</li>
-						</ol>
-					</div>
+					{[ obj.questions.forEach(function(q, i) { ]}
+						<div class="col question" style="width:80%;display: {{ i === 0 ? 'block' : 'none' }}">
+							<p>{{ q.question }}</p>
+							<ol>
+							{[ q.answers.forEach(function(a) { ]}
+								<li>{{ a }}</li>
+							{[ }); ]}
+							</ol>
+						</div>
+					{[ }); ]}
 				</div>
 			</div>
 			<div class="card-secondary">

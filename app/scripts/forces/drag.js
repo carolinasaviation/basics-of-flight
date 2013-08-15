@@ -25,10 +25,12 @@ define([
 		svg.id = 'btn-cessna-drag';
 		btn.appendChild(svg);
 
+		/*
 		btn = DragInteraction.quiz.querySelector('.btn-interaction');
 		svg = svg.cloneNode(true);
 		svg.id = 'btn-cessna-drag-close';
 		btn.appendChild(svg);
+	 */
 	};
 
 	Drag.prototype.activate = function() {

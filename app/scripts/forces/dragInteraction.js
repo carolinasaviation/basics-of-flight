@@ -20,7 +20,7 @@ define([
 	};
 
 	return {
-		quiz: helper.createDomNode(quiz(i18n.quiz)),
+		quiz: helper.createDomNode('<div></div>'),
 		setup: function(canvas) {
 			canvas.id = 'dragInteraction';
 			canvas.setAttribute('data-paper-resize', 'true');

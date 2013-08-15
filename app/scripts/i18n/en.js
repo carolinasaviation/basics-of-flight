@@ -30,7 +30,25 @@ define({
 		equation: 'W = mg',
 		equationDescription: 'The weight of an object is equal to the mass of an object multiplied by the force of gravity.',
 		historicalFigure: 'throwaway-newton.jpg',
-		historicalDescription: 'Thrust is a reaction force described quantitatively by Newton&rsquo;s second and third laws. When a system expels or accelerates mass in one direction, the accelerated mass will cause a force of equal magnitude but opposite direction on that system.'
+		historicalDescription: 'Thrust is a reaction force described quantitatively by Newton&rsquo;s second and third laws. When a system expels or accelerates mass in one direction, the accelerated mass will cause a force of equal magnitude but opposite direction on that system.',
+		quiz: [
+			{
+				question: 'What physical force causes the effect of weight?',
+				answers: [
+					'Gravity',
+					'Pressure',
+					'Electricity',
+				]
+			},
+			{
+				question: 'What must the pilot do to bring the aircraft back to a balanced flight speed?',
+				answers: [
+					'Increase Thrust',
+					'Slow down',
+					'Point the aircraft downwards'
+				]
+			}
+		]
 	},
 
 	// === CONTROLS

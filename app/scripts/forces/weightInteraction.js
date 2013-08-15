@@ -2,9 +2,9 @@ define([
 	'../lib/helpers',
 	'../i18n/en',
 	'../views/display',
-	'../views/quiz',
+	'../lib/quiz',
 	'../lib/convert',
-], function(helper, i18n, display, quiz, convert) {
+], function(helper, i18n, display, Quiz, convert) {
 
 	window.state || (window.state = {});
 	var range = document.createElement('input');
@@ -24,7 +24,7 @@ define([
 			{
 				title: 'Altitude',
 				value: undefined,
-				calculate: function(p) { 
+				calculate: function(p) {
 					return scale(p, 5000, 10000);
 				},
 				format: function() { return ' ft' }
@@ -88,8 +88,12 @@ define([
 		s.data.range = this.value;
 	}, false);
 
+	var quiz = new Quiz();
+	i18n.weight.quiz.forEach(quiz.addQuestion.bind(quiz));
+	debugger;
+
 	return {
-		quiz: helper.createDomNode(quiz(i18n.quiz)),
+		quiz: quiz.render(),
 		setup: function(canvas) {
 			canvas.id = 'weightInteraction';
 			canvas.setAttribute('data-paper-resize', 'true');
@@ -159,7 +163,6 @@ define([
 			//cessna.position.y = Math.floor(state.WEIGHT_INTERACTIVE.CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
 			//if (frame > 100) frame = 0;
 			//frame += state.WEIGHT_INTERACTIVE.CESSNA_SIN_ADDITIVE;
-
 		};
 
 		function resize() {
