@@ -90,7 +90,6 @@ define([
 
 	var quiz = new Quiz();
 	i18n.weight.quiz.forEach(quiz.addQuestion.bind(quiz));
-	debugger;
 
 	return {
 		quiz: quiz.render(),
