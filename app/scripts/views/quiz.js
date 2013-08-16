@@ -15,7 +15,7 @@ define(['./template'], function(template) {
 					{[ obj.questions.forEach(function(q, i) { ]}
 						<div class="col col__quiz-question col__quiz-question--{{ q.isActive ? 'active' : 'inactive' }}">
 							<p>{{ q.question }}</p>
-							<ol>
+							<ol class="quiz__answer-list">
 							{[ q.answers.forEach(function(a) { ]}
 								<li>{{ a }}</li>
 							{[ }); ]}
