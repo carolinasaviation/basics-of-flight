@@ -6,6 +6,8 @@ define([
 
 	function Quiz() {
 		this.questions = [];
+		this['correct-count'] = 0;
+		this['correct-total'] = 0;
 	}
 
 	Quiz.prototype = {
@@ -19,11 +21,20 @@ define([
 		 * @param {Array} [obj.answers] array of answers
 		 */
 		addQuestion: function(obj) {
+			obj.isActive = this.questions.length === 0;
+			this['correct-total'] = this.questions.length;
 			this.questions.push(obj);
 		},
 
 		render: function() {
-			return helper.createDomNode(view({ correctAnswers: i18n.quiz.correctAnswers, questions: this.questions }));
+			var self = this;
+			var quizCard = helper.createDomNode(view({ correctAnswers: i18n.quiz.correctAnswers, questions: this.questions }));
+			['count', 'total'].forEach(function(type) {
+				quizCard.querySelector('.quiz__correct-' + type).textContent = self['correct-' + type];
+			});
+
+
+			return quizCard;
 		}
 
 	};

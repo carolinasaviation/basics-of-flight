@@ -5,12 +5,15 @@ define(['./template'], function(template) {
 		<div class="card">
 			<div class="card-primary">
 				<div>
-					<div class="col col-equation" style="width: 20%">
-						<h3>{{ obj.correctAnswers }}</h3>
-						<span data-bind="correctAnswers"></span>
+					<div class="col col__quiz-equation" style="width: 20%">
+						<h3 class="quiz__correct-title">{{ obj.correctAnswers }}</h3>
+						<div class="quiz__correct">
+							<span class="quiz__correct-count"></span>
+							<span class="quiz__correct-total"></span>
+						</div>
 					</div>
 					{[ obj.questions.forEach(function(q, i) { ]}
-						<div class="col question" style="width:80%;display: {{ i === 0 ? 'block' : 'none' }}">
+						<div class="col col__quiz-question col__quiz-question--{{ q.isActive ? 'active' : 'inactive' }}">
 							<p>{{ q.question }}</p>
 							<ol>
 							{[ q.answers.forEach(function(a) { ]}
