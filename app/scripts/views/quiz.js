@@ -16,8 +16,13 @@ define(['./template'], function(template) {
 						<div class="col col__quiz-question col__quiz-question--{{ q.isActive ? 'active' : 'inactive' }}">
 							<p>{{ q.question }}</p>
 							<ol class="quiz__answer-list">
-							{[ q.answers.forEach(function(a) { ]}
-								<li>{{ a }}</li>
+							{[ q.answers.forEach(function(a, ai) { ]}
+								<li>
+									<label for="quiz__input-{{ '' + i + ai }}-{{ a.replace(/\s+/g, '').toLowerCase() }}">
+										<input value={{ ai }} type="radio" id="quiz__input-{{ '' + i + ai }}-{{ a.replace(/\s+/g, '').toLowerCase() }}"
+											name="quiz__input-{{ i }}">
+										{{ a }}</label>
+								</li>
 							{[ }); ]}
 							</ol>
 						</div>

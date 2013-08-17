@@ -9,8 +9,9 @@
     "normalize-css": "~2.1.2",
     "paper": "0.9.9",
     "almond": "~0.2.5",
-    "hammerjs": "git://github.com/EightMedia/hammer.js.git#98c4e88e25faadd36351979cab130b6d369a70a7",
     "requirejs-i18n": "git://github.com/requirejs/i18n.git#98653367086e6f23b5fac8a14e3d9480b40645af",
-		"league-gothic": "git://github.com/theleagueof/league-gothic.git#a3cf3d60a72e4d755c1b86ad45d030605f2a9649"
+    "hammerjs": "git://github.com/EightMedia/hammer.js.git#c9b41c10c1e14353df44fd304b0af42e2c95fe35",
+    "league-gothic": "git://github.com/theleagueof/league-gothic.git",
+    "bind": "git://github.com/remy/bind.git"
   }
 }
