@@ -18,10 +18,9 @@ define(['./template'], function(template) {
 							<ol class="quiz__answer-list">
 							{[ q.answers.forEach(function(a, ai) { ]}
 								<li>
-									<label for="quiz__input-{{ '' + i + ai }}-{{ a.replace(/\s+/g, '').toLowerCase() }}">
-										<input value={{ ai }} type="radio" id="quiz__input-{{ '' + i + ai }}-{{ a.replace(/\s+/g, '').toLowerCase() }}"
-											name="quiz__input-{{ i }}">
-										{{ a }}</label>
+									<input value={{ ai }} type="radio" id="quiz__input-{{ '' + i + ai }}-{{ a.replace(/\s+/g, '').toLowerCase() }}"
+										name="quiz__input-{{ i }}">
+									<label for="quiz__input-{{ '' + i + ai }}-{{ a.replace(/\s+/g, '').toLowerCase() }}">{{ a }}</label>
 								</li>
 							{[ }); ]}
 							</ol>

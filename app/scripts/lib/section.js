@@ -87,10 +87,19 @@ define([
 				.filter(function(el) {
 					return el.contains(e.target);
 				}),
-				action= (matches[0] || e.target).getAttribute('data-action');
+				action = (matches[0] || e.target).getAttribute('data-action');
 
 			if (this[action])
 				this[action]();
+
+			// Either Hammer's tap event or dynamically adding these labels to the DOM is preventing
+			// default behavior so we have to manually handle the radio selected state
+			else if (e.target.nodeName.toLowerCase() === 'label') {
+				Array.prototype.slice.call(e.target.parentNode.parentNode.querySelectorAll('input[type="radio"]'), 0).forEach(function(el) {
+					el.removeAttribute('checked');
+				});
+				document.getElementById(e.target.getAttribute('for')).setAttribute('checked', 'checked');
+			}
 		}
 	};
 

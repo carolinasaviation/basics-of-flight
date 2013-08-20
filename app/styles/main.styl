@@ -3,6 +3,7 @@
 @import url('../bower_components/league-gothic/webfonts/stylesheet.css')
 YELLOW = #feec09
 RED = #f0402a
+BLACK = #191919
 
 /* general {{{ */
 *
@@ -290,9 +291,19 @@ h1
 		border-top 1px solid #777
 		&:first-child
 			border-top 0
+
 	label
 		display block
 		padding 0.666em
+		transition all 0.1666s ease-out
+
+	input[type="radio"]
+		display none
+
+	input[type="radio"]:checked + label
+		background YELLOW
+		color BLACK
+
 
 label[for]
 	cursor pointer
