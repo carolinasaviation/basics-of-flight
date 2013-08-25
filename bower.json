@@ -7,10 +7,10 @@
     "jquery": "~1.9.1",
     "lodash": "~1.3.1",
     "normalize-css": "~2.1.2",
-    "paper": "0.9.9",
+    "paper": "git://github.com/paperjs/paper.js#40f2547e5ffbd12b5c435d0d61b753f59d975fb2",
     "almond": "~0.2.5",
     "requirejs-i18n": "git://github.com/requirejs/i18n.git#98653367086e6f23b5fac8a14e3d9480b40645af",
-    "hammerjs": "git://github.com/EightMedia/hammer.js.git#c9b41c10c1e14353df44fd304b0af42e2c95fe35",
+    "hammerjs": "latest",
     "league-gothic": "git://github.com/theleagueof/league-gothic.git",
     "bind": "git://github.com/remy/bind.git"
   }
