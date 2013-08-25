@@ -6,15 +6,15 @@ define([
 ], function(Section, draw, helper, paper) {
 	'use strict';
 
-	function Engine() {
+	function Elevators() {
 		Section.call(this);
 	}
 
-	Engine.prototype = Object.create(Section.prototype);
+	Elevators.prototype = Object.create(Section.prototype);
 
-	Engine.prototype.constructor = Engine;
+	Elevators.prototype.constructor = Elevators;
 
-	return new Engine();
+	return new Elevators();
 });
 
 

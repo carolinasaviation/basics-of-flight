@@ -1,13 +1,13 @@
 define([
 	'./_page',
-	'../controls/engine',
+	'../controls/elevators',
 	'../controls/flaps',
 	'../controls/ailerons',
 	'../controls/rudder',
 	'../lib/animations',
 	'../lib/helpers',
 	'paper'
-], function(Page, engine, flaps, ailerons, rudder, draw, helper, paper) {
+], function(Page, elevators, flaps, ailerons, rudder, draw, helper, paper) {
 	'use strict';
 
 	window.state || (window.state = {});
@@ -23,7 +23,7 @@ define([
 		Page.call(this);
 
 		this.sections = [
-			engine, flaps, ailerons, rudder
+			elevators, flaps, ailerons, rudder
 		];
 	}
 

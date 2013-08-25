@@ -6,10 +6,13 @@ define([
 ], function(Section, draw, helper, paper) {
 	'use strict';
 
-	var spriteSheet = Array.apply(0, Array(16)).map(function(_, i) {
+	var spriteSheet = Array.apply(0, Array(31)).map(function(_, i) {
 		var img = new Image();
-		var src = (i < 10) ? ('0' + i) : ('' + i);
-		img.src = 'images/elevators/' + src + '.png';
+		i -= 15;
+		var prefix = i < 0 ? '+' : '';
+		var j = Math.abs(i);
+		var src = (j < 10) ? ('0' + j) : ('' + j);
+		img.src = 'images/ailerons/aileron-' + prefix + src + '.png';
 		return img;
 	});
 
@@ -35,7 +38,7 @@ define([
 		var iteration = 0;
 		function next() {
 			iteration++;
-			if (iteration % 7 === 0) {
+			if (iteration % 2 === 0) {
 				if (cur === spriteSheet.length - 1) dir = -1;
 				if (cur === 0) dir = 1;
 				n = cur + (1 * dir);

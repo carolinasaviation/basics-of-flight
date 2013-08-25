@@ -56,8 +56,8 @@ define({
 		title: 'Controls',
 		description: 'To fly an airplane you have to master manipulating the forces.'
 	},
-	engine: {
-		title: 'Types of Engines',
+	elevators: {
+		title: 'Elevators',
 		equation: '',
 		equationDescription: 'There are shaft engines, reaction engines, and now even the Wankel engine.',
 		historicalFigure: 'throwaway-engine.jpg',
