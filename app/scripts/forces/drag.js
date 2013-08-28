@@ -19,18 +19,6 @@ define([
 
 	Drag.prototype.init = function() {
 		Section.prototype.init.call(this);
-
-		var btn = this.card.querySelector('.btn-interaction');
-		var svg = document.getElementById('cessna-elevation').cloneNode(true)
-		svg.id = 'btn-cessna-drag';
-		btn.appendChild(svg);
-
-		/*
-		btn = DragInteraction.quiz.querySelector('.btn-interaction');
-		svg = svg.cloneNode(true);
-		svg.id = 'btn-cessna-drag-close';
-		btn.appendChild(svg);
-	 */
 	};
 
 	Drag.prototype.activate = function() {

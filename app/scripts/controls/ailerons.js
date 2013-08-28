@@ -13,7 +13,7 @@ define([
 		var j = Math.abs(i);
 		var src = (j < 10) ? ('0' + j) : ('' + j);
 		img.classList.add('aileron-animation');
-		img.src = 'images/ailerons/small/aileron-' + prefix + src + '.png';
+		img.src = 'images/ailerons/aileron-' + prefix + src + '.png';
 		return img;
 	});
 

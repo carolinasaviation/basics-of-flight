@@ -19,16 +19,6 @@ define([
 
 	Weight.prototype.init = function() {
 		Section.prototype.init.call(this);
-
-		var btn = this.card.querySelector('.btn-interaction');
-		var svg = document.getElementById('cessna-elevation').cloneNode(true)
-		svg.id = 'btn-cessna-elevation';
-		btn.appendChild(svg);
-
-		btn = WeightInteraction.quiz.querySelector('.btn-interaction');
-		svg = svg.cloneNode(true);
-		svg.id = 'btn-cessna-elevation-close';
-		btn.appendChild(svg);
 	};
 
 	Weight.prototype.activate = function() {
