@@ -1,8 +1,8 @@
 define([
 	'Bind',
 	'lodash',
-	'./template',
-], function(Bind, _, template) {
+	'./template'
+], function(bind, _, template) {
 
 	var a = document.createElement('div');
 	var tmpl = template(function() {/***
@@ -38,8 +38,7 @@ define([
 			k[t] = (opt.sync || sync).bind(opt, data.prefix);
 		});
 
-		var data = Bind(d, k);
-		window.abcd = data;
+		data = bind(d, k);
 
 		return {
 			el: a.firstChild,
