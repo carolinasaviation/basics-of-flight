@@ -31,6 +31,7 @@ define([
 
 		this._page.element.querySelector('.cessna').style.display = 'none';
 
+		var self = this;
 		var el = this._page.element;
 		var cur = spriteSheet.length - 1;
 		var dir = 1
@@ -38,6 +39,10 @@ define([
 		this._page.element.appendChild(spriteSheet[cur]);
 		var iteration = 0;
 		function next() {
+			if (!self.isActive) {
+				el.removeChild(spriteSheet[n]);
+				return;
+			}
 			iteration++;
 			if (iteration % 2 === 0) {
 				if (cur === spriteSheet.length - 1) dir = -1;
@@ -56,12 +61,7 @@ define([
 		if (!this.isActive) return;
 		Section.prototype.deactivate.call(this);
 
-		/*
-		var cessna = this._page.element.querySelector('.cessna');
-		var arrows = cessna.querySelector(ARROWS_SELECTOR);
-		cessna.removeChild(arrows);
-	  */
-
+		this._page.element.querySelector('.cessna').style.display = 'block';
 		this.stopInteraction();
 	};
 
