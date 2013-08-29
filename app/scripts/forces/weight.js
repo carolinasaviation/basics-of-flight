@@ -17,10 +17,6 @@ define([
 
 	Weight.prototype.constructor = Weight;
 
-	Weight.prototype.init = function() {
-		Section.prototype.init.call(this);
-	};
-
 	Weight.prototype.activate = function() {
 		if (this.isActive) return;
 		Section.prototype.activate.call(this);

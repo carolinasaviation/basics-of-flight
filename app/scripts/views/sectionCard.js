@@ -4,7 +4,8 @@ define(['./template'], function(template) {
 	var card = function() {/***
 		<div class="card">
 			<div class="card-content">
-				<h1>{! title !}</h1>
+				<h1>{! introduction.title !}</h1>
+				{! introduction.description !}
 			</div>
 			<div class="card-secondary">
 				<button class="btn btn-quiz" data-action="startQuiz">
