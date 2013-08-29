@@ -34,10 +34,7 @@ define([
 		init: function init(){},
 
 		page: function page(page) {
-			if (page) {
-				this._page = page;
-				//page.cardRotator.appendChild(this.card);
-			}
+			if (page) this._page = page;
 			return this._page;
 		},
 

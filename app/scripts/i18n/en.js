@@ -52,7 +52,11 @@ define({
 	weight: {
 		introduction: {
 			title: 'What is weight?',
-			description: '<p>The weight of an object is equal to the mass of an object multiplied by the force of gravity.</p>'
+			description: '\
+<p>The weight of an object is equal to the mass of an object multiplied by the force of gravity.</p>\
+<p>For real. It&rsquo;s true. Just ask wikipedia. Wikipedia is smart. Really smart. Like Alex Trebek smart.</p>\
+<p>But if this was a lengthy description with some meat to it, what would it look like? It may look like this.</p>\
+<p>This being that thing that is long enough to scroll a bit. How does it look? How does it feel?</p>'
 		},
 		science: {
 			equation: 'W = mg',
