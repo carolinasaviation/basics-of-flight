@@ -52,6 +52,7 @@ define([
 			Hammer(this._page.element).on('tap', this.handleTap);
 
 			this._page.rotateIn(this.card, 'north');
+			this.startInteraction();
 			this.isActive = true;
 		},
 
@@ -64,11 +65,21 @@ define([
 			if (!(this._page && this._page.element)) return;
 
 			Hammer(this._page.element).off('tap', this.handleTap);
+			this.stopInteraction();
 			this.isActive = false;
 		},
 
-		startInteraction: function startInteraction() {
+		startInteraction: function startInteraction(interaction) {
 			this._page.element.insertBefore(this.interactive, this._page.element.firstChild);
+
+			if (interaction) {
+				interaction.setup(this.canvas);
+				helper.createPaperScript(this, this.canvas, interaction.paperScript);
+
+				if (config.logger.paperjsScope)
+					config.logger.paperjsScopeFn.call(this, this.canvas.id);
+			}
+
 
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, 'startInteraction');
@@ -77,6 +88,8 @@ define([
 		stopInteraction: function stopInteraction() {
 			if (this._page.element.contains(this.interactive))
 				this._page.element.removeChild(this.interactive);
+
+			helper.cleanupPaperScript(this);
 
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, 'stopInteraction');
