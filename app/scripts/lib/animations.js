@@ -1,4 +1,5 @@
 define(function() {
+	window.requestAnimationFrame || (window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame);
 
 	var el = document.createElement('div'),
 			hasAnimation = false,
