@@ -25,7 +25,7 @@ define([
 			canvas.id = 'dragInteraction';
 			canvas.setAttribute('data-paper-resize', 'true');
 			canvas.classList.add('hardware-hack');
-			canvas.style.backgroundColor = '#191919';
+			canvas.style.backgroundColor = '#202020';
 			canvas.style.top =
 				canvas.style.left =
 				canvas.style.right =

@@ -3,6 +3,7 @@
 @import url('../bower_components/league-gothic/webfonts/stylesheet.css')
 YELLOW = #feec09
 RED = #f0402a
+ACTION_RED = #ed1c24
 BLACK = #202020
 
 /* general {{{ */
@@ -19,7 +20,7 @@ html
 	overflow hidden
 
 body
-	background #191919
+	background #202020
 	font-family "Helvetica Neue", Helvetica, Arial, sans-serif
 	color #333
 	//width 100%
@@ -260,7 +261,6 @@ h1
 .btn-film
 	height 100%
 
-
 .btn
 	background-color transparent
 	border-radius 0
@@ -270,13 +270,23 @@ h1
 .btn-history,
 .btn-science
 	width 100%
-	img
+	svg
 		max-width 95%
+		*
+			animation actionPulse 3s infinite
+			animation-timing-function cubic-bezier(0.250, 0.100, 0.250, 1.000)
+
+.btn-quiz svg *
+	animation-delay 0
+.btn-science svg *
+	animation-delay 1s
+.btn-history svg *
+	animation-delay 2s
 
 .btn-film
 	background-image url(../images/throwaway-play-film.jpg)
 	background-size cover
-	color RED
+	color ACTION_RED
 	font-size 2em
 	font-weight bold
 	text-transform uppercase
@@ -460,13 +470,13 @@ label[for]
 // Forces::weight }}}
 // {{{ animations
 
-@keyframes flashActionableSvg
-	from
-		stroke RED
+@keyframes actionPulse
+	20%
+		stroke #202020
 	50%
-		stroke darken(RED, 40%)
-	to
-		stroke RED
+		stroke ACTION_RED
+	80%
+		stroke #202020
 
 // animations }}}
 // {{{
