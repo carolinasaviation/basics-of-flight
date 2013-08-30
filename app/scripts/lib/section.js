@@ -31,6 +31,7 @@ define([
 		paperProject: undefined,
 		paperView: undefined,
 		_page: undefined,
+		_film: undefined,
 		init: function init(){},
 
 		page: function page(page) {
@@ -92,15 +93,44 @@ define([
 				config.logger.sectionLifeCycleFn.call(this, 'stopInteraction');
 		},
 
+		show: function show(section) {
+			var el;
+			if (section === 'film') {
+				el = document.createElement('div');
+				el.classList.add('modal');
+				el.innerHTML = '<iframe width="900" height="600" src="' + this._film + '" frameborder="0" allowfullscreen></iframe>'
+				this._page.element.appendChild(el);
+				el.classList.add('modal-active');
+			}
+
+			else {
+				el = this.card.querySelector('.card-content--active');
+				el.classList.remove('card-content--active');
+				el.classList.add('card-content--inactive');
+
+				el = this.card.querySelector('.card-content[data-role="' + section + '"]');
+				el.classList.remove('card-content--inactive');
+				el.classList.add('card-content--active');
+			}
+
+			if (config.logger.sectionLifeCycle)
+				config.logger.sectionLifeCycleFn.call(this, 'show#' + section);
+		},
+
 		handleTap: function(e) {
 			var matches = helper.toArray(this.card.querySelectorAll('[data-action]'))
 				.filter(function(el) {
 					return el.contains(e.target);
 				}),
-				action = (matches[0] || e.target).getAttribute('data-action');
+				action = (matches[0] || e.target).getAttribute('data-action'),
+				args;
 
-			if (this[action])
-				this[action]();
+			if (action) {
+				args = action.split('-');
+				action = args.shift();
+				if (this[action])
+					this[action].apply(this, args);
+			}
 
 			// Either Hammer's tap event or dynamically adding these labels to the DOM is preventing
 			// default behavior so we have to manually handle the radio selected state

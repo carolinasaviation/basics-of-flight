@@ -225,6 +225,9 @@ h1
 .column-golden-small
 	width 38%
 
+.card-content--inactive
+	display none
+
 .card-stage
 	absolute left right
 	bottom 0
@@ -265,6 +268,11 @@ h1
 	background-color transparent
 	border-radius 0
 	border 0
+
+.btn-go-back
+	absolute bottom 0 right 30%
+	color ACTION_RED
+	text-transform uppercase
 
 .btn-quiz,
 .btn-history,
@@ -527,4 +535,22 @@ table
 .aileron-animation
 	margin-left 17.5%
 	max-height 500px
+
+.modal
+	absolute bottom right
+	opacity 0
+	height 3em
+	width 3em
+	overflow hidden
+	transition all 1s ease
+	z-index 10
+.modal-active
+	opacity 1
+	bottom 50%
+	right 50%
+	width 900px
+	height 600px
+	margin-right -450px
+	margin-bottom -300px
+	box-shadow 0 0 200px 200px #202020
 

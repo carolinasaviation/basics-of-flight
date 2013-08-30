@@ -11,6 +11,7 @@ define([
 
 	function Weight() {
 		Section.call(this);
+		this._film = '//www.youtube.com/embed/beTsXzvtXDs';
 	}
 
 	Weight.prototype = Object.create(Section.prototype);
