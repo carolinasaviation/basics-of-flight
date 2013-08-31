@@ -93,17 +93,9 @@ define([
 				config.logger.sectionLifeCycleFn.call(this, 'stopInteraction');
 		},
 
-		show: function show(section) {
-			var el;
-			if (section === 'film') {
-				el = document.createElement('div');
-				el.classList.add('modal');
-				el.innerHTML = '<iframe width="900" height="600" src="' + this._film + '" frameborder="0" allowfullscreen></iframe>'
-				this._page.element.appendChild(el);
-				el.classList.add('modal-active');
-			}
-
-			else {
+		show: function show(section, targetButton) {
+			var el, fn;
+			if (section !== 'film') {
 				el = this.card.querySelector('.card-content--active');
 				el.classList.remove('card-content--active');
 				el.classList.add('card-content--inactive');
@@ -111,6 +103,31 @@ define([
 				el = this.card.querySelector('.card-content[data-role="' + section + '"]');
 				el.classList.remove('card-content--inactive');
 				el.classList.add('card-content--active');
+
+				if (targetButton) {
+					el = targetButton.parentNode.querySelector('.btn--is-active');
+					if (el) el.classList.remove('btn--is-active');
+					targetButton.classList.add('btn--is-active');
+				}
+			}
+
+			else {
+				// console.log('close modal');
+				fn = function(e) {
+					el.classList.remove('modal--active');
+					el.textContent = '';
+					el.parentNode.removeChild(el);
+					Hammer(document.documentElement).off('tap', fn);
+				}
+
+				el = document.createElement('div');
+				el.classList.add('modal');
+				el.innerHTML = '<iframe width="900" height="600" src="' + this._film + '" frameborder="0" allowfullscreen></iframe>'
+				this._page.element.appendChild(el);
+				el.classList.add('modal--active');
+				setTimeout(function() {
+					Hammer(document.documentElement).on('tap', fn);
+				}, 4);
 			}
 
 			if (config.logger.sectionLifeCycle)
@@ -129,7 +146,7 @@ define([
 				args = action.split('-');
 				action = args.shift();
 				if (this[action])
-					this[action].apply(this, args);
+					this[action].apply(this, args.concat(matches[0]));
 			}
 
 			// Either Hammer's tap event or dynamically adding these labels to the DOM is preventing

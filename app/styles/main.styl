@@ -283,6 +283,12 @@ h1
 		*
 			animation actionPulse 3s infinite
 			animation-timing-function cubic-bezier(0.250, 0.100, 0.250, 1.000)
+.btn--is-active
+	svg
+		max-width 95%
+		*
+			animation none
+			stroke YELLOW
 
 .btn-quiz svg *
 	animation-delay 0
@@ -544,7 +550,7 @@ table
 	overflow hidden
 	transition all 1s ease
 	z-index 10
-.modal-active
+.modal--active
 	opacity 1
 	bottom 50%
 	right 50%
