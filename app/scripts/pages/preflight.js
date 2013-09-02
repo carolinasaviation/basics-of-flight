@@ -1,5 +1,5 @@
 define([
-	'./_page',
+	'../lib/page',
 	'../preflight/outside',
 	'../preflight/inside',
 	'../lib/animations',
@@ -12,7 +12,8 @@ define([
 		Page.call(this);
 
 		this.sections = [
-			outside, inside
+			outside,
+			inside
 		];
 	}
 

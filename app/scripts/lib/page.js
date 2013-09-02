@@ -6,11 +6,11 @@ define([
 
 	var NAV_ACTIVE_CLASS = 'subnav-item-active';
 
-	function Page() {
+	function Page(sections) {
 		this.isInit = false;
 		this.isLoaded = false;
 		this.isActive = false;
-		this.sections = [];
+		this.sections = sections || [];
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
 		this.subnavListener = this.subnavListener.bind(this);
 		this.activatedSection = false;
@@ -56,6 +56,11 @@ define([
 			Hammer(subnav).on('tap', this.subnavListener);
 
 			this.isInit = true;
+
+			var self = this;
+			this.sections.forEach(function(section) {
+				section.page(self);
+			});
 
 			if (config.logger.pageLifeCycle)
 				config.logger.pageLifeCycleFn.call(this, 'init');
@@ -199,6 +204,16 @@ define([
 			//debugger;
 		}
 
+	}
+
+	Page.create = function create(name, sections) {
+		var ctor, obj = {};
+		ctor = obj[name] = new Page(sections);
+
+		ctor.prototype = Object.create(Page.prototype);
+		ctor.prototype.constructor = ctor;
+		ctor.name = name;
+		return ctor;
 	}
 
 	return Page;

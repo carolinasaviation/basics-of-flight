@@ -1,5 +1,5 @@
 define([
-	'./_page',
+	'../lib/page',
 	'../forces/weight',
 	'../forces/lift',
 	'../forces/drag',
@@ -22,11 +22,12 @@ define([
 	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"><img src="images/cessna-isometric.svg"></div>';
 
 	function Forces() {
-		Page.call(this);
-
-		this.sections = [
-			weight, lift, drag, thrust
-		];
+		Page.call(this, [
+			weight,
+			lift,
+			drag,
+			thrust
+		]);
 	}
 
 	Forces.prototype = Object.create(Page.prototype);
@@ -41,11 +42,6 @@ define([
 		canvas.style.position = 'absolute';
 		canvas.style.top = 0;
 		canvas.style.left = 0;
-
-		weight.page(this);
-		lift.page(this);
-		drag.page(this);
-		thrust.page(this);
 	};
 
 	Forces.prototype.onLoad = function() {

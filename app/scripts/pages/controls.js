@@ -1,5 +1,5 @@
 define([
-	'./_page',
+	'../lib/page',
 	'../controls/elevators',
 	'../controls/flaps',
 	'../controls/ailerons',
