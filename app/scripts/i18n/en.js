@@ -10,10 +10,12 @@ define({
 			description: '<p>For a wing, the total drag coefficient, Cd is equal to the base drag coefficient at zero lift Cdo plus the induced drag coefficient Cdi.</p>'
 		},
 		science: {
+			title: 'How is drag calculated?',
 			equation: 'Cd = Cd0 + Cl^2 / ( pi * Ar * e)',
 			description: 'For a wing, the total drag coefficient, Cd is equal to the base drag coefficient at zero lift Cdo plus the induced drag coefficient Cdi.',
 		},
 		history: {
+			title: 'Drag&rsquou;s Discovery',
 			figure: 'throwaway-wrights.jpg',
 			description: 'The Wright brothers, Orville (August 19, 1871 – January 30, 1948) and Wilbur (April 16, 1867 – May 30, 1912), were two American brothers, inventors, and aviation pioneers who were credited with inventing and building the world&rsquo;s first successful airplane and making the first controlled, powered and sustained heavier-than-air human flight, on December 17, 1903.'
 		},
@@ -25,10 +27,12 @@ define({
 			description: '<p>The lift of an object can be calculated using the Kutta–Joukowski theorem.</p>'
 		},
 		science: {
+			title: 'How is lift calculated?',
 			equation: 'L\' =  \rho v \Gamma\,',
 			description: 'The lift of an object can be calculated using the Kutta–Joukowski theorem.',
 		},
 		history: {
+			title: 'Who discovered the science of lift?',
 			figure: 'throwaway-kutta.jpg',
 			description: 'Kutta was born in Pitschen, Upper Silesia (today Byczyna, Poland). In 1901, he co-developed the Runge-Kutta method, used to solve ordinary differential equations numerically. He is also remembered for the Zhukovsky-Kutta aerofoil, the Kutta-Zhukovsky theorem and the Kutta condition in aerodynamics.'
 		},
@@ -40,10 +44,12 @@ define({
 			description: '<p>Thrust is a force which can be calculated by mass times acceleration.</p>',
 		},
 		science: {
+			title: 'How is thrust calculated?',
 			equation: 'F = m * a',
 			description: 'Thrust is a force which can be calculated by mass times acceleration.',
 		},
 		history: {
+			title: 'The history of thrust',
 			figure: 'throwaway-thrust.png',
 			description: 'Newton&rsquo;s third law of motion states something or another. The png wireframes are much too small to read. This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane. This is a description of the force of weight and its effects on an airplane.'
 		},
@@ -59,10 +65,12 @@ define({
 <p>This being that thing that is long enough to scroll a bit. How does it look? How does it feel?</p>'
 		},
 		science: {
+			title: 'How is weight calculated?',
 			equation: 'W = mg',
 			description: 'The weight of an object is equal to the mass of an object multiplied by the force of gravity.',
 		},
 		history: {
+			title: 'The history of Weight',
 			figure: 'throwaway-newton.jpg',
 			description: 'Thrust is a reaction force described quantitatively by Newton&rsquo;s second and third laws. When a system expels or accelerates mass in one direction, the accelerated mass will cause a force of equal magnitude but opposite direction on that system.',
 		},
