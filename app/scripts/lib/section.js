@@ -105,14 +105,20 @@ define([
 				el.classList.add('card-content--active');
 
 				if (targetButton) {
-					el = targetButton.parentNode.querySelector('.btn--is-active');
+					el = (targetButton.matches('.btn-go-back')) ?
+						this.card.querySelector('.btn--is-active') :
+						targetButton.parentNode.querySelector('.btn--is-active');
+
 					if (el) el.classList.remove('btn--is-active');
-					targetButton.classList.add('btn--is-active');
+
+					// go back to index selector doesn't get this class
+					if (!targetButton.matches('.btn-go-back'))
+						targetButton.classList.add('btn--is-active');
 				}
 			}
 
 			else {
-				// console.log('close modal');
+				// close modal
 				fn = function(e) {
 					el.classList.remove('modal--active');
 					el.textContent = '';

@@ -43,6 +43,8 @@ body
 
 .btn
 	display inline-block
+	&:focus
+		outline 0
 
 .hardware-hack
 	// http://blog.alexmaccaw.com/css-transitions
@@ -277,6 +279,7 @@ h1
 .btn-quiz,
 .btn-history,
 .btn-science
+	border-right 4px solid transparent
 	width 100%
 	svg
 		max-width 95%
@@ -284,6 +287,8 @@ h1
 			animation actionPulse 3s infinite
 			animation-timing-function cubic-bezier(0.250, 0.100, 0.250, 1.000)
 .btn--is-active
+	border-right-color YELLOW
+	//color YELLOW
 	svg
 		max-width 95%
 		*
@@ -550,6 +555,7 @@ table
 	overflow hidden
 	transition all 1s ease
 	z-index 10
+
 .modal--active
 	opacity 1
 	bottom 50%
