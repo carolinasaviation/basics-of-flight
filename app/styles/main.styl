@@ -549,12 +549,16 @@ table
 
 .modal
 	absolute bottom right
+	background BLACK
 	opacity 0
 	height 3em
 	width 3em
-	overflow hidden
 	transition all 1s ease
-	z-index 10
+	z-index 20
+
+	iframe
+		position relative
+		z-index 10
 
 .modal--active
 	opacity 1
@@ -564,5 +568,15 @@ table
 	height 600px
 	margin-right -450px
 	margin-bottom -300px
-	box-shadow 0 0 200px 200px #202020
+
+	.modal-backdrop
+		display block
+
+.modal-backdrop
+	fixed top bottom
+	left 0
+	right 0
+	display none
+	background rgba(0, 0, 0, 0.8)
+	content ' '
 

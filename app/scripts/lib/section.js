@@ -129,6 +129,8 @@ define([
 				el = document.createElement('div');
 				el.classList.add('modal');
 				el.innerHTML = '<iframe width="900" height="600" src="' + this._film + '" frameborder="0" allowfullscreen></iframe>'
+				el.appendChild(document.createElement('div'))
+				el.lastChild.classList.add('modal-backdrop');
 				this._page.element.appendChild(el);
 				el.classList.add('modal--active');
 				setTimeout(function() {
