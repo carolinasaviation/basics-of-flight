@@ -15,7 +15,7 @@ define({
 			description: 'For a wing, the total drag coefficient, Cd is equal to the base drag coefficient at zero lift Cdo plus the induced drag coefficient Cdi.',
 		},
 		history: {
-			title: 'Drag&rsquou;s Discovery',
+			title: 'Drag&rsquo;s Discovery',
 			figure: 'throwaway-wrights.jpg',
 			description: 'The Wright brothers, Orville (August 19, 1871 – January 30, 1948) and Wilbur (April 16, 1867 – May 30, 1912), were two American brothers, inventors, and aviation pioneers who were credited with inventing and building the world&rsquo;s first successful airplane and making the first controlled, powered and sustained heavier-than-air human flight, on December 17, 1903.'
 		},

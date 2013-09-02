@@ -6,9 +6,6 @@ define([
 ], function(Section, draw, helper, DragInteraction) {
 	'use strict';
 
-	var ARROWS_SELECTOR = '.drag-arrows';
-	var image = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow arrow-e"></div><div class="arrow arrow-e"></div><div class="arrow arrow-e"></div></div>';
-
 	function Drag() {
 		Section.call(this);
 	}

@@ -5,10 +5,12 @@ define([
 ], function(helper, view, i18n) {
 	'use strict';
 
-	function Quiz() {
+	function Quiz(questions) {
 		this.questions = [];
 		this['correct-count'] = 0;
 		this['correct-total'] = 0;
+
+		questions.forEach(this.addQuestion.bind(this));
 	}
 
 	Quiz.prototype = {
@@ -34,8 +36,11 @@ define([
 				quizCard.querySelector('.quiz__correct-' + type).textContent = self['correct-' + type];
 			});
 
-
 			return quizCard;
+		},
+
+		appendTo: function(el) {
+			el.appendChild(this.render());
 		}
 
 	};

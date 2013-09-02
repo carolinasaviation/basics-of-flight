@@ -1,9 +1,10 @@
 define([
 	'../lib/helpers',
 	'../views/sectionCard',
+	'../lib/quiz',
 	'../config',
 	'../i18n/en',
-], function(helper, card, config, i18n) {
+], function(helper, card, Quiz, config, i18n) {
 	'use strict';
 
 	window.i18n = i18n;
@@ -32,11 +33,23 @@ define([
 		paperView: undefined,
 		_page: undefined,
 		_film: undefined,
+		_quiz: undefined,
 		init: function init(){},
 
 		page: function(page) {
 			if (page) this._page = page;
 			return this._page;
+		},
+
+		film: function(url) {
+			this._film = url;
+			return this;
+		},
+
+		quiz: function(questions) {
+			this._quiz = new Quiz(questions);
+			this._quiz.appendTo(this.card.querySelector('.card-content[data-role="quiz"]'));
+			return this;
 		},
 
 		activate: function activate() {

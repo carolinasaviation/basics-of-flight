@@ -6,12 +6,10 @@ define([
 ], function(Section, draw, helper, WeightInteraction) {
 	'use strict';
 
-	var ARROWS_SELECTOR = '.weight-arrows';
-	var image = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow arrow-s"></div><div class="arrow arrow-s"></div><div class="arrow arrow-s"></div></div>';
-
 	function Weight() {
 		Section.call(this);
-		this._film = '//www.youtube.com/embed/beTsXzvtXDs';
+		this.film('//www.youtube.com/embed/beTsXzvtXDs');
+		this.quiz(i18n.weight.quiz);
 	}
 
 	Weight.prototype = Object.create(Section.prototype);
@@ -24,3 +22,4 @@ define([
 
 	return new Weight();
 });
+

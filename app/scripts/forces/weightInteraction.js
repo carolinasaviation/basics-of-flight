@@ -2,9 +2,8 @@ define([
 	'../lib/helpers',
 	'../i18n/en',
 	'../views/display',
-	'../lib/quiz',
 	'../lib/convert',
-], function(helper, i18n, display, Quiz, convert) {
+], function(helper, i18n, display, convert) {
 
 	window.state || (window.state = {});
 	var range = document.createElement('input');
@@ -88,11 +87,7 @@ define([
 		s.data.range = this.value;
 	}, false);
 
-	var quiz = new Quiz();
-	i18n.weight.quiz.forEach(quiz.addQuestion.bind(quiz));
-
 	return {
-		quiz: quiz.render(),
 		setup: function(canvas) {
 			canvas.id = 'weightInteraction';
 			canvas.setAttribute('data-paper-resize', 'true');
