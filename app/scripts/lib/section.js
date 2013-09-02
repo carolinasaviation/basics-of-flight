@@ -34,7 +34,7 @@ define([
 		_film: undefined,
 		init: function init(){},
 
-		page: function page(page) {
+		page: function(page) {
 			if (page) this._page = page;
 			return this._page;
 		},
