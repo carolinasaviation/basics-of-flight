@@ -1,4 +1,4 @@
-define(function(i18n) {
+define(function() {
 
 	var dim = document.body.getBoundingClientRect();
 	var logger = {

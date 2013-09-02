@@ -119,11 +119,12 @@ define([
 
 			else {
 				// close modal
-				fn = function(e) {
+				fn = function fn(_el) {
+					el || (el = _el);
+					el.parentNode.removeChild(el);
 					el.classList.remove('modal--active');
 					el.textContent = '';
-					el.parentNode.removeChild(el);
-					Hammer(document.documentElement).off('tap', fn);
+					Hammer(el).off('tap', window.closeModal);
 				}
 
 				el = document.createElement('div');
@@ -134,7 +135,9 @@ define([
 				this._page.element.appendChild(el);
 				el.classList.add('modal--active');
 				setTimeout(function() {
-					Hammer(document.documentElement).on('tap', fn);
+					// hack to let the close Modal be called globally
+					window.closeModal = fn;
+					Hammer(el).on('tap', fn);
 				}, 4);
 			}
 

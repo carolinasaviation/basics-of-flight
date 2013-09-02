@@ -1,7 +1,8 @@
 define([
 	'../lib/helpers',
 	'../views/quiz',
-], function(helper, view) {
+	'../i18n/en',
+], function(helper, view, i18n) {
 	'use strict';
 
 	function Quiz() {
