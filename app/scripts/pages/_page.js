@@ -174,7 +174,7 @@ define([
 			var prevChild = this.cardRotator.firstElementChild;
 
 			if (!prevChild) {
-				el.style.webkitTransform = 'rotateX(0deg) translate3d(0, 0, 125px)';
+				el.style.webkitTransform = 'rotateX(0deg) translate3d(0, 0, 100px)';
 				this.cardRotator.appendChild(el);
 				this.cardRotator.style.webkitTransform = 'rotateX(-90deg)';
 				var r = this.cardRotator;
@@ -183,7 +183,7 @@ define([
 			}
 
 			this.cardRotation = this.cardRotation + pos * 90;
-			el.style.webkitTransform = 'rotateX(' + (-this.cardRotation) + 'deg) translate3d(0, 0, 125px)';
+			el.style.webkitTransform = 'rotateX(' + (-this.cardRotation) + 'deg) translate3d(0, 0, 100px)';
 
 			this.cardRotator.appendChild(el);
 

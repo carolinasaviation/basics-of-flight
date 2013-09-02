@@ -6,6 +6,12 @@ define(['./template'], function(template) {
 			{[ ['introduction', 'quiz', 'science', 'history'].forEach(function(section, i) { ]}
 			<div class="card-content {{ i === 0 ? "card-content--active" : "card-content--inactive" }}" data-role="{{ section }}">
 				<h1>{! obj[section].title !}</h1>
+				{[ if (typeof obj[section].equation !== 'undefined') { ]}
+				<div class="card-equation">{! obj[section].equation !}</div>
+				{[ } ]}
+				{[ if (typeof obj[section].figure !== 'undefined') { ]}
+				<div class="card-figure"><img src="images/{{ obj[section].figure }}"></div>
+				{[ } ]}
 				{! obj[section].description !}
 				{[ if (i !== 0) { ]}
 				<button class="btn btn-go-back" data-action="show-introduction">Back</button>
