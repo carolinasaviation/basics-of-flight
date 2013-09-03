@@ -1,18 +1,11 @@
 require.config({
-    paths: {
-        jquery: '../bower_components/jquery/jquery',
-        lodash: '../bower_components/lodash/lodash',
-        paper: '../bower_components/paper/dist/paper-full',
-        hammer: '../bower_components/hammerjs/dist/hammer',
-        Bind: '../bower_components/bind/bind',
-        setImmediate: '../bower_components/setImmediate/setImmediate'
-    },
-    shim: {
-        bootstrap: {
-            deps: ['jquery'],
-            exports: 'jquery'
-        }
-    }
+	paths: {
+		lodash: '../bower_components/lodash/lodash',
+		paper: '../bower_components/paper/dist/paper-full',
+		hammer: '../bower_components/hammerjs/dist/hammer',
+		Bind: '../bower_components/bind/bind',
+		setImmediate: '../bower_components/setImmediate/setImmediate'
+	},
 });
 
 require([
@@ -29,7 +22,6 @@ require([
 
 	// use app here
 	console.groupCollapsed('Dependencies');
-	//console.log('Running jQuery %s', $.prototype.jquery);
 	console.log('Running LoDash %s', _.VERSION);
 	console.log('Running Paper.js %s', paper.version);
 	console.log('Running Hammerjs %s', (hammer || Hammer).VERSION);
