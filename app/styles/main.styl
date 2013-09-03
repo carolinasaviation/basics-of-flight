@@ -1,6 +1,7 @@
 @import nib
 @import url('../bower_components/normalize-css/normalize.css')
 @import url('../bower_components/league-gothic/webfonts/stylesheet.css')
+
 YELLOW = #feec09
 RED = #f0402a
 ACTION_RED = #ed1c24
@@ -112,7 +113,7 @@ body
 	display block
 	text-align center
 	text-transform uppercase
-	font-family 'League Gothic'
+	font-family 'League Gothic', Impact, serif
 	font-weight 400
 
 // nav }}}
@@ -167,7 +168,7 @@ body
 
 h1
 	color YELLOW
-	font-family 'League Gothic'
+	font-family 'League Gothic', Impact, serif
 	font-size 3em
 	font-weight 400
 	letter-spacing 1px
@@ -192,7 +193,8 @@ h1
 
 .card-content
 	height 100%
-	overflow-y auto
+	overflow scroll
+	-webkit-overflow-scrolling touch
 	padding 0.5em
 	width 75%
 
@@ -384,13 +386,16 @@ label[for]
 	cursor pointer
 
 // quiz }}}
-// {{{ Forces::weight
+// {{{ Forces
 
-#weightInteraction
+#weightInteraction,
+#dragInteraction
 	height 100%
 	width 100%
 
 .cessna
+	top 3%
+	left 8%
 	img
 		position relative
 		z-index 1
@@ -398,14 +403,13 @@ label[for]
 		background YELLOW
 		position relative
 		display inline-block
-		height 60px
-		width 2px
+		height 6em
+		width 0.875em
 		&:after
-			absolute bottom -2px
-			left -6px
-			border-left 7px solid transparent
-			border-right 7px solid transparent
-			border-top 7px solid YELLOW
+			absolute bottom -1em left -0.91666em
+			border-left 1.4em solid transparent
+			border-right 1.4em solid transparent
+			border-top 1.4em solid YELLOW
 			content ''
 
 .forces-arrows
@@ -422,85 +426,58 @@ label[for]
 		position absolute
 		height 0
 		width 0
+		&:before
+			color YELLOW
+			font-family 'League Gothic', Impact, serif
+			font-size 2em
+			text-transform uppercase
+			display block
 
 	.arrow-n
-		left 40%
-		top 20%
-		transform rotate(180deg)
+		left 44%
+		top 38%
+		transform rotate(180deg) skewY(-20deg)
+		&:before
+			content 'Lift'
+			transform rotate(-90deg) translate(-3em, -0.5em)
 	.arrow-s
-		left 37%
-		top 66%
+		left 40%
+		top 57%
+		transform skewY(-20deg)
+		&:before
+			content 'Weight'
+			transform rotate(-90deg) translate(-3.25em, -0.5em)
 	.arrow-w
-		bottom 36%
-		left 11%
-		transform rotate(65deg)
+		bottom 41.5%
+		left 17%
+		transform rotate(65deg) skewY(20deg)
+		&:before
+			content 'Thrust'
+			transform rotate(-90deg) translate(-3.25em, -0.5em)
 	.arrow-e
-		top 22%
-		left 76%
-		transform rotate(-115deg)
+		top 26%
+		left 71%
+		transform rotate(-115deg) skewY(20deg)
+		&:before
+			content 'Drag'
+			transform rotate(90deg) translate(1.5em, -1em)
 
 @keyframes forcesArrow
 	from
 		transform translateY(0em)
-		opacity 1
+		opacity 0.2
 	to
 		transform  translateY(1em)
-		opacity 0.6
-
-.weight-arrows
-	position absolute
-	left 20%
-	bottom 15%
-	transform skewX(13deg)
-	.arrow
-		background YELLOW
-		position relative
-		display inline-block
-		margin 0 20px
-		height 60px
-		width 2px
-		&:after
-			absolute bottom
-			left -4px
-			border-left 5px solid transparent
-			border-right 5px solid transparent
-			border-top 5px solid YELLOW
-			content ''
-
-// Forces::weight }}}
-// {{{ Forces::drag
-
-#dragInteraction
-	height 100%
-	width 100%
-
-@keyframes dragArrow
-	from
-		transform translateX(0em)
 		opacity 1
-	to
-		transform  translateX(1em)
-		opacity 0.6
 
-.drag-arrows
-	absolute left 80% top 5%
-	top 5%
-	transform skewX(13deg);
-	.arrow
-		background YELLOW
-		position relative
-		display block
-		margin 20px 0
-		height 2px
-		width 60px
-		&:after
-			absolute left 100% top -4px
-			border-top 5px solid transparent
-			border-bottom 5px solid transparent
-			border-left 5px solid YELLOW
-			content ''
+// Forces }}}
+// {{{ Controls
 
-// Forces::weight }}}
+.aileron-animation
+	margin-left 17.5%
+	max-height 500px
+
+// Controls }}}
 // {{{ animations
 
 @keyframes actionPulse
@@ -512,7 +489,7 @@ label[for]
 		stroke #202020
 
 // animations }}}
-// {{{
+// {{{ range and data table
 
 input[type="range"]
 	//-webkit-appearance none
@@ -557,9 +534,7 @@ table
 		width 8em
 
 // }}}
-.aileron-animation
-	margin-left 17.5%
-	max-height 500px
+// {{{ modal
 
 .modal
 	absolute bottom right
@@ -593,4 +568,6 @@ table
 	display none
 	background rgba(0, 0, 0, 0.8)
 	content ' '
+
+// modal }}}
 
