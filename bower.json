@@ -12,6 +12,7 @@
     "hammerjs": "latest",
     "league-gothic": "git://github.com/theleagueof/league-gothic.git",
     "bind": "git://github.com/remy/bind.git",
-		"setImmediate": "git@github.com:NobleJS/setImmediate.git#~1.0.1"
+    "setImmediate": "git@github.com:NobleJS/setImmediate.git#~1.0.1",
+    "granger": "~0.1.4"
   }
 }

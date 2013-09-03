@@ -3,10 +3,21 @@ define([
 	'../i18n/en',
 	'../views/display',
 	'../lib/convert',
-], function(helper, i18n, display, convert) {
+	'granger',
+], function(helper, i18n, display, convert, Granger) {
 
 	window.state || (window.state = {});
 	var range = document.createElement('input');
+
+	range.setAttribute('type', 'range');
+	range.setAttribute('min', 0);
+	range.setAttribute('max', 100);
+	range.setAttribute('step', 1);
+
+	var oldValue = range.value;
+	range.addEventListener('change', function(e) {
+		s.data.range = this.value;
+	}, false);
 
 	function limit(val, min, max) {
 		return Math.max(Math.min(val, max), min);
@@ -77,16 +88,6 @@ define([
 		data: display.data
 	};
 
-	range.setAttribute('type', 'range');
-	range.setAttribute('min', 0);
-	range.setAttribute('max', 100);
-	range.setAttribute('step', 1);
-
-	var oldValue = range.value;
-	range.addEventListener('change', function(e) {
-		s.data.range = this.value;
-	}, false);
-
 	return {
 		setup: function(canvas) {
 			canvas.id = 'weightInteraction';
@@ -110,6 +111,8 @@ define([
 		if (s.isFirstTime) {
 			s.isFirstTime = false;
 			view.element.parentNode.insertBefore(s.range, view.element);
+			// bash the range control with a Granger control
+			new Granger(s.range, { renderer: 'dom', type: 'x', height: 32 });
 			view.element.parentNode.insertBefore(s.displayEl, view.element);
 		}
 

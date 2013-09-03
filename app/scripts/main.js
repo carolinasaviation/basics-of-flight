@@ -4,8 +4,15 @@ require.config({
 		paper: '../bower_components/paper/dist/paper-full',
 		hammer: '../bower_components/hammerjs/dist/hammer',
 		Bind: '../bower_components/bind/bind',
-		setImmediate: '../bower_components/setImmediate/setImmediate'
+		setImmediate: '../bower_components/setImmediate/setImmediate',
+		granger: '../bower_components/granger/dist/granger'
 	},
+	shim: {
+		granger: {
+			deps: [],
+			exports: 'Granger'
+		}
+	}
 });
 
 require([
