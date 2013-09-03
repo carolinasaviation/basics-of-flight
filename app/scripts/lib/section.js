@@ -83,14 +83,15 @@ define([
 		startInteraction: function startInteraction(interaction) {
 			this._page.element.insertBefore(this.interactive, this._page.element.firstChild);
 
+			var section = this;
 			if (interaction) {
-				interaction.setup(this.canvas);
-				helper.createPaperScript(this, this.canvas, interaction.paperScript);
-
-				if (config.logger.paperjsScope)
-					config.logger.paperjsScopeFn.call(this, this.canvas.id);
+				setImmediate(function() {
+					interaction.setup(section.canvas);
+					helper.createPaperScript(section, section.canvas, interaction.paperScript);
+					if (config.logger.paperjsScope)
+						config.logger.paperjsScopeFn.call(section, section.canvas.id);
+				});
 			}
-
 
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, 'startInteraction');

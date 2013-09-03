@@ -12,6 +12,7 @@
     "requirejs-i18n": "git://github.com/requirejs/i18n.git#98653367086e6f23b5fac8a14e3d9480b40645af",
     "hammerjs": "latest",
     "league-gothic": "git://github.com/theleagueof/league-gothic.git",
-    "bind": "git://github.com/remy/bind.git"
+    "bind": "git://github.com/remy/bind.git",
+		"setImmediate": "git@github.com:NobleJS/setImmediate.git#~1.0.1"
   }
 }

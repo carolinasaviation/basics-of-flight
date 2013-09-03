@@ -123,8 +123,6 @@ define([
 
 		deactivate: function deactivate() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'deactivate');
-			//this.card.classList.remove(CARD_TRANSITION_IN);
-			//this.card.classList.add(CARD_TRANSITION_OUT);
 			this.isActive = false;
 		},
 

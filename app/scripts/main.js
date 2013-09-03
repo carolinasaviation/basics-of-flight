@@ -5,6 +5,7 @@ require.config({
         paper: '../bower_components/paper/dist/paper-full',
         hammer: '../bower_components/hammerjs/dist/hammer',
         Bind: '../bower_components/bind/bind',
+        setImmediate: '../bower_components/setImmediate/setImmediate'
     },
     shim: {
         bootstrap: {
@@ -16,19 +17,19 @@ require.config({
 
 require([
 	'app',
-	'jquery',
 	'lodash',
 	'paper',
 	'hammer',
 	'Bind',
+	'setImmediate',
 	'polyfills'
-], function (app, $, _, paper, Bind, hammer) {
+], function (app, _, paper, Bind, setImmediate, hammer) {
 	'use strict';
 	window.config = config;
 
 	// use app here
 	console.groupCollapsed('Dependencies');
-	console.log('Running jQuery %s', $.prototype.jquery);
+	//console.log('Running jQuery %s', $.prototype.jquery);
 	console.log('Running LoDash %s', _.VERSION);
 	console.log('Running Paper.js %s', paper.version);
 	console.log('Running Hammerjs %s', (hammer || Hammer).VERSION);

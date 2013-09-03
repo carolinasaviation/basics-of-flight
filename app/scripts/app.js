@@ -88,6 +88,9 @@ define([
 				else
 					node = node.parentNode;
 
+			// do this early for quicker feedback for perceived performance
+			node.classList.add(NAV_ACTIVE_CLASS);
+
 			if (active) {
 				page = _.findWhere(this.pages, { name: active.textContent });
 
@@ -104,8 +107,6 @@ define([
 				active.classList.remove(NAV_ACTIVE_CLASS);
 			}
 
-
-			node.classList.add(NAV_ACTIVE_CLASS);
 			page = _.findWhere(this.pages, { name: node.textContent });
 			page.load();
 		}
