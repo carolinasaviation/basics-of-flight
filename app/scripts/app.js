@@ -47,11 +47,28 @@ define([
 		},
 
 		bind: function() {
+			// el lives on for all handlers to avoid GC
+			var el;
+
 			// prevent all clicks
 			document.body.addEventListener('click', function(e) { e.preventDefault(); }, false);
-			document.body.addEventListener('touchmove', function(e) { e.preventDefault(); }, false);
+
+			// prevent scrolling except for white listed elements
+			// this is really janky.
+			document.addEventListener('touchstart', onTouchstart, false);
+			document.addEventListener('touchend', onTouchend, false);
+
+			function onTouchstart(e) {
+				el = document.querySelector('.card-content--active');
+				if (el && el.contains(e.target)) return;
+					
+				document.addEventListener('touchmove', onTouchmove, false);
+			}
+
+			function onTouchmove(e) { e.preventDefault(); }
+			function onTouchend(e) { document.removeEventListener('touchmove', onTouchmove); }
+
 			document.documentElement.addEventListener('keyup', function(e) {
-				var el;
 				if (e.keyCode === 27 && (el = document.querySelector('.modal--active')))
 					window.closeModal(el);
 			}, false);
