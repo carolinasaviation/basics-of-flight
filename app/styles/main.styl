@@ -5,6 +5,7 @@
 YELLOW = #feec09
 RED = #f0402a
 ACTION_RED = #ed1c24
+BLUE = #23a8e0
 BLACK = #202020
 
 /* general {{{ */
@@ -396,11 +397,13 @@ label[for]
 .cessna
 	top 3%
 	left 8%
-	img
+	svg
 		position relative
 		z-index 1
+	g
+		stroke BLUE
 	.arrow
-		background YELLOW
+		background ACTION_RED
 		position relative
 		display inline-block
 		height 6em
@@ -409,7 +412,7 @@ label[for]
 			absolute bottom -1em left -0.91666em
 			border-left 1.4em solid transparent
 			border-right 1.4em solid transparent
-			border-top 1.4em solid YELLOW
+			border-top 1.4em solid ACTION_RED
 			content ''
 
 .forces-arrows

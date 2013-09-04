@@ -19,7 +19,7 @@ define([
 
 	var ARROWS_SELECTOR = '.forces-arrows';
 	var arrows = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow-n"><div class="arrow"></div></div><div class="arrow-s"><div class="arrow"></div></div><div class="arrow-w"><div class="arrow"></div></div><div class="arrow-e"><div class="arrow"></div></div></div>';
-	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"><img src="images/cessna-isometric.svg"></div>';
+	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"></div>';
 
 	function Forces() {
 		Page.call(this, [
@@ -35,7 +35,9 @@ define([
 	Forces.prototype.constructor = Forces;
 	Forces.prototype.init = function() {
 		Page.prototype.init.call(this);
-		this.element.appendChild(helper.createDomNode(image));
+		var cessna = helper.createDomNode(image)
+		cessna.appendChild(document.getElementById('cessna-isometric').cloneNode(true));
+		this.element.appendChild(cessna);
 
 		var canvas = this.canvas = document.createElement('canvas');
 		canvas.setAttribute('data-paper-resize', 'true');
