@@ -168,6 +168,8 @@ define([
 				args;
 
 			if (action) {
+				if ((matches[0] || e.target).matches('.btn--is-active')) return;
+
 				args = action.split('-');
 				action = args.shift();
 				if (this[action])
