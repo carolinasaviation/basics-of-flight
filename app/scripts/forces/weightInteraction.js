@@ -3,78 +3,57 @@ define([
 	'../i18n/en',
 	'../views/display',
 	'../lib/convert',
-	'granger',
-], function(helper, i18n, display, convert, Granger) {
+], function(helper, i18n, display, convert) {
 
 	window.state || (window.state = {});
-	var range = document.createElement('input');
 
-	range.setAttribute('type', 'range');
-	range.setAttribute('min', 0);
-	range.setAttribute('max', 100);
-	range.setAttribute('step', 1);
+	var scale = helper.scale;
 
-	var oldValue = range.value;
-	range.addEventListener('change', function(e) {
-		s.data.range = this.value;
-	}, false);
-
-	function limit(val, min, max) {
-		return Math.max(Math.min(val, max), min);
-	}
-
-	function scale(percentage, min, max) {
-		if (percentage > 1) percentage /= 100;
-		return limit((+percentage) * (max - min) + min, min, max);
-	}
-
-	display = display.register({
-		prefix: 'weight-interaction',
-		options: [
-			{
-				title: 'Altitude',
-				value: undefined,
-				calculate: function(p) {
-					return scale(p, 5000, 10000);
+	var bindings = display.create({
+		title: 'Weight',
+		min: 0,
+		max: 100,
+		step: 1,
+		state: s,
+		bindings: {
+			prefix: 'weight-interaction',
+			options: [
+				{
+					title: 'Altitude',
+					value: undefined,
+					calculate: function(p) {
+						return scale(p, 5000, 10000);
+					},
+					format: function() { return ' ft' }
 				},
-				format: function() { return ' ft' }
-			},
-			{
-				title: 'Speed',
-				value: undefined,
-				calculate: function(p) { return 3200; },
-				format: function() { return ' m/hr' }
-			},
-			{
-				title: 'Weight',
-				value: undefined,
-				calculate: function(p) {
-					return scale(p, 600, 1500);
+				{
+					title: 'Speed',
+					value: undefined,
+					calculate: function(p) { return 3200; },
+					format: function() { return ' m/hr' }
 				},
-				format: function() { return ' lbs'; }
-			},
-			{
-				title: 'range',
-				value: undefined,
-				renderable: false,
-				sync: function(prefix, value) {
-					if (!s) return;
-					s.data.altitude =
-					s.data.speed =
-					s.data.gravity =
-					s.data.weight = value;
+				{
+					title: 'Weight',
+					value: undefined,
+					calculate: function(p) {
+						return scale(p, 600, 1500);
+					},
+					format: function() { return ' lbs'; }
+				},
+				{
+					title: 'range',
+					value: undefined,
+					renderable: false,
+					sync: function(prefix, value) {
+						if (!s) return;
+						s.data.altitude =
+						s.data.speed =
+						s.data.weight = value;
+					}
 				}
-			}
-		]
+			]
+		}
 	});
-
-	var d = document.createElement('section');
-	d.classList.add('display');
-	var h = document.createElement('h1');
-	h.textContent = 'Weight';
-	d.appendChild(h);
-	d.appendChild(range);
-	d.appendChild(display.el);
 
 	var s = window.state.WEIGHT_INTERACTIVE = {
 		SPEED: 100,
@@ -83,8 +62,9 @@ define([
 		CESSNA_SIN_MULTIPLIER: 4,
 		CESSNA_SIN_ADDITIVE: 0.04,
 		isFirstTime: true,
-		el: d,
-		data: display.data
+		el: bindings.el,
+		data: bindings.data,
+		granger: bindings.granger
 	};
 
 	return {
@@ -110,8 +90,7 @@ define([
 		if (s.isFirstTime) {
 			s.isFirstTime = false;
 			view.element.parentNode.insertBefore(s.el, view.element);
-			// bash the range control with a Granger control
-			new Granger(s.el.querySelector('input'), { renderer: 'dom', type: 'x', height: 32 });
+			s.granger.sync();
 		}
 
 		var lines = [], line;

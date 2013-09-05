@@ -3,7 +3,10 @@ define([
 	'lodash',
 	'./template',
 	'../lib/helpers',
-], function(bind, _, template, helper) {
+	'granger'
+], function(bind, _, template, helper, Granger) {
+
+	// TODO: this file is a terrible mess
 
 	var tmpl = template(function() {/***
 		<table>
@@ -17,6 +20,49 @@ define([
 	 </table>
 	***/
 	});
+
+	function createRange(options) {
+		var range = document.createElement('input');
+
+		range.setAttribute('type', 'range');
+		range.setAttribute('min', options.min || 0);
+		range.setAttribute('max', options.max || 100);
+		range.setAttribute('step', options.step || 1);
+
+		return range;
+	}
+
+	function create(options) {
+		var el, h, range, bindings, granger;
+
+		el = document.createElement('section');
+		el.classList.add('display');
+
+		h = document.createElement('h1');
+		h.textContent = options.title;
+
+		range = createRange(options);
+
+		el.appendChild(h);
+		el.appendChild(range);
+
+		bindings = register(options.bindings);
+
+		range.addEventListener('change', function(e) {
+			// points to the data bindings
+			bindings.data.range = this.value;
+		}, false);
+
+		granger = new Granger(range, { renderer: 'dom', type: 'x', height: 55 });
+
+		el.appendChild(bindings.el);
+
+		return {
+			el: el,
+			data: bindings.data,
+			granger: granger
+		};
+	}
 
 	function sync(prefix, value) {
 		console.log('syncing %s-%s: %s', prefix, this.title, value);
@@ -45,6 +91,7 @@ define([
 	}
 
 	return {
-		register: register
+		register: register,
+		create: create
 	};
 });
