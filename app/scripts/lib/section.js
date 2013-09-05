@@ -86,7 +86,16 @@ define([
 			var section = this;
 			if (interaction) {
 				setImmediate(function() {
-					interaction.setup(section.canvas);
+					section.canvas.id = 'weightInteraction';
+					section.canvas.setAttribute('data-paper-resize', 'true');
+					section.canvas.classList.add('hardware-hack');
+					section.canvas.style.backgroundColor = '#202020';
+					section.canvas.style.top =
+						section.canvas.style.left =
+						section.canvas.style.right =
+						0;
+					section.canvas.style.zIndex = 2;
+					section.canvas.id = section.name + 'Interaction';
 					helper.createPaperScript(section, section.canvas, interaction.paperScript);
 					if (config.logger.paperjsScope)
 						config.logger.paperjsScopeFn.call(section, section.canvas.id);

@@ -4,13 +4,14 @@ define([
 	'../views/display',
 	'../lib/convert',
 ], function(helper, i18n, display, convert) {
+	'use strict';
 
 	window.state || (window.state = {});
 
 	var scale = helper.scale;
 
 	var bindings = display.create({
-		title: 'Weight',
+		title: i18n.t.weight,
 		min: 0,
 		max: 100,
 		step: 1,
@@ -19,7 +20,7 @@ define([
 			prefix: 'weight-interaction',
 			options: [
 				{
-					title: 'Altitude',
+					title: i18n.t.altitude,
 					value: undefined,
 					calculate: function(p) {
 						return scale(p, 5000, 10000);
@@ -27,13 +28,13 @@ define([
 					format: function() { return ' ft' }
 				},
 				{
-					title: 'Speed',
+					title: i18n.t.speed,
 					value: undefined,
 					calculate: function(p) { return 3200; },
 					format: function() { return ' m/hr' }
 				},
 				{
-					title: 'Weight',
+					title: i18n.t.weight,
 					value: undefined,
 					calculate: function(p) {
 						return scale(p, 600, 1500);
@@ -66,22 +67,6 @@ define([
 		data: bindings.data,
 		granger: bindings.granger
 	};
-
-	return {
-		setup: function(canvas) {
-			canvas.id = 'weightInteraction';
-			canvas.setAttribute('data-paper-resize', 'true');
-			canvas.classList.add('hardware-hack');
-			canvas.style.backgroundColor = '#202020';
-			canvas.style.top =
-				canvas.style.left =
-				canvas.style.right =
-				0;
-			canvas.style.zIndex = 2;
-		},
-
-		paperScript: paperScript
-	}
 
 	function paperScript() {
 		var w = view.element.width;
@@ -141,4 +126,7 @@ define([
 			w = view.element.width;
 		}
 	}
+
+	return { paperScript: paperScript }
+
 });
