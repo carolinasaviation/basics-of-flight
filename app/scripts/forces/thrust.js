@@ -1,4 +1,7 @@
-define(['../lib/section'], function(Section) {
+define([
+	'../lib/section',
+	'./interactives/thrust'
+], function(Section, interactive) {
 	'use strict';
 
 	function Thrust() {
@@ -8,6 +11,10 @@ define(['../lib/section'], function(Section) {
 	Thrust.prototype = Object.create(Section.prototype);
 
 	Thrust.prototype.constructor = Thrust;
+
+	Thrust.prototype.startInteraction = function() {
+		Section.prototype.startInteraction.call(this, interactive);
+	};
 
 	return new Thrust();
 });

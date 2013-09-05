@@ -1,8 +1,8 @@
 define([
-	'../lib/helpers',
-	'../i18n/en',
-	'../views/display',
-	'../lib/convert',
+	'../../lib/helpers',
+	'../../i18n/en',
+	'../../views/display',
+	'../../lib/convert',
 ], function(helper, i18n, display, convert) {
 	'use strict';
 
@@ -21,7 +21,6 @@ define([
 			options: [
 				{
 					title: i18n.t.altitude,
-					value: undefined,
 					calculate: function(p) {
 						return scale(p, 5000, 10000);
 					},
@@ -29,13 +28,11 @@ define([
 				},
 				{
 					title: i18n.t.speed,
-					value: undefined,
 					calculate: function(p) { return 3200; },
 					format: function() { return ' m/hr' }
 				},
 				{
 					title: i18n.t.weight,
-					value: undefined,
 					calculate: function(p) {
 						return scale(p, 600, 1500);
 					},
@@ -43,7 +40,6 @@ define([
 				},
 				{
 					title: 'range',
-					value: undefined,
 					renderable: false,
 					sync: function(prefix, value) {
 						if (!s) return;
@@ -97,11 +93,11 @@ define([
 		}
 
 		var activeLayer = this.project.activeLayer;
-		//var cessnaLayer = new Layer();
-		//var cessna = project.importSVG(document.getElementById('cessna-elevation'));
+		var cessnaLayer = new Layer();
+		var cessna = project.importSVG(document.getElementById('cessna-elevation'));
 
-		//cessna.position.x = 400;
-		//cessna.position.y = 400;
+		cessna.position.x = 400;
+		cessna.position.y = 400;
 
 		var angle = -Math.PI;
 		var frame = 0;
@@ -117,9 +113,9 @@ define([
 				if (l.position.x > w) l.position.x = -10;
 			});
 
-			//cessna.position.y = Math.floor(state.WEIGHT_INTERACTIVE.CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
-			//if (frame > 100) frame = 0;
-			//frame += state.WEIGHT_INTERACTIVE.CESSNA_SIN_ADDITIVE;
+			cessna.position.y = Math.floor(state.WEIGHT_INTERACTIVE.CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
+			if (frame > 100) frame = 0;
+			frame += state.WEIGHT_INTERACTIVE.CESSNA_SIN_ADDITIVE;
 		};
 
 		function resize() {

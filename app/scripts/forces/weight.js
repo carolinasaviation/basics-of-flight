@@ -1,9 +1,7 @@
 define([
 	'../lib/section',
-	'../lib/animations',
-	'../lib/helpers',
-	'./weightInteraction'
-], function(Section, draw, helper, WeightInteraction) {
+	'./interactives/weight'
+], function(Section, interactive) {
 	'use strict';
 
 	function Weight() {
@@ -17,7 +15,7 @@ define([
 	Weight.prototype.constructor = Weight;
 
 	Weight.prototype.startInteraction = function() {
-		Section.prototype.startInteraction.call(this, WeightInteraction);
+		Section.prototype.startInteraction.call(this, interactive);
 	};
 
 	return new Weight();

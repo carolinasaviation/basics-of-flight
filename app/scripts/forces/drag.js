@@ -1,9 +1,7 @@
 define([
 	'../lib/section',
-	'../lib/animations',
-	'../lib/helpers',
-	'./dragInteraction'
-], function(Section, draw, helper, DragInteraction) {
+	'./interactives/drag'
+], function(Section, interactive) {
 	'use strict';
 
 	function Drag() {
@@ -15,7 +13,7 @@ define([
 	Drag.prototype.constructor = Drag;
 
 	Drag.prototype.startInteraction = function() {
-		Section.prototype.startInteraction.call(this, DragInteraction);
+		Section.prototype.startInteraction.call(this, interactive);
 	};
 
 	return new Drag();

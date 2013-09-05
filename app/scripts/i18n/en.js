@@ -205,6 +205,9 @@ define({
 		speed: 'Speed',
 		gravity: 'Gravity',
 		weight: 'Weight',
+		drag: 'Drag',
+		lift: 'Lift',
+		thrust: 'Thrust'
 	}
 });
 

@@ -1,42 +1,77 @@
 define([
-	'../lib/helpers',
-	'../i18n/en',
-	'../views/display',
-	'../views/quiz',
-], function(helper, i18n, display, quiz) {
+	'../../lib/helpers',
+	'../../i18n/en',
+	'../../views/display'
+], function(helper, i18n, display) {
 	'use strict';
 
 	window.state || (window.state = {});
-	window.state.DRAG_INTERACTIVE = {
+
+	var scale = helper.scale;
+
+	var bindings = display.create({
+		title: i18n.t.drag,
+		min: 0,
+		max: 100,
+		step: 1,
+		state: s,
+		bindings: {
+			prefix: 'drag-interaction',
+			options: [
+				{
+					title: i18n.t.altitude,
+					calculate: function(p) {
+						return scale(p, 5000, 10000);
+					},
+					format: function() { return ' ft' }
+				},
+				{
+					title: i18n.t.speed,
+					calculate: function(p) { return 3200; },
+					format: function() { return ' m/hr' }
+				},
+				{
+					title: i18n.t.drag,
+					calculate: function(p) {
+						return scale(p, 600, 1500);
+					},
+					format: function() { return ' coeffecient'; }
+				},
+				{
+					title: 'range',
+					renderable: false,
+					sync: function(prefix, value) {
+						if (!s) return;
+						s.data.altitude =
+						s.data.speed =
+						s.data.drag = value;
+					}
+				}
+			]
+		}
+	});
+
+	var s = window.state.DRAG_INTERACTIVE = {
 		SPEED: 100,
 		xDiff: 0,
 		yDiff: 0,
 		CESSNA_SIN_MULTIPLIER: 4,
 		CESSNA_SIN_ADDITIVE: 0.04,
-		//range: range,
 		isFirstTime: true,
-		//displayEl: display.el,
-		//data: display.data
+		el: bindings.el,
+		data: bindings.data,
+		granger: bindings.granger
 	};
 
-	return {
-		quiz: helper.createDomNode('<div></div>'),
-		setup: function(canvas) {
-			canvas.id = 'dragInteraction';
-			canvas.setAttribute('data-paper-resize', 'true');
-			canvas.classList.add('hardware-hack');
-			canvas.style.backgroundColor = '#202020';
-			canvas.style.top =
-				canvas.style.left =
-				canvas.style.right =
-				0;
-			canvas.style.zIndex = 2;
-		},
+	function paperscript() {
 
-		paperScript: intro
-	}
+		var s = window.state.DRAG_INTERACTIVE;
+		if (s.isFirstTime) {
+			s.isFirstTime = false;
+			view.element.parentNode.insertBefore(s.el, view.element);
+			s.granger.sync();
+		}
 
-	function intro() {
 		// Code ported to Paper.js from http://the389.com/9/1/
 		// with permission.
 
@@ -148,5 +183,7 @@ define([
 			}
 		}
 	}
+
+	return { paperScript: paperscript }
 
 });
