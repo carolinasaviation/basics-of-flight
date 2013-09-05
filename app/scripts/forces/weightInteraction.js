@@ -45,14 +45,6 @@ define([
 				calculate: function(p) { return 3200; },
 				format: function() { return ' m/hr' }
 			},
-			/*
-			{
-				title: 'Gravity',
-				value: undefined,
-				calculate: function(p) { return 700; },
-				format: function() { return ' Newtons' }
-			},
-		 */
 			{
 				title: 'Weight',
 				value: undefined,
@@ -76,15 +68,22 @@ define([
 		]
 	});
 
+	var d = document.createElement('section');
+	d.classList.add('display');
+	var h = document.createElement('h1');
+	h.textContent = 'Weight';
+	d.appendChild(h);
+	d.appendChild(range);
+	d.appendChild(display.el);
+
 	var s = window.state.WEIGHT_INTERACTIVE = {
 		SPEED: 100,
 		xDiff: 0,
 		yDiff: 0,
 		CESSNA_SIN_MULTIPLIER: 4,
 		CESSNA_SIN_ADDITIVE: 0.04,
-		range: range,
 		isFirstTime: true,
-		displayEl: display.el,
+		el: d,
 		data: display.data
 	};
 
@@ -110,10 +109,9 @@ define([
 		var s = window.state.WEIGHT_INTERACTIVE;
 		if (s.isFirstTime) {
 			s.isFirstTime = false;
-			view.element.parentNode.insertBefore(s.range, view.element);
+			view.element.parentNode.insertBefore(s.el, view.element);
 			// bash the range control with a Granger control
-			new Granger(s.range, { renderer: 'dom', type: 'x', height: 32 });
-			view.element.parentNode.insertBefore(s.displayEl, view.element);
+			new Granger(s.el.querySelector('input'), { renderer: 'dom', type: 'x', height: 32 });
 		}
 
 		var lines = [], line;
@@ -144,8 +142,6 @@ define([
 		var angle = -Math.PI;
 		var frame = 0;
 		this.project.activeLayer = activeLayer;
-
-		window.myPaperScript = this;
 
 		function onFrame(event) {
 			if (!lines) return;

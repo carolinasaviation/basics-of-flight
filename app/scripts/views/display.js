@@ -1,12 +1,12 @@
 define([
 	'Bind',
 	'lodash',
-	'./template'
-], function(bind, _, template) {
+	'./template',
+	'../lib/helpers',
+], function(bind, _, template, helper) {
 
-	var a = document.createElement('div');
 	var tmpl = template(function() {/***
-		<table class="display">
+		<table>
 			{[ _.forEach(obj.options, function(opt) { ]}
 			{[ if (opt.renderable === false) return ''; ]}
 			<tr>
@@ -27,9 +27,7 @@ define([
 	}
 
 	function register(data) {
-		var t = tmpl(data);
-		a.innerHTML = t;
-
+		var el = helper.createDomNode(tmpl(data));
 		var d = {};
 		var k = {};
 		data.options.forEach(function(opt) {
@@ -41,7 +39,7 @@ define([
 		data = bind(d, k);
 
 		return {
-			el: a.firstChild,
+			el: el,
 			data: data
 		};
 	}
