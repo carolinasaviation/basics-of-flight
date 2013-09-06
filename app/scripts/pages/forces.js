@@ -6,16 +6,17 @@ define([
 	'../forces/thrust',
 	'../lib/animations',
 	'../lib/helpers',
-	'paper'
-], function(Page, weight, lift, drag, thrust, draw, helper, paper) {
+	'../lib/Tween'
+], function(Page, weight, lift, drag, thrust, draw, helper, TWEEN) {
 	'use strict';
 
-	window.state || (window.state = {});
-	window.state.FORCES = {
-		NUMBER_OF_PARTICLES: 30,
-		CESSNA_SIN_MULTIPLIER: 40,
-		CESSNA_SIN_ADDITIVE: 0.04,
-	};
+	var TWEEN = window.TWEEN;
+	var BLEED = 200;
+	var OFFSET = 20;
+	var TIME = 6000;
+	var STROKE_WIDTH = 2;
+	var STROKE_COLOR = '#666';
+	var raf;
 
 	var ARROWS_SELECTOR = '.forces-arrows';
 	var arrows = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow-n"><div class="arrow"></div></div><div class="arrow-s"><div class="arrow"></div></div><div class="arrow-w"><div class="arrow"></div></div><div class="arrow-e"><div class="arrow"></div></div></div>';
@@ -38,12 +39,6 @@ define([
 		var cessna = helper.createDomNode(image)
 		cessna.appendChild(document.getElementById('cessna-isometric').cloneNode(true));
 		this.element.appendChild(cessna);
-
-		var canvas = this.canvas = document.createElement('canvas');
-		canvas.setAttribute('data-paper-resize', 'true');
-		canvas.style.position = 'absolute';
-		canvas.style.top = 0;
-		canvas.style.left = 0;
 	};
 
 	Forces.prototype.onLoad = function() {
@@ -65,13 +60,51 @@ define([
 		if (this.isActive) return;
 		Page.prototype.activate.call(this);
 
+		var canvas = document.createElement('canvas');
+		canvas.width = this.element.clientWidth;
+		canvas.height = this.element.clientHeight - this.card.clientHeight;
+		var ctx = canvas.getContext('2d');
+						
+		this.element.insertBefore(canvas, this.element.firstChild);
 		this.element.querySelector('.cessna').appendChild(helper.createDomNode(arrows));
 
-		this.element.appendChild(this.canvas);
+		var end = ((canvas.width > canvas.height) ? canvas.width : canvas.height) + BLEED * 2;
+		var i;
 
-		helper.createPaperScript(this, this.canvas, paperScript)
+		var t = new TWEEN.Tween({ x: -BLEED, y: BLEED })
+			.to({ x: BLEED, y: -BLEED }, TIME)
+			.easing(TWEEN.Easing.Linear.None)
+			.repeat(Infinity)
+			.onUpdate(function() {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.save();
 
-		if (config.logger.paperjsScope) config.logger.paperjsScopeFn.call(this, this.canvas.id);
+				ctx.lineWidth = STROKE_WIDTH;
+				ctx.strokeStyle = STROKE_COLOR;
+
+				// x lines, moving in y axis
+				ctx.beginPath();
+				for (i = -BLEED; i <= end; i += OFFSET) {
+					ctx.moveTo(0, i + this.y);
+					ctx.lineTo(canvas.width, i + this.y);
+
+					ctx.moveTo(i + this.x, 0);
+					ctx.lineTo(i + this.x, canvas.height);
+				}
+				ctx.closePath();
+				ctx.stroke();
+
+				ctx.restore();
+			})
+			.start();
+
+		animate();
+
+		function animate() {
+			raf = requestAnimationFrame(animate);
+			TWEEN.update();
+		}
+
 	};
 
 	Forces.prototype.deactivate = function() {
@@ -81,44 +114,9 @@ define([
 		var arrows = this.element.querySelector(ARROWS_SELECTOR);
 
 		this.element.querySelector('.cessna').removeChild(arrows);
-
-		helper.cleanupPaperScript(this);
-		this.element.removeChild(this.canvas);
+		if (raf) cancelAnimationFrame(raf);
+		this.element.removeChild(this.element.querySelector('canvas'));
 	};
-
-
-	function paperScript() {
-		var num = state.FORCES.NUMBER_OF_PARTICLES;
-		var w = view.viewSize.width;
-		var h = view.viewSize.height;
-		var white = new Color(255, 255, 255);
-
-		circles = new Array(num);
-		while (num--)
-			circles[num] = new Path.Circle({
-					center: [state.rand(-10, config.width), state.rand(-10, config.height)],
-					radius: state.rand(3, 6),
-					fillColor: white,
-					// opacity greatly reduces frame rate on tablets
-					// strokeColor: new Color(255,255,255,0.3), strokeWidth: 5
-				});
-
-		function onFrame(event) {
-			if (config.fps) config.fps(event.delta);
-
-			circles.forEach(function(c, i) {
-				if (c.position.x > w) c.position.x = -10;
-				if (c.position.y < 0) c.position.y = h + 10;
-				c.position.x += state.rand(2, 4);
-				c.position.y -= state.rand(1, 3);
-			});
-		}
-
-		function onResize() {
-			w = view.viewSize.width;
-			h = view.viewSize.height;
-		}
-	}
 
 	return new Forces();
 });
