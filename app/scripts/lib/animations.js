@@ -1,5 +1,6 @@
 define(function() {
 	window.requestAnimationFrame || (window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame);
+	window.cancelAnimationFrame || (window.cancelAnimationFrame = window.mozCancelAnimationFrame || window.webkitCancelRequestAnimationFrame);
 
 	var el = document.createElement('div'),
 			hasAnimation = false,
@@ -59,8 +60,6 @@ define(function() {
 
 	function transition(element, transitions) {
 		var name = generateName('transition');
-
-
 
 		console.log(transitionstring, transitions);
 		element.style[transitionstring] = transitions.join(',');
