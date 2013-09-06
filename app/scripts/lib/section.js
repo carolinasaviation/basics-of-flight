@@ -81,15 +81,13 @@ define([
 		},
 
 		startInteraction: function startInteraction(interaction) {
-			this._page.element.insertBefore(this.interactive, this._page.element.firstChild);
-
 			var section = this;
 			if (interaction) {
+				this._page.element.insertBefore(this.interactive, this._page.element.firstChild);
 				setImmediate(function() {
 					section.canvas.id = 'weightInteraction';
 					section.canvas.setAttribute('data-paper-resize', 'true');
 					section.canvas.classList.add('hardware-hack');
-					section.canvas.style.backgroundColor = '#202020';
 					section.canvas.style.top =
 						section.canvas.style.left =
 						section.canvas.style.right =

@@ -10,7 +10,7 @@ define([
 ], function(Page, weight, lift, drag, thrust, draw, helper, TWEEN) {
 	'use strict';
 
-	var TWEEN = window.TWEEN;
+	TWEEN || (TWEEN = window.TWEEN);
 	var BLEED = 200;
 	var OFFSET = 20;
 	var TIME = 6000;

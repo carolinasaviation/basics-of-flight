@@ -65,6 +65,7 @@ define([
 	};
 
 	function paperScript() {
+		/*
 		var w = view.element.width;
 
 		var s = window.state.WEIGHT_INTERACTIVE;
@@ -74,26 +75,6 @@ define([
 			s.granger.sync();
 		}
 
-		var lines = [], line;
-		var top = new Point(0, 0);
-		var bottom = new Point(0, view.element.height);
-		var offset = 0;
-		var color;
-
-		while (offset < w) {
-			offset += 20;
-			top.x = offset;
-			bottom.x = offset;
-			line = new Path.Line(top, bottom);
-			line.speed = 4;
-			color = state.rand(50, 135) / 255;
-			line.strokeColor = new Color(color, color, color);
-			line.strokeWidth = 2;
-			lines.push(line);
-		}
-
-		var activeLayer = this.project.activeLayer;
-		var cessnaLayer = new Layer();
 		var cessna = project.importSVG(document.getElementById('cessna-elevation'));
 
 		cessna.position.x = 400;
@@ -101,17 +82,11 @@ define([
 
 		var angle = -Math.PI;
 		var frame = 0;
-		this.project.activeLayer = activeLayer;
 
 		function onFrame(event) {
-			if (!lines) return;
 			if (config.fps) config.fps(event.delta);
 
 			var w = view._element.width;
-			lines.forEach(function(l) {
-				l.position.x += l.speed * 50 / state.WEIGHT_INTERACTIVE.SPEED;
-				if (l.position.x > w) l.position.x = -10;
-			});
 
 			cessna.position.y = Math.floor(state.WEIGHT_INTERACTIVE.CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
 			if (frame > 100) frame = 0;
@@ -121,6 +96,7 @@ define([
 		function resize() {
 			w = view.element.width;
 		}
+	 */
 	}
 
 	return { paperScript: paperScript }
