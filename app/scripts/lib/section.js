@@ -11,13 +11,9 @@ define([
 
 	function Section() {
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
-		this.interactive = document.createElement('div');
-		this.interactive.classList.add('interactive');
 
 		this.canvas = document.createElement('canvas');
 		this.canvas.style.position = 'absolute';
-
-		this.interactive.appendChild(this.canvas);
 
 		var tmp = document.createElement('div');
 		tmp.innerHTML = card(i18n[this.name.toLowerCase()]);
@@ -28,9 +24,11 @@ define([
 	}
 
 	Section.prototype = {
+		_raf: undefined,
 		_page: undefined,
 		_film: undefined,
 		_quiz: undefined,
+		tween: undefined,
 		init: function init(){},
 
 		page: function(page) {
@@ -60,6 +58,8 @@ define([
 			Hammer(this._page.element).on('tap', this.handleTap);
 
 			this._page.rotateIn(this.card, 'north');
+			var cessna = this._page.element.querySelector('.cessna')
+			if (cessna) cessna.parentNode.removeChild(cessna);
 			this.startInteraction();
 			this.isActive = true;
 		},
@@ -78,15 +78,22 @@ define([
 		},
 
 		startInteraction: function startInteraction() {
-			var section = this;
+			TWEEN.removeAll();
+
+			this.canvas.width = this._page.element.clientWidth;
+			this.canvas.height = this._page.element.clientHeight - this.card.clientHeight;
+			this._page.element.insertBefore(this.canvas, this._page.element.firstChild);
+			this._page.element.insertBefore(this.interactive.bindings.el, this._page.element.firstChild);
+
+			this.tween = this.interactive.interactive.call(this, this.canvas);
 
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, 'startInteraction');
 		},
 
 		stopInteraction: function stopInteraction() {
-			if (this._page.element.contains(this.interactive))
-				this._page.element.removeChild(this.interactive);
+			if (this.raf) cancelAnimationFrame(this.raf);
+			this._page.element.removeChild(this.canvas);
 
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, 'stopInteraction');

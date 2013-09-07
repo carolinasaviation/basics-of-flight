@@ -311,9 +311,11 @@ h1
 	.icon
 		max-width 95%
 		max-height 100%
+	/* Experiment to test memory usage
 		*
 			animation actionPulse 3s infinite
 			animation-timing-function cubic-bezier(0.250, 0.100, 0.250, 1.000)
+	*/
 .btn--is-active
 	border-right-color YELLOW
 	//color YELLOW
@@ -528,7 +530,7 @@ input[type="range"]::-webkit-slider-thumb
 
 .display
 	absolute left right
-	bottom 0
+	bottom 200px
 	z-index 5
 	> *
 		display inline-block
@@ -538,7 +540,7 @@ input[type="range"]::-webkit-slider-thumb
 		background YELLOW
 		font-family FONT_FAMILY
 		line-height 1
-		padding 0.099999em 0 0.055555em
+		padding 0.111111em 0 0.055555em
 		text-align center
 		width 15%
 	.granger

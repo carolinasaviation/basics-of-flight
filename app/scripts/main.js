@@ -10,6 +10,10 @@ require.config({
 		granger: {
 			deps: [],
 			exports: 'Granger'
+		},
+		'../lib/Tween': {
+			deps: [],
+			exports: 'TWEEN'
 		}
 	}
 });

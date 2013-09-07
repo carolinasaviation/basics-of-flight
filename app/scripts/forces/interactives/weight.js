@@ -3,11 +3,16 @@ define([
 	'../../i18n/en',
 	'../../views/display',
 	'../../lib/convert',
-], function(helper, i18n, display, convert) {
+	'../../lib/Tween'
+], function(helper, i18n, display, convert, TWEEN) {
 	'use strict';
 
-	window.state || (window.state = {});
-
+	TWEEN || (TWEEN = window.TWEEN);
+	var BLEED = 200;
+	var TIME = 6000;
+	var OFFSET = 20;
+	var STROKE_WIDTH = 2;
+	var STROKE_COLOR = '#666';
 	var scale = helper.scale;
 
 	var bindings = display.create({
@@ -15,7 +20,6 @@ define([
 		min: 0,
 		max: 100,
 		step: 1,
-		state: s,
 		bindings: {
 			prefix: 'weight-interaction',
 			options: [
@@ -42,32 +46,64 @@ define([
 					title: 'range',
 					renderable: false,
 					sync: function(prefix, value) {
-						if (!s) return;
-						s.data.altitude =
-						s.data.speed =
-						s.data.weight = value;
+						if (!bindings) return;
+						bindings.data.altitude =
+						bindings.data.speed =
+						bindings.data.weight = value;
 					}
 				}
 			]
 		}
 	});
 
-	var s = window.state.WEIGHT_INTERACTIVE = {
-		SPEED: 100,
-		xDiff: 0,
-		yDiff: 0,
-		CESSNA_SIN_MULTIPLIER: 4,
-		CESSNA_SIN_ADDITIVE: 0.04,
-		isFirstTime: true,
-		el: bindings.el,
-		data: bindings.data,
-		granger: bindings.granger
-	};
+	function interactive(canvas) {
+		var self = this, i;
+		var ctx = canvas.getContext('2d');
+		var img = document.getElementById('cessna-isometric').cloneNode(true);
+		img.id = 'weight-cessna-isometric';
+		img.style.position = 'absolute';
+		canvas.parentNode.appendChild(img);
 
-	function interactive() {
-		console.log('interactive');
+		var end = ((canvas.width > canvas.height) ? canvas.width : canvas.height) + BLEED * 2;
+		var z = 0;
+		var t = new TWEEN.Tween({ x: -BLEED, y: BLEED })
+			.to({ x: BLEED, y: -BLEED }, TIME)
+			.easing(TWEEN.Easing.Linear.None)
+			.repeat(Infinity)
+			.onUpdate(function() {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.save();
+
+				ctx.lineWidth = STROKE_WIDTH;
+				ctx.strokeStyle = STROKE_COLOR;
+
+				// x lines, moving in y axis
+				ctx.beginPath();
+				for (i = -BLEED; i <= end; i += OFFSET) {
+					ctx.moveTo(0, i + this.y);
+					ctx.lineTo(canvas.width, i + this.y);
+
+					ctx.moveTo(i + this.x, 0);
+					ctx.lineTo(i + this.x, canvas.height);
+				}
+				ctx.closePath();
+				ctx.stroke();
+
+				ctx.restore();
+			})
+			.start();
+
+		(function animate() {
+			self.raf = requestAnimationFrame(animate);
+			TWEEN.update();
+		})();
+
+		return t;
 	}
 
-	return { interactive: interactive }
+	return {
+		bindings: bindings,
+		interactive: interactive
+	}
 
 });

@@ -28,7 +28,7 @@ define([
 		if (this.isActive) return;
 		Section.prototype.activate.call(this);
 
-		this._page.element.querySelector('.cessna').style.display = 'none';
+		//this._page.element.querySelector('.cessna').style.display = 'none';
 
 		var self = this;
 		var el = this._page.element;
@@ -60,7 +60,7 @@ define([
 		if (!this.isActive) return;
 		Section.prototype.deactivate.call(this);
 
-		this._page.element.querySelector('.cessna').style.display = 'block';
+		//this._page.element.querySelector('.cessna').style.display = 'block';
 		this.stopInteraction();
 	};
 
