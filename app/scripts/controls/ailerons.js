@@ -2,8 +2,7 @@ define([
 	'../lib/section',
 	'../lib/animations',
 	'../lib/helpers',
-	'paper',
-], function(Section, draw, helper, paper) {
+], function(Section, draw, helper) {
 	'use strict';
 
 	var spriteSheet = Array.apply(0, Array(31)).map(function(_, i) {

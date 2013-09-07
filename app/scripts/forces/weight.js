@@ -25,6 +25,7 @@ define([
 
 	Weight.prototype.startInteraction = function() {
 		Section.prototype.startInteraction.call(this);
+		TWEEN.removeAll();
 
 		var canvas = document.createElement('canvas');
 		canvas.width = this._page.element.clientWidth;

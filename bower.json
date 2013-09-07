@@ -6,7 +6,6 @@
     "modernizr": "~2.6.2",
     "lodash": "~1.3.1",
     "normalize-css": "~2.1.2",
-    "paper": "git://github.com/paperjs/paper.js#40f2547e5ffbd12b5c435d0d61b753f59d975fb2",
     "almond": "~0.2.5",
     "requirejs-i18n": "git://github.com/requirejs/i18n.git#98653367086e6f23b5fac8a14e3d9480b40645af",
     "hammerjs": "latest",

@@ -34,22 +34,14 @@ define(function() {
 				'color: ' + logger.colors[this.name], this.name,
 				'color: ' + logger.colors.fn, fn
 			);
-		},
-		paperjsScope: true,
-		paperjsScopeFn: function(scope) {
-			console.log(
-				"%c%s paperjs view id: %c%s",
-				'color:' + logger.colors[this.name] + ';font-weight: bold', this.name,
-				'color: ' + logger.colors.fn, scope
-			);
-		},
-
+		}
 	};
 
 
 	return {
 		logger: logger,
 		// false or fn
+		/*
 		fps: function(delta) {
 			var text;
 			if (delta === 0) {
@@ -68,6 +60,7 @@ define(function() {
 			text.fillColor = '#ffffff';
 			return fps;
 		},
+	  */
 		width: dim.width,
 		height: dim.height,
 

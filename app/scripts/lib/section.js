@@ -28,9 +28,6 @@ define([
 	}
 
 	Section.prototype = {
-		paperScope: undefined,
-		paperProject: undefined,
-		paperView: undefined,
 		_page: undefined,
 		_film: undefined,
 		_quiz: undefined,
@@ -80,25 +77,8 @@ define([
 			this.isActive = false;
 		},
 
-		startInteraction: function startInteraction(interaction) {
+		startInteraction: function startInteraction() {
 			var section = this;
-			if (interaction) {
-				this._page.element.insertBefore(this.interactive, this._page.element.firstChild);
-				setImmediate(function() {
-					section.canvas.id = 'weightInteraction';
-					section.canvas.setAttribute('data-paper-resize', 'true');
-					section.canvas.classList.add('hardware-hack');
-					section.canvas.style.top =
-						section.canvas.style.left =
-						section.canvas.style.right =
-						0;
-					section.canvas.style.zIndex = 2;
-					section.canvas.id = section.name + 'Interaction';
-					helper.createPaperScript(section, section.canvas, interaction.paperScript);
-					if (config.logger.paperjsScope)
-						config.logger.paperjsScopeFn.call(section, section.canvas.id);
-				});
-			}
 
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, 'startInteraction');
@@ -107,8 +87,6 @@ define([
 		stopInteraction: function stopInteraction() {
 			if (this._page.element.contains(this.interactive))
 				this._page.element.removeChild(this.interactive);
-
-			helper.cleanupPaperScript(this);
 
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, 'stopInteraction');

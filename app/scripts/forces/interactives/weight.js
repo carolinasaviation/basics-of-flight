@@ -64,41 +64,10 @@ define([
 		granger: bindings.granger
 	};
 
-	function paperScript() {
-		/*
-		var w = view.element.width;
-
-		var s = window.state.WEIGHT_INTERACTIVE;
-		if (s.isFirstTime) {
-			s.isFirstTime = false;
-			view.element.parentNode.insertBefore(s.el, view.element);
-			s.granger.sync();
-		}
-
-		var cessna = project.importSVG(document.getElementById('cessna-elevation'));
-
-		cessna.position.x = 400;
-		cessna.position.y = 400;
-
-		var angle = -Math.PI;
-		var frame = 0;
-
-		function onFrame(event) {
-			if (config.fps) config.fps(event.delta);
-
-			var w = view._element.width;
-
-			cessna.position.y = Math.floor(state.WEIGHT_INTERACTIVE.CESSNA_SIN_MULTIPLIER * Math.sin(frame) + 330) || 0;
-			if (frame > 100) frame = 0;
-			frame += state.WEIGHT_INTERACTIVE.CESSNA_SIN_ADDITIVE;
-		};
-
-		function resize() {
-			w = view.element.width;
-		}
-	 */
+	function interactive() {
+		console.log('interactive');
 	}
 
-	return { paperScript: paperScript }
+	return { interactive: interactive }
 
 });

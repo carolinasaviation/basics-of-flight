@@ -25,8 +25,6 @@ define([
 
 	Page.prototype = {
 		card: undefined,
-		paperProject: undefined,
-		paperView: undefined,
 
 		init: function init() {
 			if (this.isInit) return;
@@ -116,7 +114,6 @@ define([
 
 		activate: function activate() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'activate');
-			paper || (paper = window.paper);
 			this.rotateIn(this.card, 'south');
 			this.isActive = true;
 		},

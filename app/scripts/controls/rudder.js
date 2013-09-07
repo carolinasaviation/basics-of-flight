@@ -2,8 +2,7 @@ define([
 	'../lib/section',
 	'../lib/animations',
 	'../lib/helpers',
-	'paper',
-], function(Section, draw, helper, paper) {
+], function(Section, draw, helper) {
 	'use strict';
 
 	function Rudder() {

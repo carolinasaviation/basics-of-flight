@@ -59,12 +59,13 @@ define([
 	Forces.prototype.activate = function() {
 		if (this.isActive) return;
 		Page.prototype.activate.call(this);
+		TWEEN.removeAll();
 
 		var canvas = document.createElement('canvas');
 		canvas.width = this.element.clientWidth;
 		canvas.height = this.element.clientHeight - this.card.clientHeight;
 		var ctx = canvas.getContext('2d');
-						
+
 		this.element.insertBefore(canvas, this.element.firstChild);
 		this.element.querySelector('.cessna').appendChild(helper.createDomNode(arrows));
 
