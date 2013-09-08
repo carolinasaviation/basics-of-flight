@@ -1,11 +1,11 @@
 define([
 	'../../lib/helpers',
 	'../../i18n/en',
-	'../../views/display'
-], function(helper, i18n, display) {
+	'../../views/display',
+	'../../lib/Tween'
+], function(helper, i18n, display, TWEEN) {
 	'use strict';
-
-	window.state || (window.state = {});
+	TWEEN || (TWEEN = window.TWEEN);
 
 	var scale = helper.scale;
 
@@ -14,7 +14,6 @@ define([
 		min: 0,
 		max: 100,
 		step: 1,
-		state: s,
 		bindings: {
 			prefix: 'thrust-interaction',
 			options: [
@@ -41,33 +40,24 @@ define([
 					title: 'range',
 					renderable: false,
 					sync: function(prefix, value) {
-						if (!s) return;
-						s.data.altitude =
-						s.data.speed =
-						s.data.thrust = value;
+						if (!bindings) return;
+						bindings.data.altitude =
+						bindings.data.speed =
+						bindings.data.thrust = value;
 					}
 				}
 			]
 		}
 	});
 
-	var s = window.state.THRUST_INTERACTIVE = {
-		SPEED: 100,
-		xDiff: 0,
-		yDiff: 0,
-		CESSNA_SIN_MULTIPLIER: 4,
-		CESSNA_SIN_ADDITIVE: 0.04,
-		isFirstTime: true,
-		el: bindings.el,
-		data: bindings.data,
-		granger: bindings.granger
-	};
-
 	function interactive() {
-		console.log('interactive');
+		console.log('Thrust::interactive');
 	}
 
-	return { interactive: interactive }
+	return {
+		bindings: bindings,
+		interactive: interactive
+	}
 
 });
 

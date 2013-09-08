@@ -6,15 +6,14 @@ define([
 
 	function Lift() {
 		Section.call(this);
+		this.film('//www.youtube.com/embed/beTsXzvtXDs');
+		this.quiz(i18n.lift.quiz);
+		this.interactive = interactive;
 	}
 
 	Lift.prototype = Object.create(Section.prototype);
 
 	Lift.prototype.constructor = Lift;
-
-	Lift.prototype.startInteraction = function() {
-		Section.prototype.startInteraction.call(this, interactive);
-	};
 
 	return new Lift();
 });

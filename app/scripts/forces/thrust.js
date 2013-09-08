@@ -6,15 +6,14 @@ define([
 
 	function Thrust() {
 		Section.call(this);
+		this.film('//www.youtube.com/embed/beTsXzvtXDs');
+		this.quiz(i18n.thrust.quiz);
+		this.interactive = interactive;
 	}
 
 	Thrust.prototype = Object.create(Section.prototype);
 
 	Thrust.prototype.constructor = Thrust;
-
-	Thrust.prototype.startInteraction = function() {
-		Section.prototype.startInteraction.call(this, interactive);
-	};
 
 	return new Thrust();
 });

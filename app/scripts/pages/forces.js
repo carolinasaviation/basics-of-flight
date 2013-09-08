@@ -21,6 +21,8 @@ define([
 	var ARROWS_SELECTOR = '.forces-arrows';
 	var arrows = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow-n"><div class="arrow"></div></div><div class="arrow-s"><div class="arrow"></div></div><div class="arrow-w"><div class="arrow"></div></div><div class="arrow-e"><div class="arrow"></div></div></div>';
 	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"></div>';
+	var cessna = helper.createDomNode(image)
+	cessna.appendChild(document.getElementById('cessna-isometric').cloneNode(true));
 
 	function Forces() {
 		Page.call(this, [
@@ -36,9 +38,6 @@ define([
 	Forces.prototype.constructor = Forces;
 	Forces.prototype.init = function() {
 		Page.prototype.init.call(this);
-		var cessna = helper.createDomNode(image)
-		cessna.appendChild(document.getElementById('cessna-isometric').cloneNode(true));
-		this.element.appendChild(cessna);
 	};
 
 	Forces.prototype.onLoad = function() {
@@ -61,6 +60,7 @@ define([
 		Page.prototype.activate.call(this);
 		TWEEN.removeAll();
 
+		this.element.appendChild(cessna);
 		var canvas = document.createElement('canvas');
 		canvas.width = this.element.clientWidth;
 		canvas.height = this.element.clientHeight - this.card.clientHeight;
