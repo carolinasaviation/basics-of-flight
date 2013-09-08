@@ -1,12 +1,14 @@
 define([
 	'../lib/section',
-	'../lib/animations',
-	'../lib/helpers',
-], function(Section, draw, helper) {
+	'./interactives/elevators'
+], function(Section, interactive) {
 	'use strict';
 
 	function Elevators() {
 		Section.call(this);
+		this.film('//www.youtube.com/embed/beTsXzvtXDs');
+		this.quiz(i18n.elevators.quiz);
+		this.interactive = interactive;
 	}
 
 	Elevators.prototype = Object.create(Section.prototype);

@@ -1,12 +1,14 @@
 define([
 	'../lib/section',
-	'../lib/animations',
-	'../lib/helpers',
-], function(Section, draw, helper) {
+	'./interactives/flaps'
+], function(Section, interactive) {
 	'use strict';
 
 	function Flaps() {
 		Section.call(this);
+		this.film('//www.youtube.com/embed/beTsXzvtXDs');
+		this.quiz(i18n.flaps.quiz);
+		this.interactive = interactive;
 	}
 
 	Flaps.prototype = Object.create(Section.prototype);

@@ -67,7 +67,6 @@ define([
 		// console.log('syncing %s-%s: %s', prefix, this.title, value);
 		this.value = value;
 		var t = document.getElementById(prefix + '-' + this.title);
-		console.log('sync', t, this.calculate(value) + this.format());
 		if (t)
 			t.textContent = this.calculate(value) + this.format();
 	}

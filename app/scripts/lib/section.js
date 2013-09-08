@@ -24,7 +24,7 @@ define([
 	}
 
 	Section.prototype = {
-		_raf: undefined,
+		raf: undefined,
 		_page: undefined,
 		_film: undefined,
 		_quiz: undefined,
@@ -54,6 +54,7 @@ define([
 			 	config.logger.sectionLifeCycleFn.call(this, 'activate');
 
 			if (!(this._page && this._page.element)) return;
+			this.isActive = true;
 
 			Hammer(this._page.element).on('tap', this.handleTap);
 
@@ -61,7 +62,6 @@ define([
 			var cessna = this._page.element.querySelector('.cessna')
 			if (cessna) cessna.parentNode.removeChild(cessna);
 			this.startInteraction();
-			this.isActive = true;
 		},
 
 		deactivate: function deactivate() {
@@ -71,10 +71,11 @@ define([
 			 	config.logger.sectionLifeCycleFn.call(this, 'deactivate');
 
 			if (!(this._page && this._page.element)) return;
+			this.isActive = false;
 
 			Hammer(this._page.element).off('tap', this.handleTap);
+
 			this.stopInteraction();
-			this.isActive = false;
 		},
 
 		startInteraction: function startInteraction() {
@@ -94,6 +95,7 @@ define([
 		stopInteraction: function stopInteraction() {
 			if (this.raf) cancelAnimationFrame(this.raf);
 			this._page.element.removeChild(this.canvas);
+			this._page.element.removeChild(this.interactive.bindings.el);
 
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, 'stopInteraction');

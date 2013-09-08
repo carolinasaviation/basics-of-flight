@@ -207,7 +207,11 @@ define({
 		weight: 'Weight',
 		drag: 'Drag',
 		lift: 'Lift',
-		thrust: 'Thrust'
+		thrust: 'Thrust',
+		elevators: 'Elevators',
+		flaps: 'Flaps',
+		ailerons: 'Ailerons',
+		rudder: 'Rudder',
 	}
 });
 
