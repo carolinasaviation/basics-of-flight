@@ -88,6 +88,9 @@ define([
 
 			this.tween = this.interactive.interactive.call(this, this.canvas);
 
+			if (this.interactive.bindings.granger)
+				this.interactive.bindings.granger.sync();
+
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, 'startInteraction');
 		},

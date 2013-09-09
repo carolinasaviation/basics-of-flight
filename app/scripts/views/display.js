@@ -59,7 +59,8 @@ define([
 
 		return {
 			el: el,
-			data: bindings.data
+			data: bindings.data,
+			granger: granger
 		};
 	}
 

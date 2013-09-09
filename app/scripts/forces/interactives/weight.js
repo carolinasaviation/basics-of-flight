@@ -62,12 +62,13 @@ define([
 		var img = document.getElementById('cessna-isometric').cloneNode(true);
 		img.id = 'weight-cessna-isometric';
 		img.style.position = 'absolute';
+		img.style.left = '8%';
 		canvas.parentNode.appendChild(img);
 
 		var end = ((canvas.width > canvas.height) ? canvas.width : canvas.height) + BLEED * 2;
 		var z = 0;
-		var t = new TWEEN.Tween({ x: -BLEED, y: BLEED })
-			.to({ x: BLEED, y: -BLEED }, TIME)
+		var t = new TWEEN.Tween({ x: -BLEED, y: BLEED, t: 0 })
+			.to({ x: BLEED, y: -BLEED, t: 10 }, TIME)
 			.easing(TWEEN.Easing.Linear.None)
 			.repeat(Infinity)
 			.onUpdate(function() {
@@ -90,6 +91,10 @@ define([
 				ctx.stroke();
 
 				ctx.restore();
+
+				var x = 0;
+				var y = (Math.sin(this.t) * 14);
+				img.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)';
 			})
 			.start();
 
