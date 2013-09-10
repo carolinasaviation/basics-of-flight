@@ -84,12 +84,14 @@ define([
 			this.canvas.width = this._page.element.clientWidth;
 			this.canvas.height = this._page.element.clientHeight - this.card.clientHeight;
 			this._page.element.insertBefore(this.canvas, this._page.element.firstChild);
-			this._page.element.insertBefore(this.interactive.bindings.el, this._page.element.firstChild);
 
-			this.tween = this.interactive.interactive.call(this, this.canvas);
+			if (this.interactive.bindings.el)
+				this._page.element.insertBefore(this.interactive.bindings.el, this._page.element.firstChild);
 
 			if (this.interactive.bindings.granger)
 				this.interactive.bindings.granger.sync();
+
+			this.tween = this.interactive.interactive.call(this, this.canvas);
 
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, 'startInteraction');
