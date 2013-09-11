@@ -56,6 +56,7 @@ define([
 		var j = Math.abs(i);
 		var src = (j < 10) ? ('0' + j) : ('' + j);
 		img.classList.add('aileron-animation');
+		img.classList.add('interactive--sprite');
 		img.src = 'images/ailerons/aileron-' + prefix + src + '.png';
 		return img;
 	});

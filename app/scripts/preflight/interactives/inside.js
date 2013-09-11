@@ -9,12 +9,12 @@ define([
 
 	var scale = helper.scale;
 
-	var spriteSheet = Array.apply(0, Array(72)).map(function(_, i) {
+	var spriteSheet = Array.apply(0, Array(17)).map(function(_, i) {
 		var img = new Image();
 		var src = (i < 10) ? ('0' + i) : ('' + i);
-		img.classList.add('general-animation');
+		img.classList.add('internal-animation');
 		img.classList.add('interactive--sprite');
-		img.src = 'images/preflight-general/' + src + '.png';
+		img.src = 'images/preflight-internal/' + src + '.png';
 		return img;
 	});
 

@@ -100,7 +100,13 @@ define([
 		stopInteraction: function stopInteraction() {
 			if (this.raf) cancelAnimationFrame(this.raf);
 			this._page.element.removeChild(this.canvas);
-			this._page.element.removeChild(this.interactive.bindings.el);
+
+			var tmp = this._page.element.querySelector('.interactive--sprite');
+			if (tmp)
+				tmp.parentNode.removeChild(tmp);
+
+			if (this.interactive.bindings.el)
+				this._page.element.removeChild(this.interactive.bindings.el);
 
 			if (config.logger.sectionLifeCycle)
 				config.logger.sectionLifeCycleFn.call(this, 'stopInteraction');
