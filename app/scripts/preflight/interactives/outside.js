@@ -41,7 +41,7 @@ define([
 				el.replaceChild(spriteSheet[n], spriteSheet[cur]);
 				cur = n;
 			}
-			//self.raf = requestAnimationFrame(next);
+			self.raf = requestAnimationFrame(next);
 		}
 
 		next();
