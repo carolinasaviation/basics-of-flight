@@ -3,11 +3,10 @@ define([
 	'../../i18n/en',
 	'../../views/display',
 	'../../lib/convert',
-	'../../lib/Tween'
+	'Tween'
 ], function(helper, i18n, display, convert, TWEEN) {
 	'use strict';
 
-	TWEEN || (TWEEN = window.TWEEN);
 	var BLEED = 200;
 	var TIME = 6000;
 	var OFFSET = 20;

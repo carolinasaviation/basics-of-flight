@@ -2,10 +2,9 @@ define([
 	'../../lib/helpers',
 	'../../i18n/en',
 	'../../views/display',
-	'../../lib/Tween'
+	'Tween'
 ], function(helper, i18n, display, TWEEN) {
 	'use strict';
-	TWEEN || (TWEEN = window.TWEEN);
 
 	var scale = helper.scale;
 
