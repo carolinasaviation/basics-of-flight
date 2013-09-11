@@ -3,7 +3,7 @@ define([
 	'../../i18n/en',
 	'../../views/display',
 	'../../lib/convert',
-	'Tween'
+	'../../lib/Tween'
 ], function(helper, i18n, display, convert, TWEEN) {
 	'use strict';
 

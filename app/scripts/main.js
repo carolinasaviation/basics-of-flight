@@ -4,16 +4,12 @@ require.config({
 		hammer: '../bower_components/hammerjs/dist/hammer',
 		Bind: '../bower_components/bind/bind',
 		setImmediate: '../bower_components/setImmediate/setImmediate',
-		granger: '../bower_components/granger/dist/granger',
-		Tween: './lib/Tween'
+		granger: '../bower_components/granger/dist/granger'
 	},
 	shim: {
 		'granger': {
 			deps: [],
 			exports: 'Granger'
-		},
-		'Tween': {
-			exports: 'TWEEN'
 		}
 	}
 });
@@ -24,7 +20,7 @@ require([
 	'hammer',
 	'Bind',
 	'setImmediate',
-	'Tween',
+	'./lib/Tween',
 	'polyfills'
 ], function (app, _, hammer, Bind, setImmediate, TWEEN) {
 	'use strict';

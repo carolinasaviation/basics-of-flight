@@ -722,3 +722,9 @@ TWEEN.Interpolation = {
 	}
 
 };
+
+if (define && define.amd) {
+	define(function () {
+		return TWEEN;
+	});
+}

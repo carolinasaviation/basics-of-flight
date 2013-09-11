@@ -2,7 +2,7 @@ define([
 	'../../lib/helpers',
 	'../../i18n/en',
 	'../../views/display',
-	'Tween'
+	'../../lib/Tween'
 ], function(helper, i18n, display, TWEEN) {
 	'use strict';
 
