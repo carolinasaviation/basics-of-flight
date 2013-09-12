@@ -41,7 +41,5 @@ require([
 	};
 
 	app.init();
-
-	// select the first page....sort of
-	//document.querySelector('.nav-item').click()
 });
+

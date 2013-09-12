@@ -52,6 +52,7 @@ define([
 		range.addEventListener('change', function(e) {
 			// points to the data bindings
 			bindings.data.range = this.value;
+			window.GRANGER = +this.value;
 		}, false);
 
 		granger = new Granger(range, { renderer: 'dom', type: 'x', height: 55 });

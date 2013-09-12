@@ -3,8 +3,9 @@ define([
 	'../../i18n/en',
 	'../../views/display',
 	'../../lib/convert',
-	'../../lib/Tween'
-], function(helper, i18n, display, convert, TWEEN) {
+	'../../lib/Tween',
+	'../../lib/things'
+], function(helper, i18n, display, convert, TWEEN, __) {
 	'use strict';
 
 	var BLEED = 200;
@@ -59,14 +60,30 @@ define([
 		var self = this, i;
 		var ctx = canvas.getContext('2d');
 		var img = document.getElementById('cessna-isometric').cloneNode(true);
+
 		img.id = 'weight-cessna-isometric';
+		img.classList.add('interactive--image');
 		img.style.position = 'absolute';
-		img.style.left = '8%';
+		img.style.left = '15%';
+		img.style.width = '60%';
 		canvas.parentNode.appendChild(img);
 
+		var origin = new __.Vector(canvas.width / 2, canvas.height / 2)
+		var field = new __.Field(origin.clone(), 50);
+		var particle = new __.Particle(origin.clone());
+		var value = +bindings.granger.element.value;
+
+		window.field = field;
+		window.particle = particle;
+
+		bindings.granger.element.addEventListener('change', function(e) {
+			var diff = +this.value - value;
+			field.position.x = origin.x + diff;
+			field.position.y = origin.y + diff;
+		}, false);
+
 		var end = ((canvas.width > canvas.height) ? canvas.width : canvas.height) + BLEED * 2;
-		var z = 0;
-		var t = new TWEEN.Tween({ x: -BLEED, y: BLEED, t: 0 })
+		var tween = new TWEEN.Tween({ x: -BLEED, y: BLEED, t: 0 })
 			.to({ x: BLEED, y: -BLEED, t: 10 }, TIME)
 			.easing(TWEEN.Easing.Linear.None)
 			.repeat(Infinity)
@@ -91,9 +108,12 @@ define([
 
 				ctx.restore();
 
-				var x = 0;
-				var y = (Math.sin(this.t) * 14);
-				img.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px)';
+				particle.submitToFields([field]);
+				particle.move();
+
+				var y = (Math.sin(this.t) * 14) - window.GRANGER / 1.5;
+				var transform = 'translate(' + (particle.position.x - img.clientWidth / 2) + 'px,' + (particle.position.y + y - img.clientHeight / 2) + 'px)';
+				img.style.webkitTransform = transform;
 			})
 			.start();
 
@@ -102,7 +122,7 @@ define([
 			TWEEN.update();
 		})();
 
-		return t;
+		return tween;
 	}
 
 	return {

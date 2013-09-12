@@ -9,7 +9,7 @@ define([
 
 	window.i18n = i18n;
 
-	function Section() {
+	function Section(name) {
 		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
 
 		this.canvas = document.createElement('canvas');
@@ -106,8 +106,10 @@ define([
 			this._page.element.removeChild(this.canvas);
 
 			var tmp = this._page.element.querySelector('.interactive--sprite');
-			if (tmp)
-				tmp.parentNode.removeChild(tmp);
+			if (tmp) tmp.parentNode.removeChild(tmp);
+
+			tmp = this._page.element.querySelector('.interactive--image');
+			if (tmp) tmp.parentNode.removeChild(tmp);
 
 			if (this.interactive.bindings.el)
 				this._page.element.removeChild(this.interactive.bindings.el);
