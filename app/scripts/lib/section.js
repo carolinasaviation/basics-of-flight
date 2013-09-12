@@ -88,8 +88,12 @@ define([
 			if (this.interactive.bindings.el)
 				this._page.element.insertBefore(this.interactive.bindings.el, this._page.element.firstChild);
 
-			if (this.interactive.bindings.granger)
+			if (this.interactive.bindings.granger) {
+				if (this.name === 'Weight') window.a = this.interactive;
+				// recalc dimensions since it's instantiated without being onscreen
+				this.interactive.bindings.granger.renderer._calculateDimensions()
 				this.interactive.bindings.granger.sync();
+			}
 
 			this.tween = this.interactive.interactive.call(this, this.canvas);
 

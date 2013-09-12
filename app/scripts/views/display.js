@@ -28,6 +28,7 @@ define([
 		range.setAttribute('min', options.min || 0);
 		range.setAttribute('max', options.max || 100);
 		range.setAttribute('step', options.step || 1);
+		range.value = 50;
 
 		return range;
 	}
