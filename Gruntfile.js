@@ -20,7 +20,8 @@ module.exports = function (grunt) {
 	var yeomanConfig = {
 		app: 'app',
 		dist: 'dist',
-		tmp: '.tmp'
+		tmp: '.tmp',
+		plato: 'plato'
 	};
 
 	grunt.initConfig({
@@ -84,11 +85,24 @@ module.exports = function (grunt) {
 						];
 					}
 				}
+			},
+			plato: {
+				options: {
+					port: 8001,
+					middleware: function (connect) {
+						return [
+							mountFolder(connect, yeomanConfig.plato)
+						];
+					}
+				}
 			}
 		},
 		open: {
 			server: {
 				path: 'http://localhost:<%= connect.options.port %>'
+			},
+			plato: {
+				path: 'http://localhost:<%= connect.plato.options.port %>'
 			}
 		},
 		clean: {
@@ -309,6 +323,19 @@ module.exports = function (grunt) {
 			all: {
 				rjsConfig: '<%= yeoman.app %>/scripts/main.js'
 			}
+		},
+		plato: {
+			options: {
+				jshint: grunt.file.readJSON('.jshintrc')
+				//jshint: false
+			},
+			report: {
+				files: {
+					'<%= yeoman.plato %>': [
+						'app/scripts/**/*.js'
+					]
+				}
+			}
 		}
 	});
 
@@ -354,4 +381,11 @@ module.exports = function (grunt) {
 		'test',
 		'build'
 	]);
+
+	grunt.registerTask('report', [
+		'plato:report',
+		'open:plato',
+		'connect:plato:keepalive'
+	]);
+
 };
