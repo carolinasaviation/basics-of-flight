@@ -29,6 +29,22 @@ define([
 		init: function() {
 			this.bind();
 			this._onNavigationAction({ target: document.querySelector('.nav-item') });
+
+			// quick hack for deep linking
+			if (location.hash) {
+				var l = location.hash.split('/');
+				l.shift();
+				var n = document.querySelector('.nav a[href="#/' + l[0] + '"]')
+				if (!n) return;
+
+				Hammer(n).trigger('tap', { target: n });
+				n = n.parentNode.querySelector('a[href="' + l[1] + '"]');
+
+				if (!n) return
+				setTimeout(function() {
+					Hammer(n).trigger('tap', { target: n });
+				}, 500);
+			}
 		},
 
 		render: function() {

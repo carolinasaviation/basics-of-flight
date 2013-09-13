@@ -34,12 +34,6 @@ require([
 	console.log('Running TWEEN %s', TWEEN.REVISION);
 	console.groupEnd();
 
-	window.state = window.state || {}
-	window.state.rand = function rand(min, max, isFloat) {
-		var rand = Math.random();
-		return Math.floor(max * rand) + min;
-	};
-
 	app.init();
 });
 
