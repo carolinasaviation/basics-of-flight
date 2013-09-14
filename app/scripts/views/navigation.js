@@ -7,7 +7,6 @@ define(['./template'], function(template) {
 				{[ _.forEach(pages, function(page) { ]}
 					<li class="nav-item-container">
 						<a class="nav-item" href="#/{{ page.name.toLowerCase() }}">
-							<img class="nav-image" src="images/proto-nav-{{ page.name.toLowerCase() }}.png">
 							<span class="nav-text">{{ page.name }}</span>
 						</a>
 						<ul class="subnav">
