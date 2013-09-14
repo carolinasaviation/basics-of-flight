@@ -6,13 +6,13 @@ define([
 ], function(helper, i18n, display, grid) {
 	'use strict';
 
-	var BLEED = 200;
 	var scale = helper.scale;
+	var FRAMES = 31;
 
 	var bindings = display.create({
 		title: i18n.t.elevators,
 		min: 0,
-		max: 100,
+		max: FRAMES - 1,
 		step: 1,
 		bindings: {
 			prefix: 'elevators-interaction',
@@ -50,13 +50,35 @@ define([
 		}
 	});
 
+	var spriteSheet = Array.apply(0, Array(FRAMES)).map(function(_, i) {
+		var img = new Image();
+		var src = (i < 10) ? ('0' + i) : ('' + i);
+		img.classList.add('elevators-animation');
+		img.classList.add('interactive--sprite');
+		img.classList.add('cessna');
+		img.src = 'images/elevators/' + src + '.png';
+		return img;
+	});
+
 	function interactive(canvas) {
-		var tween = grid(this, canvas, {
-			from: { x: -BLEED, y: BLEED, t: 0 },
-			to: { x: BLEED, y: -BLEED, t: 10 },
-			time: 6000,
-			onUpdate: function() {}
-		});
+		var self = this;
+		var el = this._page.element;
+		var tween = grid(this, canvas);
+
+		var cur = +bindings.granger.element.value, n;
+		this._page.element.insertBefore(spriteSheet[cur], canvas);
+
+		bindings.granger.element.addEventListener('change', function() {
+			if (!self.isActive) {
+				el.removeChild(spriteSheet[n]);
+				return;
+			}
+			n = +this.value;
+			if (el.contains(spriteSheet[cur]))
+				el.replaceChild(spriteSheet[n], spriteSheet[cur]);
+			else el.insertBefore(spriteSheet[n], el.firstChild);
+			cur = n;
+		}, false);
 
 		return tween;
 	}

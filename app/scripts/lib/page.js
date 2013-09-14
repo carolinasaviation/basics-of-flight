@@ -23,12 +23,11 @@ define([
 		this.cardStage =
 		this.cardRotator =
 		this.card =
+		this.canvas =
 		undefined;
 	}
 
 	Page.prototype = {
-		card: undefined,
-
 		init: function init() {
 			if (this.isInit) return;
 
@@ -38,6 +37,8 @@ define([
 
 			this.card = helper.createDomNode(viewCard(i18n[this.name.toLowerCase()]));
 			this.card.classList.add('card-main');
+
+			this.canvas = document.createElement('canvas');
 
 			this.cardRotator = document.createElement('div');
 			this.cardRotator.classList.add('card-rotator');
@@ -110,6 +111,7 @@ define([
 		onunload: function onUnload() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'onUnload');
 			this.element.parentNode.removeChild(this.element);
+			this.deactivate();
 			this.activatedSection = false;
 		},
 
@@ -118,12 +120,21 @@ define([
 		activate: function activate() {
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'activate');
 			this.rotateIn(this.card, 'south');
+
+			this.canvas.width = this.element.clientWidth;
+			this.canvas.height = this.element.clientHeight - this.card.clientHeight;
+			this.element.insertBefore(this.canvas, this.element.firstChild);
+
 			this.isActive = true;
 		},
 
 		deactivate: function deactivate() {
+			if (!this.isActive) return;
 			if (config.logger.pageLifeCycle) config.logger.pageLifeCycleFn.call(this, 'deactivate');
 			this.isActive = false;
+
+			if (this.raf) cancelAnimationFrame(this.raf);
+			this.element.removeChild(this.canvas);
 		},
 
 		deselectActiveSection: function() {

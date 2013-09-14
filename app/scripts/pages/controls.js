@@ -50,24 +50,10 @@ define([
 		grid.TWEEN.removeAll();
 
 		this.element.appendChild(cessna);
-		var canvas = document.createElement('canvas');
-		canvas.width = this.element.clientWidth;
-		canvas.height = this.element.clientHeight - this.card.clientHeight;
-		var ctx = canvas.getContext('2d');
 
-		this.element.insertBefore(canvas, this.element.firstChild);
-
-		var tween = grid(this, canvas)
+		var tween = grid(this, this.canvas)
 
 		return tween;
-	};
-
-	Controls.prototype.deactivate = function() {
-		if (!this.isActive) return;
-		Page.prototype.deactivate.call(this);
-
-		if (this.raf) cancelAnimationFrame(this.raf);
-		this.element.removeChild(this.element.querySelector('canvas'));
 	};
 
 	return new Controls();

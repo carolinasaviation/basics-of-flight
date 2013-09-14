@@ -6,7 +6,6 @@ define([
 ], function(helper, i18n, display, grid) {
 	'use strict';
 
-	var BLEED = 200;
 	var FRAMES = 31;
 	var scale = helper.scale;
 
@@ -67,17 +66,12 @@ define([
 	function interactive(canvas) {
 		var self = this;
 		var el = this._page.element;
-		var cur = spriteSheet.length - 1;
+		var cur = +bindings.granger.element.value;
 		var dir = 1;
 		var n = 0;
 		var iteration = 0;
 
-		var tween = grid(this, canvas, {
-			from: { x: -BLEED, y: BLEED, t: 0 },
-			to: { x: BLEED, y: -BLEED, t: 10 },
-			time: 6000,
-			onUpdate: function() {}
-		});
+		var tween = grid(this, canvas);
 
 		this._page.element.insertBefore(spriteSheet[cur], canvas);
 
@@ -104,10 +98,11 @@ define([
 				el.removeChild(spriteSheet[n]);
 				return;
 			}
-			n = this.value;
-			el.replaceChild(spriteSheet[n], spriteSheet[cur]);
+			n = +this.value;
+			if (el.contains(spriteSheet[cur]))
+				el.replaceChild(spriteSheet[n], spriteSheet[cur]);
+			else el.insertBefore(spriteSheet[n], el.firstChild);
 			cur = n;
-			console.log('Ailerons go to frame', +this.value);
 		}, false);
 
 		//next();

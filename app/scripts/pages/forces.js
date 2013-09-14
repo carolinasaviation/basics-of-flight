@@ -10,12 +10,6 @@ define([
 ], function(Page, weight, lift, drag, thrust, draw, helper, grid) {
 	'use strict';
 
-	var BLEED = 200;
-	var OFFSET = 20;
-	var TIME = 6000;
-	var STROKE_WIDTH = 2;
-	var STROKE_COLOR = '#666';
-
 	var ARROWS_SELECTOR = '.forces-arrows';
 	var arrows = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow-n"><div class="arrow"></div></div><div class="arrow-s"><div class="arrow"></div></div><div class="arrow-w"><div class="arrow"></div></div><div class="arrow-e"><div class="arrow"></div></div></div>';
 	var image = '<div class="cessna" style="-webkit-transform: translate(0,0)"></div>';
@@ -59,20 +53,10 @@ define([
 		Page.prototype.activate.call(this);
 		grid.TWEEN.removeAll();
 
+		cessna.appendChild(helper.createDomNode(arrows));
 		this.element.appendChild(cessna);
-		var canvas = document.createElement('canvas');
-		canvas.width = this.element.clientWidth;
-		canvas.height = this.element.clientHeight - this.card.clientHeight;
-		var ctx = canvas.getContext('2d');
 
-		this.element.insertBefore(canvas, this.element.firstChild);
-		this.element.querySelector('.cessna').appendChild(helper.createDomNode(arrows));
-
-		var tween = grid(this, canvas, {
-			from: { x: -BLEED, y: BLEED },
-			to: { x: BLEED, y: -BLEED },
-			time: TIME
-		});
+		var tween = grid(this, this.canvas);
 
 		return tween;
 	};
@@ -83,9 +67,6 @@ define([
 
 		var arrows = this.element.querySelector(ARROWS_SELECTOR);
 		this.element.querySelector('.cessna').removeChild(arrows);
-
-		if (this.raf) cancelAnimationFrame(this.raf);
-		this.element.removeChild(this.element.querySelector('canvas'));
 	};
 
 	return new Forces();
