@@ -2,16 +2,18 @@ define([
 	'../../lib/helpers',
 	'i18n',
 	'../../views/display',
-	'../../lib/Tween'
-], function(helper, i18n, display, TWEEN) {
+	'../../lib/grid'
+], function(helper, i18n, display, grid) {
 	'use strict';
 
+	var BLEED = 200;
+	var FRAMES = 31;
 	var scale = helper.scale;
 
 	var bindings = display.create({
 		title: i18n.t.ailerons,
 		min: 0,
-		max: 100,
+		max: FRAMES - 1,
 		step: 1,
 		bindings: {
 			prefix: 'ailerons-interaction',
@@ -49,7 +51,7 @@ define([
 		}
 	});
 
-	var spriteSheet = Array.apply(0, Array(31)).map(function(_, i) {
+	var spriteSheet = Array.apply(0, Array(FRAMES)).map(function(_, i) {
 		var img = new Image();
 		i -= 15;
 		var prefix = i < 0 ? '+' : '';
@@ -57,11 +59,12 @@ define([
 		var src = (j < 10) ? ('0' + j) : ('' + j);
 		img.classList.add('aileron-animation');
 		img.classList.add('interactive--sprite');
+		img.classList.add('cessna');
 		img.src = 'images/ailerons/aileron-' + prefix + src + '.png';
 		return img;
 	});
 
-	function interactive() {
+	function interactive(canvas) {
 		var self = this;
 		var el = this._page.element;
 		var cur = spriteSheet.length - 1;
@@ -69,10 +72,17 @@ define([
 		var n = 0;
 		var iteration = 0;
 
-		this._page.element.appendChild(spriteSheet[cur]);
+		var tween = grid(this, canvas, {
+			from: { x: -BLEED, y: BLEED, t: 0 },
+			to: { x: BLEED, y: -BLEED, t: 10 },
+			time: 6000,
+			onUpdate: function() {}
+		});
 
+		this._page.element.insertBefore(spriteSheet[cur], canvas);
+
+		/*
 		function next() {
-			// TODO: handle this in Section.js
 			if (!self.isActive) {
 				el.removeChild(spriteSheet[n]);
 				return;
@@ -87,8 +97,22 @@ define([
 			}
 			self.raf = requestAnimationFrame(next);
 		}
+	  */
 
-		next();
+		bindings.granger.element.addEventListener('change', function() {
+			if (!self.isActive) {
+				el.removeChild(spriteSheet[n]);
+				return;
+			}
+			n = this.value;
+			el.replaceChild(spriteSheet[n], spriteSheet[cur]);
+			cur = n;
+			console.log('Ailerons go to frame', +this.value);
+		}, false);
+
+		//next();
+
+		return tween;
 	}
 
 	return {

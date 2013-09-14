@@ -6,8 +6,8 @@ define([
 	'../forces/thrust',
 	'../lib/animations',
 	'../lib/helpers',
-	'../lib/Tween'
-], function(Page, weight, lift, drag, thrust, draw, helper, TWEEN) {
+	'../lib/grid'
+], function(Page, weight, lift, drag, thrust, draw, helper, grid) {
 	'use strict';
 
 	var BLEED = 200;
@@ -19,7 +19,7 @@ define([
 
 	var ARROWS_SELECTOR = '.forces-arrows';
 	var arrows = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow-n"><div class="arrow"></div></div><div class="arrow-s"><div class="arrow"></div></div><div class="arrow-w"><div class="arrow"></div></div><div class="arrow-e"><div class="arrow"></div></div></div>';
-	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"></div>';
+	var image = '<div class="cessna" style="-webkit-transform: translate(0,0)"></div>';
 	var cessna = helper.createDomNode(image);
 	cessna.appendChild(document.getElementById('cessna-isometric').cloneNode(true));
 
@@ -57,7 +57,7 @@ define([
 	Forces.prototype.activate = function() {
 		if (this.isActive) return;
 		Page.prototype.activate.call(this);
-		TWEEN.removeAll();
+		grid.TWEEN.removeAll();
 
 		this.element.appendChild(cessna);
 		var canvas = document.createElement('canvas');
@@ -68,42 +68,19 @@ define([
 		this.element.insertBefore(canvas, this.element.firstChild);
 		this.element.querySelector('.cessna').appendChild(helper.createDomNode(arrows));
 
-		var end = ((canvas.width > canvas.height) ? canvas.width : canvas.height) + BLEED * 2;
-		var i;
-
-		new TWEEN.Tween({ x: -BLEED, y: BLEED })
-			.to({ x: BLEED, y: -BLEED }, TIME)
-			.easing(TWEEN.Easing.Linear.None)
-			.repeat(Infinity)
-			.onUpdate(function() {
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
-				ctx.save();
-
-				ctx.lineWidth = STROKE_WIDTH;
-				ctx.strokeStyle = STROKE_COLOR;
-
-				// x lines, moving in y axis
-				ctx.beginPath();
-				for (i = -BLEED; i <= end; i += OFFSET) {
-					ctx.moveTo(0, i + this.y);
-					ctx.lineTo(canvas.width, i + this.y);
-
-					ctx.moveTo(i + this.x, 0);
-					ctx.lineTo(i + this.x, canvas.height);
-				}
-				ctx.closePath();
-				ctx.stroke();
-
-				ctx.restore();
-			})
-			.start();
+		var tween = grid(this, canvas, {
+			from: { x: -BLEED, y: BLEED },
+			to: { x: BLEED, y: -BLEED },
+			time: TIME
+		});
 
 		function animate() {
 			raf = requestAnimationFrame(animate);
-			TWEEN.update();
+			grid.TWEEN.update();
 		}
-
 		animate();
+
+		return tween;
 	};
 
 	Forces.prototype.deactivate = function() {

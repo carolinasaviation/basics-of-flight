@@ -1,4 +1,5 @@
 define(function() {
+	'use strict';
 
 	function createDomNode(str, tmpElement) {
 		tmpElement = document.createElement(tmpElement || 'div');

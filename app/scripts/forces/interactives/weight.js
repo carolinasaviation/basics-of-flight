@@ -3,16 +3,12 @@ define([
 	'i18n',
 	'../../views/display',
 	'../../lib/convert',
-	'../../lib/Tween',
-	'../../lib/things'
-], function(helper, i18n, display, convert, TWEEN, __) {
+	'../../lib/things',
+	'../../lib/grid'
+], function(helper, i18n, display, convert, __, grid) {
 	'use strict';
 
 	var BLEED = 200;
-	var TIME = 6000;
-	var OFFSET = 20;
-	var STROKE_WIDTH = 2;
-	var STROKE_COLOR = '#666';
 	var scale = helper.scale;
 
 	var bindings = display.create({
@@ -57,7 +53,7 @@ define([
 	});
 
 	function interactive(canvas) {
-		var self = this, i;
+		var self = this;
 		var ctx = canvas.getContext('2d');
 		var img = document.getElementById('cessna-isometric').cloneNode(true);
 
@@ -79,49 +75,24 @@ define([
 			field.position.y = origin.y + diff;
 		}, false);
 
-		var end = ((canvas.width > canvas.height) ? canvas.width : canvas.height) + BLEED * 2;
-		var tween = new TWEEN.Tween({ x: -BLEED, y: BLEED, t: 0 })
-			.to({ x: BLEED, y: -BLEED, t: 10 }, TIME)
-			.easing(TWEEN.Easing.Linear.None)
-			.repeat(Infinity)
-			.onUpdate(function() {
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
-				ctx.save();
+		function onUpdate() {
+			particle.moveToField(field);
+			particle.move();
 
-				ctx.lineWidth = STROKE_WIDTH;
-				ctx.strokeStyle = STROKE_COLOR;
+			field.draw(ctx);
 
-				// x lines, moving in y axis
-				ctx.beginPath();
-				this.y = this.x = 0;
-				for (i = -BLEED; i <= end; i += OFFSET) {
-					ctx.moveTo(0, i + this.y);
-					ctx.lineTo(canvas.width, i + this.y);
+			var y = 0;
+			//var y = (Math.sin(this.t) * 14);
+			var transform = 'translate(' + (particle.position.x - img.clientWidth / 2) + 'px,' + (particle.position.y + y - img.clientHeight / 2) + 'px)';
+			img.style.webkitTransform = transform;
+		}
 
-					ctx.moveTo(i + this.x, 0);
-					ctx.lineTo(i + this.x, canvas.height);
-				}
-				ctx.closePath();
-				ctx.stroke();
-
-				ctx.restore();
-
-				particle.moveToField(field);
-				particle.move();
-
-				field.draw(ctx);
-
-				var y = 0;
-				//var y = (Math.sin(this.t) * 14);
-				var transform = 'translate(' + (particle.position.x - img.clientWidth / 2) + 'px,' + (particle.position.y + y - img.clientHeight / 2) + 'px)';
-				img.style.webkitTransform = transform;
-			})
-			.start();
-
-		(function animate() {
-			self.raf = setTimeout(animate, 64); //requestAnimationFrame(animate);
-			TWEEN.update();
-		})();
+		var tween = grid(this, canvas, {
+			from: { x: -BLEED, y: BLEED, t: 0 },
+			to: { x: BLEED, y: -BLEED, t: 10 },
+			time: 6000,
+			onUpdate: onUpdate
+		});
 
 		return tween;
 	}

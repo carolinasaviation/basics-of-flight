@@ -2,10 +2,11 @@ define([
 	'../../lib/helpers',
 	'i18n',
 	'../../views/display',
-	'../../lib/Tween'
-], function(helper, i18n, display, TWEEN) {
+	'../../lib/grid'
+], function(helper, i18n, display, grid) {
 	'use strict';
 
+	var BLEED = 200;
 	var scale = helper.scale;
 
 	var bindings = display.create({
@@ -49,8 +50,15 @@ define([
 		}
 	});
 
-	function interactive() {
-		console.log('Flaps::interactive');
+	function interactive(canvas) {
+		var tween = grid(this, canvas, {
+			from: { x: -BLEED, y: BLEED, t: 0 },
+			to: { x: BLEED, y: -BLEED, t: 10 },
+			time: 6000,
+			onUpdate: function() {}
+		});
+
+		return tween;
 	}
 
 	return {
