@@ -15,7 +15,6 @@ define([
 	var TIME = 6000;
 	var STROKE_WIDTH = 2;
 	var STROKE_COLOR = '#666';
-	var raf;
 
 	var ARROWS_SELECTOR = '.forces-arrows';
 	var arrows = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow-n"><div class="arrow"></div></div><div class="arrow-s"><div class="arrow"></div></div><div class="arrow-w"><div class="arrow"></div></div><div class="arrow-e"><div class="arrow"></div></div></div>';
@@ -35,6 +34,7 @@ define([
 	Forces.prototype = Object.create(Page.prototype);
 
 	Forces.prototype.constructor = Forces;
+
 	Forces.prototype.init = function() {
 		Page.prototype.init.call(this);
 	};
@@ -74,12 +74,6 @@ define([
 			time: TIME
 		});
 
-		function animate() {
-			raf = requestAnimationFrame(animate);
-			grid.TWEEN.update();
-		}
-		animate();
-
 		return tween;
 	};
 
@@ -88,9 +82,9 @@ define([
 		Page.prototype.deactivate.call(this);
 
 		var arrows = this.element.querySelector(ARROWS_SELECTOR);
-
 		this.element.querySelector('.cessna').removeChild(arrows);
-		if (raf) cancelAnimationFrame(raf);
+
+		if (this.raf) cancelAnimationFrame(this.raf);
 		this.element.removeChild(this.element.querySelector('canvas'));
 	};
 
