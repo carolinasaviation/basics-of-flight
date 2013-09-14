@@ -343,7 +343,7 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('server', function (target) {
 		if (target === 'dist') {
-			return grunt.task.run([/*'build',*/ 'open', 'connect:dist:keepalive']);
+			return grunt.task.run([/*'build',*/ 'open:server', 'connect:dist:keepalive']);
 		}
 
 		grunt.task.run([
@@ -352,7 +352,7 @@ module.exports = function (grunt) {
 			'stylus:compile',
 			'jade:compile',
 			'connect:livereload',
-			'open',
+			'open:server',
 			'watch'
 		]);
 	});
