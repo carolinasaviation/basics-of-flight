@@ -1,18 +1,18 @@
 define([
 	'../lib/page',
-	'../preflight/outside',
-	'../preflight/inside',
+	'../preflight/exterior',
+	'../preflight/interior',
 	'../lib/animations',
 	'../lib/helpers'
-], function(Page, outside, inside /*, draw, helper*/) {
+], function(Page, exterior, interior /*, draw, helper*/) {
 	'use strict';
 
 	function Preflight() {
 		Page.call(this);
 
 		this.sections = [
-			outside,
-			inside
+			exterior,
+			interior
 		];
 	}
 

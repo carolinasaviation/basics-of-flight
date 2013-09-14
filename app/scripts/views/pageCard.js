@@ -5,7 +5,7 @@ define(['./template'], function(template) {
 		<div class="card">
 			<div class="card-primary">
 				<h1>{{ title }}</h1>
-				<p>{{ description }}</p>
+				{! description !}
 			</div>
 		</div>
 	***/

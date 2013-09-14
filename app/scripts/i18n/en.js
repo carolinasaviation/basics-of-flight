@@ -2,7 +2,7 @@ define({
 	// === FORCES
 	forces: {
 		title: 'Forces',
-		description: 'To fly an airplane, you have to master the four basic aerodynamic forces: lift, weight, thrust and drag. You can think of them as four arms holding the plane in the air, each pushing them from a different direction. Every aircraft, whether an airplane, helicopter or rocket, is affected by four opposing forces: Thrust, Lift, Drag and Weight.'
+		description: '<p>To fly an airplane, you have to master the four basic aerodynamic forces: lift, weight, thrust and drag. You can think of them as four arms holding the plane in the air, each pushing them from a different direction. Every aircraft, whether an airplane, helicopter or rocket, is affected by four opposing forces: Thrust, Lift, Drag and Weight.</p>'
 	},
 	drag: {
 		introduction: {
@@ -74,7 +74,7 @@ define({
 		science: {
 			title: 'How is thrust calculated?',
 			equation: 'T = (dm / dt) * v',
-			description: '<p.T is the thrust generated (force){dm} {dt} is the rate of change of mass with respect to time (mass flow rate of exhaust); v is the speed</p>',
+			description: '<p>T is the thrust generated (force){dm} {dt} is the rate of change of mass with respect to time (mass flow rate of exhaust); v is the speed</p>',
 		},
 		history: {
 			title: 'The history of thrust',
@@ -128,7 +128,7 @@ define({
 	// === CONTROLS
 	controls: {
 		title: 'Controls',
-		description: 'To fly an airplane you have to master manipulating the forces.'
+		description: '<p>To fly an airplane you have to master manipulating the forces.</p>'
 	},
 	elevators: {
 		introduction: {
@@ -137,48 +137,70 @@ define({
 		},
 		science: {
 			equation: '',
-			description: 'There are shaft engines, reaction engines, and now even the Wankel engine.',
+			description: '<p>There are shaft engines, reaction engines, and now even the Wankel engine.</p>',
 		},
 		history: {
 			figure: 'throwaway-engine.jpg',
-			description: 'A Rolls-Royce Merlin installed in a preserved Avro York. From http://en.wikipedia.org/wiki/Aircraft_engine'
+			description: '<p>A Rolls-Royce Merlin installed in a preserved Avro York. From http://en.wikipedia.org/wiki/Aircraft_engine</p>'
 		},
 		quiz: []
 	},
 	flaps: {
 		introduction: {
 			title: 'Flaps',
-			description: '<p>Flaps are responsible for increasing drag.</p>',
+			description: '<p>Most flaps are located on the trailing edge of each wing, usually between the fuselage and the ailerons, and extend downward (and often outward) from the wing when put into use. The purpose of the flaps is to generate more lift at slower airspeed, which enables the airplane to fly at a greatly reduced speed with a lower risk of stalling.</p>' +
+				'<p>This is especially useful during takeoff and landing. When extended further, flaps also generate more drag which slows the airplane down much faster than just reducing throttle.</p>'
 		},
 		science: {
 			equation: '',
-			description: 'Flaps are responsible for increasing drag.',
+			description: '</p>Flaps are responsible for increasing drag.</p>',
 		},
 		history: {
 			figure: 'throwaway-flaps.jpg',
-			description: 'Flaps are hinged surfaces mounted on the trailing edges of the wings of a fixed-wing aircraft to reduce the speed at which an aircraft can be safely flown and to increase the angle of descent for landing. They shorten takeoff and landing distances. Flaps do this by lowering the stall speed and increasing the drag.'
+			description: '<p>Flaps are hinged surfaces mounted on the trailing edges of the wings of a fixed-wing aircraft to reduce the speed at which an aircraft can be safely flown and to increase the angle of descent for landing. They shorten takeoff and landing distances. Flaps do this by lowering the stall speed and increasing the drag.</p>'
 		},
-		quiz: []
+		quiz: [
+			{
+				question: 'What happens to the plane as the flaps are down?',
+				answers: [
+					'It goes up',
+					'It gets drag',
+					'It goes down'
+				]
+			}
+		]
 	},
 	ailerons: {
 		introduction: {
 			title: 'What&rsquo;s an aileron?',
-			description: '<p>French for &lsquo;little wing&rsquo;</p>',
+			description: '<p>Ailerons are small hinged sections on the outboard portion of a wing. Ailerons usually work in opposition: while one moves down the other moves up.</p>' +
+				'<p>Their job is to increase the lift on one wing and reduce the lift on the other. This rolls the aircraft sideways allowing it to turn. Airplanes turn because of banking created by the ailerons, not because of rudder input.</p>',
 		},
 		science: {
 			equation: 'F = m * a',
-			description: 'French for &lsquo;little wing&rsquo;',
+			description: '<p>French for &lsquo;little wing&rsquo;</p>',
 		},
 		history: {
 			figure: 'throwaway-aileron.gif',
-			description: 'An aileron is a hinged flight control surface usually attached to the trailing edge of each wing of a fixed-wing aircraft. Ailerons are used in pairs to control the aircraft in roll, or movement around the aircraft&rsquo;s longitudinal axis, which normally results in a change in heading due to the tilting of the lift vector. Movement around this axis is called &lsquo;rolling&rsquo; or &lsquo;banking&rsquo;.'
+			description: '<p>Glenn Curtiss was one of many innovators that expanded on the idea of wing warping developed by the Wright Brothers. He developed an aileron that gave aircraft more lateral control.</p>' +
+			 '<p>Curtiss was born in 1878 in Hammondsport, New York. Similar to the Wright Brothers, Curtiss opend a bicycle shop and manufactured his own bikes. He later started another company and developed the Hercules motorcycle. The motorized engines on his bikes were the best in the country. It was his work with engines that brought him into the aviation realm.</p>' +
+			 '<p>Early aviatiors asked him to supply engines for their aircrafts. In 1908, Curtiss attracted the attention of Alexander Graham Bell, the telephone inventor. Curtiss joined Bell and others to start the Aerial Experiment Association. Curtiss made a controlled flight of over 1,000 feet in an aircraft called the White Wing. This was the first American aircraft to use ailerons for control purposes. Curtiss designed an aircraft called the June Bug, providing it with wing flaps that would later be known as ailerons.'
 		},
-		quiz: []
+		quiz: [
+			{
+				question: 'What happens to the plane as the rudder left is on the right?',
+				answers: [
+					'It goes right',
+					'It goes left',
+					'It goes faster',
+				]
+			}
+		]
 	},
 	rudder: {
 		introduction: {
 			title: 'Rudder',
-			description: '',
+			description: '<p>The rudder is the small moving section at the rear of the vertical stabilizer. Because the rudder moves, it varies the amount of force generated by the tail surface and is used to generate and control the yawing motion of the aircraft.</p>',
 		},
 		science: {
 			equation: 'W = mg',
@@ -186,45 +208,55 @@ define({
 		},
 		history: {
 			figure: 'throwaway-rudder.gif',
-			description: 'The rudder is a directional control surface along with the rudder-like elevator. It is usually attached to the fin  which allows the pilot to control yaw about the vertical axis, i.e. change the horizontal direction in which the nose is pointing.'
+			description: '<p>The rudder is a directional control surface along with the rudder-like elevator. It is usually attached to the fin  which allows the pilot to control yaw about the vertical axis, i.e. change the horizontal direction in which the nose is pointing.</p>'
 		},
-		quiz: []
+		quiz: [
+			{
+				question: 'What happens to the plane as the elevators are up?',
+				answers: [
+					'It goes up',
+					'It goes down',
+					'It goes slower',
+				]
+			}
+		]
 	},
 
 	// === PREFLIGHT
 	preflight: {
 		title: 'Preflight',
-		description: 'Before taking to the skies, you best make sure your plane is all checked out!'
+		description: '<p>Every flight is preceded by a preflight inspection of the airplane. Here you can follow the steps of the preflight inspection to prepare your Cessna for takeoff.</p>'
 	},
-	inside: {
+	interior: {
 		introduction: {
-			title: 'Inside the cockpit',
-			description: '',
-		},
-		science: {
-			equation: '',
-			description: '',
+			title: 'The Interior',
+			description: '<p>You will need to make sure all cockpit equipment is operating and the fuel tanks have sufficient fuel for your flight.</p>',
 		},
 		history: {
 			figure: 'throwaway-engine.jpg',
-			description: 'A Rolls-Royce Merlin installed in a preserved Avro York. From http://en.wikipedia.org/wiki/Aircraft_engine'
+			description: '<p>A Rolls-Royce Merlin installed in a preserved Avro York. From http://en.wikipedia.org/wiki/Aircraft_engine</p>'
 		},
-		quiz: []
+		part: {
+			'wing': '<p>Begin at the right wing and look at the forward wing surface for nicks, loose fasteners, dents, or other damage. Look at the flight control surfaces, flaps, and ailerons. Make sure that items are secure and have no loose fasteners.</p>',
+			'wing fuel tank': '<p>Remove the fuel cap(for wing fuel tanks) and visually confirm they have sufficient fuel to make your flight. Drain a small quantity of fuel from the right fuel tankdrain valve and check for water, sediment and proper fuel grade. Replace the fuel cap securely.</p>',
+			'tail assembly': '<p>Move to the tail assembly. While at the tail, you may remove the wheel chock or tail tie-down. Look at the elevators and the rudder. As with all control surfaces, these should be tight, with no loose motion or free play.</p>',
+			'left wing fuel tank': '<p>Move to the opposite side of the aircraft, continuig to look over the aircraftskin as you reach the left wing. Remove the fuel cap and look into the tank to be sure it is fuelled, replacethe tank cap securely, and check out the control surfaces (again, the ailerons and flaps).</p>',
+			'left wing ailerons and flaps': '<p>Check the engine oil, the ignition wires, the magneto electrical connections, and the fuel lines and other hoses to be sure they are seated properly and tightly clamped.</p>',
+			'engine oil, ignition wires': '<p>Move to the front of the aircraft. Check the engine oil, the ignition wires, the magneto electrical connections, and the fuel lines and other hoses to be sure they are sealedproperly and tightlyclamped. Look at the alternator belt to make sure it is tight, and air intake to be sure it is not obstructed.</p>'
+		}
 	},
-	outside: {
+	exterior: {
 		introduction: {
-			title: 'The outside',
-			description: '',
+			title: 'The Exterior',
+			description: '<p>During the exterior part of the pre-flight inspection, look for anything that appears to be mechanically unsound. Items such a loose or missing rivets or fasteners, wrinkled surfaces, or anything that just does not look right should be suspect. If in doubt, do not fly!</p>',
 		},
-		science: {
-			equation: '',
-			description: 'Flaps are responsible for increasing drag.',
-		},
-		history: {
-			figure: 'throwaway-flaps.jpg',
-			description: 'Flaps are hinged surfaces mounted on the trailing edges of the wings of a fixed-wing aircraft to reduce the speed at which an aircraft can be safely flown and to increase the angle of descent for landing. They shorten takeoff and landing distances. Flaps do this by lowering the stall speed and increasing the drag.'
-		},
-		quiz: []
+		part: {
+			'registration': '<p>Make sure the aircraft registration, certification, and other paperwork is in the cabin and up to date.</p>',
+			'master power': '<p>Turn on the master power switch</p>',
+			'fuel gauges': '<p>Check the fuel gaugues. If the fuel is low, call for the service truck to bring your fuel out while you continue to do the rest of your checks.</p>',
+			'sounds': '<p>Listen to the sounds of equipment powering on. Radio cooling fans, instrument gyros, and other equipment make noticeable sounds and when unusual sounds are heard, it may be a warning an instrument or radio could fail in flight.</p>',
+			'flaps, landing gear': '<p>Check flaps, landing gear lockdown levers, and other flight controllers for smooth, normal function.</p>'
+		}
 	},
 
 	quiz: {
