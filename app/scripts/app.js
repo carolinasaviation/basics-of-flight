@@ -95,12 +95,23 @@ define([
 			// the hackiest keybindings for navigation of all time
 			var KEYS = { 48: 0, 49: 1, 50: 2, 51: 3, 52: 4, 192: '`' };
 			document.body.addEventListener('keyup', function(e) {
+				var tmp = 'nextElementSibling';
 				var n = KEYS[e.keyCode];
 				if (typeof n === 'undefined') return;
 				if (n === '`') {
-					n = document.querySelector('.nav .' + NAV_ACTIVE_CLASS).parentNode.nextElementSibling;
+					if (e.shiftKey) tmp = 'previousElementSibling';
+					n = document.querySelector('.nav .' + NAV_ACTIVE_CLASS).parentNode[tmp];
 					if (n) n = n.querySelector('.nav-item');
-					return self._onNavigationAction({ target: n || document.querySelector('.nav .nav-item') });
+					if (!n) {
+						if (tmp === 'nextElementSibling') {
+							n = document.querySelector('.nav .nav-item');
+						}
+						else {
+							n = document.querySelectorAll('.nav .nav-item');
+							n = n[n.length - 1];
+						}
+					}
+					return self._onNavigationAction({ target: n });
 				}
 
 			  if (n === 0)
