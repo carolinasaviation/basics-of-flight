@@ -2,15 +2,14 @@ define([
 	'../lib/helpers',
 	'../views/sectionCard',
 	'../lib/quiz',
+	'../lib/touch',
 	'../config',
-	'../i18n/en',
-], function(helper, card, Quiz, config, i18n) {
+	'i18n'
+], function(helper, card, Quiz, touch, config, i18n) {
 	'use strict';
 
-	window.i18n = i18n;
-
 	function Section(name) {
-		this.name = this.constructor.toString().match(/^function (\w+)/)[1];
+		this.name = name || this.constructor.toString().match(/^function (\w+)/)[1];
 
 		this.canvas = document.createElement('canvas');
 		this.canvas.style.position = 'absolute';
@@ -51,15 +50,15 @@ define([
 			if (this.isActive) return false;
 
 			if (config.logger.sectionLifeCycle)
-			 	config.logger.sectionLifeCycleFn.call(this, 'activate');
+				config.logger.sectionLifeCycleFn.call(this, 'activate');
 
 			if (!(this._page && this._page.element)) return;
 			this.isActive = true;
 
-			Hammer(this._page.element).on('tap', this.handleTap);
+			touch(this._page.element).on('tap', this.handleTap);
 
 			this._page.rotateIn(this.card, 'north');
-			var cessna = this._page.element.querySelector('.cessna')
+			var cessna = this._page.element.querySelector('.cessna');
 			if (cessna) cessna.parentNode.removeChild(cessna);
 			this.startInteraction();
 		},
@@ -68,12 +67,12 @@ define([
 			if (!this.isActive) return false;
 
 			if (config.logger.sectionLifeCycle)
-			 	config.logger.sectionLifeCycleFn.call(this, 'deactivate');
+				config.logger.sectionLifeCycleFn.call(this, 'deactivate');
 
 			if (!(this._page && this._page.element)) return;
 			this.isActive = false;
 
-			Hammer(this._page.element).off('tap', this.handleTap);
+			touch(this._page.element).off('tap', this.handleTap);
 
 			this.stopInteraction();
 		},
@@ -91,7 +90,7 @@ define([
 			if (this.interactive.bindings.granger) {
 				if (this.name === 'Weight') window.a = this.interactive;
 				// recalc dimensions since it's instantiated without being onscreen
-				this.interactive.bindings.granger.renderer._calculateDimensions()
+				this.interactive.bindings.granger.renderer._calculateDimensions();
 				this.interactive.bindings.granger.sync();
 			}
 
@@ -149,20 +148,20 @@ define([
 					el.parentNode.removeChild(el);
 					el.classList.remove('modal--active');
 					el.textContent = '';
-					Hammer(el).off('tap', window.closeModal);
-				}
+					touch(el).off('tap', window.closeModal);
+				};
 
 				el = document.createElement('div');
 				el.classList.add('modal');
-				el.innerHTML = '<iframe width="900" height="600" src="' + this._film + '" frameborder="0" allowfullscreen></iframe>'
-				el.appendChild(document.createElement('div'))
+				el.innerHTML = '<iframe width="900" height="600" src="' + this._film + '" frameborder="0" allowfullscreen></iframe>';
+				el.appendChild(document.createElement('div'));
 				el.lastChild.classList.add('modal-backdrop');
 				this._page.element.appendChild(el);
 				el.classList.add('modal--active');
 				setTimeout(function() {
 					// hack to let the close Modal be called globally
 					window.closeModal = fn;
-					Hammer(el).on('tap', fn);
+					touch(el).on('tap', fn);
 				}, 4);
 			}
 

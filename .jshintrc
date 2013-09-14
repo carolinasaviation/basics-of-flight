@@ -17,9 +17,13 @@
     "unused": true,
     "trailing": true,
     "smarttabs": true,
+		"expr": true,
 		"globals": {
 			"i18n": true,
-			"define": true
+			"define": true,
+			"requestAnimationFrame": true,
+			"cancelAnimationFrame": true,
+			"TWEEN": true
 		},
 
     "strict": false,

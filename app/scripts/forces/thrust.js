@@ -1,7 +1,8 @@
 define([
 	'../lib/section',
-	'./interactives/thrust'
-], function(Section, interactive) {
+	'./interactives/thrust',
+	'i18n'
+], function(Section, interactive, i18n) {
 	'use strict';
 
 	function Thrust() {

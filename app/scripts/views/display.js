@@ -28,7 +28,7 @@ define([
 		range.setAttribute('min', options.min || 0);
 		range.setAttribute('max', options.max || 100);
 		range.setAttribute('step', options.step || 1);
-		range.value = 50;
+		range.value = 30;
 
 		return range;
 	}
@@ -49,7 +49,7 @@ define([
 
 		bindings = register(options.bindings);
 
-		range.addEventListener('change', function(e) {
+		range.addEventListener('change', function() {
 			// points to the data bindings
 			bindings.data.range = this.value;
 			window.GRANGER = +this.value;
@@ -66,7 +66,7 @@ define([
 		};
 	}
 
-	function sync(prefix, value, bindings) {
+	function sync(prefix, value) {
 		// console.log('syncing %s-%s: %s', prefix, this.title, value);
 		this.value = value;
 		var t = document.getElementById(prefix + '-' + this.title);

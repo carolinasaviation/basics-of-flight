@@ -1,7 +1,10 @@
 define([
 	'../views/pageCard',
 	'../lib/helpers',
-], function(viewCard, helper) {
+	'../lib/touch',
+	'config',
+	'lodash'
+], function(viewCard, helper, touch, config, _) {
 	'use strict';
 
 	var NAV_ACTIVE_CLASS = 'subnav-item-active';
@@ -34,7 +37,7 @@ define([
 			this.element.setAttribute('id', 'page-' + this.name.toLowerCase());
 
 			this.card = helper.createDomNode(viewCard(i18n[this.name.toLowerCase()]));
-			this.card.classList.add('card-main')
+			this.card.classList.add('card-main');
 
 			this.cardRotator = document.createElement('div');
 			this.cardRotator.classList.add('card-rotator');
@@ -47,11 +50,11 @@ define([
 			this.sections.forEach(giveThis.bind(this));
 
 			var name = this.name;
-			var subnav = helper.toArray(document.querySelectorAll('.nav-item')).filter(function(el, index, array) {
+			var subnav = helper.toArray(document.querySelectorAll('.nav-item')).filter(function(el) {
 				return el.textContent === name;
 			})[0].parentNode.querySelector('.subnav');
 
-			Hammer(subnav).on('tap', this.subnavListener);
+			touch(subnav).on('tap', this.subnavListener);
 
 			this.isInit = true;
 
@@ -123,7 +126,7 @@ define([
 			this.isActive = false;
 		},
 
-		deselectActiveSection: function(e) {
+		deselectActiveSection: function() {
 			var active = document.querySelector('.subnav .' + NAV_ACTIVE_CLASS);
 			if (!active) return;
 
@@ -191,7 +194,7 @@ define([
 			this.cardRotator.appendChild(el);
 
 			this.cardRotator.style.webkitTransform = 'rotateX(' + this.cardRotation + 'deg)';
-			this.cardStage.addEventListener('webkitTransitionEnd', function end(e) {
+			this.cardStage.addEventListener('webkitTransitionEnd', function end() {
 				if (prevChild && prevChild.parentNode)
 					prevChild.parentNode.removeChild(prevChild);
 				this.removeEventListener('webkitTransitionEnd', end);
@@ -202,17 +205,7 @@ define([
 			//debugger;
 		}
 
-	}
-
-	Page.create = function create(name, sections) {
-		var ctor, obj = {};
-		ctor = obj[name] = new Page(sections);
-
-		ctor.prototype = Object.create(Page.prototype);
-		ctor.prototype.constructor = ctor;
-		ctor.name = name;
-		return ctor;
-	}
+	};
 
 	return Page;
 });

@@ -1,13 +1,14 @@
 /*global define */
 define([
-	'./config',
-	'./i18n/en',
+	'config',
+	'i18n',
 	'./pages/forces',
 	'./pages/controls',
 	'./pages/preflight',
 	'./views/navigation',
-	'lodash',
-], function (config, i18n, forces, controls, preflight, viewNavigation, _) {
+	'./lib/touch',
+	'lodash'
+], function (config, i18n, forces, controls, preflight, viewNavigation, touch, _) {
 	'use strict';
 
 	window.config = config;
@@ -34,15 +35,15 @@ define([
 			if (location.hash) {
 				var l = location.hash.split('/');
 				l.shift();
-				var n = document.querySelector('.nav a[href="#/' + l[0] + '"]')
+				var n = document.querySelector('.nav a[href="#/' + l[0] + '"]');
 				if (!n) return;
 
-				Hammer(n).trigger('tap', { target: n });
+				touch(n).trigger('tap', { target: n });
 				n = n.parentNode.querySelector('a[href="' + l[1] + '"]');
 
-				if (!n) return
+				if (!n) return;
 				setTimeout(function() {
-					Hammer(n).trigger('tap', { target: n });
+					touch(n).trigger('tap', { target: n });
 				}, 500);
 			}
 		},
@@ -54,7 +55,7 @@ define([
 						name: getName(page),
 						sections: page.sections.map(getName)
 					};
-				})
+				});
 
 			var nav = viewNavigation({ pages: pages });
 			var tmp = document.createElement('div');
@@ -69,11 +70,6 @@ define([
 			// prevent all clicks
 			document.body.addEventListener('click', function(e) { e.preventDefault(); }, false);
 
-			// prevent scrolling except for white listed elements
-			// this is really janky.
-			document.addEventListener('touchstart', onTouchstart, false);
-			document.addEventListener('touchend', onTouchend, false);
-
 			function onTouchstart(e) {
 				el = document.querySelector('.card-content--active');
 				if (el && el.contains(e.target)) return;
@@ -82,14 +78,19 @@ define([
 			}
 
 			function onTouchmove(e) { e.preventDefault(); }
-			function onTouchend(e) { document.removeEventListener('touchmove', onTouchmove); }
+			function onTouchend() { document.removeEventListener('touchmove', onTouchmove); }
+
+			// prevent scrolling except for white listed elements
+			// this is really janky.
+			document.addEventListener('touchstart', onTouchstart, false);
+			document.addEventListener('touchend', onTouchend, false);
 
 			document.documentElement.addEventListener('keyup', function(e) {
 				if (e.keyCode === 27 && (el = document.querySelector('.modal--active')))
 					window.closeModal(el);
 			}, false);
 
-			Hammer(document.querySelector('.nav')).on('tap', this._onNavigationAction.bind(this));
+			touch(document.querySelector('.nav')).on('tap', this._onNavigationAction.bind(this));
 
 			// the hackiest keybindings for navigation of all time
 			var KEYS = { 48: 0, 49: 1, 50: 2, 51: 3, 52: 4, 192: '`' };
@@ -106,7 +107,7 @@ define([
 					return self._onNavigationAction({ target: document.querySelector('.nav .' + NAV_ACTIVE_CLASS) });
 				n = document.querySelector('.' + NAV_ACTIVE_CLASS + '+.subnav .subnav-item-container:nth-child(' + n + ') a');
 				if (n)
-					Hammer(n).trigger('tap', { target: n });
+					touch(n).trigger('tap', { target: n });
 			}, false);
 		},
 
@@ -118,7 +119,7 @@ define([
 			// since all subnavs are visible before events are necessarily bound,
 			// we bail out if the handler should be handled by the subnavListener
 			while (!node.matches('.nav-item'))
-				if (node.matches('.subnav')) return
+				if (node.matches('.subnav')) return;
 				else
 					node = node.parentNode;
 
@@ -146,7 +147,7 @@ define([
 			page = _.findWhere(this.pages, { name: node.textContent });
 			page.load();
 		}
-	}
+	};
 
 
 	return new AppManager();

@@ -1,7 +1,8 @@
 define([
 	'../lib/section',
 	'./interactives/weight',
-], function(Section, interactive) {
+	'i18n'
+], function(Section, interactive, i18n) {
 	'use strict';
 
 	function Weight() {

@@ -1,7 +1,8 @@
 define([
 	'../lib/section',
-	'./interactives/ailerons'
-], function(Section, interactive) {
+	'./interactives/ailerons',
+	'i18n'
+], function(Section, interactive, i18n) {
 	'use strict';
 
 	function Ailerons() {

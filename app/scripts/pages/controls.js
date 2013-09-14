@@ -5,16 +5,9 @@ define([
 	'../controls/ailerons',
 	'../controls/rudder',
 	'../lib/animations',
-	'../lib/helpers',
+	'../lib/helpers'
 ], function(Page, elevators, flaps, ailerons, rudder, draw, helper) {
 	'use strict';
-
-	window.state || (window.state = {});
-	window.state.CONTROLS = {
-		NUMBER_OF_PARTICLES: 30,
-		CESSNA_SIN_MULTIPLIER: 40,
-		CESSNA_SIN_ADDITIVE: 0.04,
-	};
 
 	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"><img src="images/cessna-isometric.svg"></div>';
 

@@ -10,7 +10,6 @@ define([
 ], function(Page, weight, lift, drag, thrust, draw, helper, TWEEN) {
 	'use strict';
 
-	TWEEN || (TWEEN = window.TWEEN);
 	var BLEED = 200;
 	var OFFSET = 20;
 	var TIME = 6000;
@@ -21,7 +20,7 @@ define([
 	var ARROWS_SELECTOR = '.forces-arrows';
 	var arrows = '<div class="' + ARROWS_SELECTOR.substr(1) + '"><div class="arrow-n"><div class="arrow"></div></div><div class="arrow-s"><div class="arrow"></div></div><div class="arrow-w"><div class="arrow"></div></div><div class="arrow-e"><div class="arrow"></div></div></div>';
 	var image = '<div class="cessna" style="position:absolute;z-index:1;-webkit-transform: translate(0,0)"></div>';
-	var cessna = helper.createDomNode(image)
+	var cessna = helper.createDomNode(image);
 	cessna.appendChild(document.getElementById('cessna-isometric').cloneNode(true));
 
 	function Forces() {
@@ -72,7 +71,7 @@ define([
 		var end = ((canvas.width > canvas.height) ? canvas.width : canvas.height) + BLEED * 2;
 		var i;
 
-		var t = new TWEEN.Tween({ x: -BLEED, y: BLEED })
+		new TWEEN.Tween({ x: -BLEED, y: BLEED })
 			.to({ x: BLEED, y: -BLEED }, TIME)
 			.easing(TWEEN.Easing.Linear.None)
 			.repeat(Infinity)
@@ -99,13 +98,12 @@ define([
 			})
 			.start();
 
-		animate();
-
 		function animate() {
 			raf = requestAnimationFrame(animate);
 			TWEEN.update();
 		}
 
+		animate();
 	};
 
 	Forces.prototype.deactivate = function() {

@@ -1,6 +1,6 @@
 define([
 	'../../lib/helpers',
-	'../../i18n/en',
+	'i18n',
 	'../../views/display',
 	'../../lib/Tween'
 ], function(helper, i18n, display, TWEEN) {

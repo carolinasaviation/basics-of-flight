@@ -1,7 +1,8 @@
 define([
 	'../lib/section',
-	'./interactives/rudder'
-], function(Section, interactive) {
+	'./interactives/rudder',
+	'i18n'
+], function(Section, interactive, i18n) {
 	'use strict';
 
 	function Rudder() {

@@ -23,13 +23,13 @@ define(function() {
 		sectionLifeCycle: true,
 		pageLifeCycleFn: function(fn) {
 			console.log(
-				"%c%s: %c%s",
+				'%c%s: %c%s',
 				'color:' + logger.colors[this.name] + ';font-weight: bold', this.name,
 				'color: ' + logger.colors.fn, fn
 			);
 		},
 		sectionLifeCycleFn: function(fn) {
-			console.log("%c%s/%c%s: %c%s",
+			console.log('%c%s/%c%s: %c%s',
 				'color: ' + logger.colors[this._page.name] + ';font-weight: bold', this._page.name,
 				'color: ' + logger.colors[this.name], this.name,
 				'color: ' + logger.colors.fn, fn
@@ -66,7 +66,7 @@ define(function() {
 
 		transform: 'webkitTransform',
 		animation: 'webkitAnimation'
-	}
+	};
 
 });
 

@@ -1,4 +1,6 @@
 define(function() {
+	'use strict';
+
 	window.requestAnimationFrame || (window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame);
 	window.cancelAnimationFrame || (window.cancelAnimationFrame = window.mozCancelAnimationFrame || window.webkitCancelRequestAnimationFrame);
 
@@ -7,10 +9,10 @@ define(function() {
 			animationstring = 'animation',
 			prefix = '',
 			prefixes = 'Webkit Moz O ms Khtml'.split(' '),
-			pfx  = ''
+			pfx  = '',
 			i = 0;
 
-	if (el.style.animationName) animation = true;
+	if (el.style[animationstring]) hasAnimation = true;
 	else
 		for (; i < prefixes.length; i++) {
 			if (el.style[prefixes[i] + 'AnimationName'] === undefined) continue;
@@ -18,7 +20,7 @@ define(function() {
 			pfx = prefixes[i];
 			animationstring = pfx + 'Animation';
 			prefix = '-' + pfx.toLowerCase() + '-';
-			animation = true;
+			hasAnimation = true;
 			break;
 		}
 
@@ -36,7 +38,7 @@ define(function() {
 			var s = document.createElement('style');
 			s.innerHTML = keyframes;
 			document.getElementsByTagName('head')[0].appendChild(s);
-		}
+		};
 	})();
 
 	var counter = 0;
@@ -49,26 +51,26 @@ define(function() {
 	function animate(element, properties, animation) {
 		var name = generateName('animate');
 		var frames = animation.map(function(frame) {
-			return frame[0] + '%{' + frame[1] + '}'
+			return frame[0] + '%{' + frame[1] + '}';
 		}).join('');
 		var keyframes = ['@', prefix, 'keyframes ', name, '{ ', frames, '}'].join('');
 
 		appendStyle(keyframes);
 
-		element.style[animationstring] = name + ' ' + properties
+		element.style[animationstring] = name + ' ' + properties;
 	}
 
 	function transition(element, transitions) {
 		var name = generateName('transition');
 
-		console.log(transitionstring, transitions);
+		console.log(transitionstring, transitions, name);
 		element.style[transitionstring] = transitions.join(',');
 	}
 
 	return {
 		createAnimation: animate,
 		createTransition: transition
-	}
+	};
 
 });
 

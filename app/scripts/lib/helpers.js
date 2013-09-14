@@ -20,5 +20,5 @@ define(function() {
 		limit: limit,
 		scale: scale,
 		toArray: function toArray(n) { return Array.prototype.slice.call(n, 0); }
-	}
+	};
 });

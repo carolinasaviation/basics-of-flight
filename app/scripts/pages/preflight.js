@@ -3,7 +3,7 @@ define([
 	'../preflight/outside',
 	'../preflight/inside',
 	'../lib/animations',
-	'../lib/helpers',
+	'../lib/helpers'
 ], function(Page, outside, inside /*, draw, helper*/) {
 	'use strict';
 

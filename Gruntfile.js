@@ -127,6 +127,8 @@ module.exports = function (grunt) {
 				'<%= yeoman.app %>/scripts/{,*/}*.js',
 				'!<%= yeoman.app %>/scripts/vendor/*',
 				'!<%= yeoman.app %>/scripts/polyfills.js',
+				'!<%= yeoman.app %>/scripts/lib/Tween.js',
+				'!<%= yeoman.app %>/scripts/i18n/*',
 				'test/spec/{,*/}*.js'
 			]
 		},

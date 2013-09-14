@@ -1,7 +1,8 @@
 define([
 	'../lib/section',
-	'./interactives/lift'
-], function(Section, interactive) {
+	'./interactives/lift',
+	'i18n'
+], function(Section, interactive, i18n) {
 	'use strict';
 
 	function Lift() {

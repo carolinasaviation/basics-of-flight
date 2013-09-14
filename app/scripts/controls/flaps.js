@@ -1,7 +1,8 @@
 define([
 	'../lib/section',
-	'./interactives/flaps'
-], function(Section, interactive) {
+	'./interactives/flaps',
+	'i18n'
+], function(Section, interactive, i18n) {
 	'use strict';
 
 	function Flaps() {

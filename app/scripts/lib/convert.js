@@ -2,7 +2,7 @@ define([
 
 ], function() {
 
-	var convert = {};
+	var _convert = {};
 
 	function extractUnit(any) {
 		if (typeof any === 'undefined' || typeof any === 'number') return '';
@@ -20,12 +20,12 @@ define([
 
 	function convert(measurement, format) {
 		measurement = parse(measurement);
-		return convert[measurement[1] + 'to' + format](measurement[0]);
+		return _convert[measurement[1] + 'to' + format](measurement[0]);
 	}
 
 	function register(start, end, toFn, fromFn) {
-		convert[start + 'to' + end] = toFn;
-		convert[end + 'to' + start] = fromFn;
+		_convert[start + 'to' + end] = toFn;
+		_convert[end + 'to' + start] = fromFn;
 	}
 
 	register('kg', 'lbs',
@@ -41,7 +41,7 @@ define([
 	return {
 		convert: convert,
 		register: register
-	}
+	};
 
 });
 

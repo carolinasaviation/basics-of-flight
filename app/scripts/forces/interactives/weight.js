@@ -1,6 +1,6 @@
 define([
 	'../../lib/helpers',
-	'../../i18n/en',
+	'i18n',
 	'../../views/display',
 	'../../lib/convert',
 	'../../lib/Tween',
@@ -28,12 +28,12 @@ define([
 					calculate: function(p) {
 						return scale(p, 5000, 10000);
 					},
-					format: function() { return ' ft' }
+					format: function() { return ' ft'; }
 				},
 				{
 					title: i18n.t.speed,
 					calculate: function(p) { return 3200; },
-					format: function() { return ' m/hr' }
+					format: function() { return ' m/hr'; }
 				},
 				{
 					title: i18n.t.weight,
@@ -69,15 +69,12 @@ define([
 		canvas.parentNode.appendChild(img);
 
 		var origin = new __.Vector(canvas.width / 2, canvas.height / 2)
-		var field = new __.Field(origin.clone(), 50);
+		var field = new __.Field(new __.Vector(canvas.width / 2 - 50, canvas.height / 2 - 50), 100);
 		var particle = new __.Particle(origin.clone());
 		var value = +bindings.granger.element.value;
 
-		window.field = field;
-		window.particle = particle;
-
 		bindings.granger.element.addEventListener('change', function(e) {
-			var diff = +this.value - value;
+			var diff = (+this.value - value) * 4;
 			field.position.x = origin.x + diff;
 			field.position.y = origin.y + diff;
 		}, false);
@@ -96,6 +93,7 @@ define([
 
 				// x lines, moving in y axis
 				ctx.beginPath();
+				this.y = this.x = 0;
 				for (i = -BLEED; i <= end; i += OFFSET) {
 					ctx.moveTo(0, i + this.y);
 					ctx.lineTo(canvas.width, i + this.y);
@@ -108,17 +106,20 @@ define([
 
 				ctx.restore();
 
-				particle.submitToFields([field]);
+				particle.moveToField(field);
 				particle.move();
 
-				var y = (Math.sin(this.t) * 14) - window.GRANGER / 1.5;
+				field.draw(ctx);
+
+				var y = 0;
+				//var y = (Math.sin(this.t) * 14);
 				var transform = 'translate(' + (particle.position.x - img.clientWidth / 2) + 'px,' + (particle.position.y + y - img.clientHeight / 2) + 'px)';
 				img.style.webkitTransform = transform;
 			})
 			.start();
 
 		(function animate() {
-			self.raf = requestAnimationFrame(animate);
+			self.raf = setTimeout(animate, 64); //requestAnimationFrame(animate);
 			TWEEN.update();
 		})();
 

@@ -1,7 +1,8 @@
 define([
 	'../lib/section',
-	'./interactives/drag'
-], function(Section, interactive) {
+	'./interactives/drag',
+	'i18n'
+], function(Section, interactive, i18n) {
 	'use strict';
 
 	function Drag() {
