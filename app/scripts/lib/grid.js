@@ -17,16 +17,19 @@ define([
 		});
 	 */
 
+	function noop(){}
+
 	function defaults(options) {
 		if (!options) options = {};
 		if (!options.to) options.to = {};
 		if (!options.from) options.from = {};
-		if (typeof options.to.x === 'undefined') options.to.x = -BLEED;
-		if (typeof options.to.y === 'undefined') options.to.y = BLEED;
+		if (typeof options.to.x === 'undefined') options.to.x = BLEED;
+		if (typeof options.to.y === 'undefined') options.to.y = -BLEED;
 		if (typeof options.to.t === 'undefined') options.from.t = 0;
-		if (typeof options.from.x === 'undefined') options.from.x = BLEED;
-		if (typeof options.from.y === 'undefined') options.from.y = -BLEED;
+		if (typeof options.from.x === 'undefined') options.from.x = -BLEED;
+		if (typeof options.from.y === 'undefined') options.from.y = BLEED;
 		if (typeof options.from.t === 'undefined') options.from.t = 10;
+		if (typeof options.onUpdate === 'undefined') options.onUpdate = noop;
 
 		return options;
 	}
@@ -63,7 +66,7 @@ define([
 
 				ctx.restore();
 
-				if (options.onUpdate) options.onUpdate();
+				options.onUpdate();
 			})
 			.start();
 

@@ -51,12 +51,7 @@ define([
 	});
 
 	function interactive(canvas) {
-		var tween = grid(this, canvas, {
-			from: { x: -BLEED, y: BLEED, t: 0 },
-			to: { x: BLEED, y: -BLEED, t: 10 },
-			time: 6000,
-			onUpdate: function() {}
-		});
+		var tween = grid(this, canvas);
 
 		return tween;
 	}

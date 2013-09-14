@@ -87,12 +87,7 @@ define([
 			img.style.webkitTransform = transform;
 		}
 
-		var tween = grid(this, canvas, {
-			from: { x: -BLEED, y: BLEED, t: 0 },
-			to: { x: BLEED, y: -BLEED, t: 10 },
-			time: 6000,
-			onUpdate: onUpdate
-		});
+		var tween = grid(this, canvas);
 
 		return tween;
 	}
