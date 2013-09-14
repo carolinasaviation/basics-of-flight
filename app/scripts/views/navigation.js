@@ -12,7 +12,7 @@ define(['./template'], function(template) {
 						</a>
 						<ul class="subnav">
 							{[ _.forEach(page.sections, function(section) { ]}
-								<li class="subnav-item-container"><a class="subnav-item" href="{{ (section.name || section).toLowerCase() }}">{{ section.name || section }}</a></li>
+								<li class="subnav-item-container"><a class="subnav-item" href="#/{{ page.name.toLowerCase() }}/{{ (section.name || section).toLowerCase() }}">{{ section.name || section }}</a></li>
 							{[ }); ]}
 						</ul>
 				 </li>

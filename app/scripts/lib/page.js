@@ -128,6 +128,7 @@ define([
 			if (!active) return;
 
 			var section = _.findWhere(this.sections, { name: active.textContent });
+			this.activatedSection = false;
 			if (section)
 				section.deactivate();
 
@@ -156,8 +157,10 @@ define([
 
 			node.classList.add(NAV_ACTIVE_CLASS);
 			section = _.findWhere(this.sections, { name: node.textContent });
-			if (section)
+			if (section) {
+				history.pushState(null, null, node.href);
 				section.activate();
+			}
 
 			return false;
 		},
