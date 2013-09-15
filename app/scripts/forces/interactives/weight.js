@@ -2,20 +2,15 @@ define([
 	'../../lib/helpers',
 	'i18n',
 	'../../views/display',
-	'../../lib/convert',
-	'../../lib/things',
-	'../../lib/grid'
-], function(helper, i18n, display, convert, __, grid) {
+	'../../lib/grid',
+	'./common'
+], function(helper, i18n, display, grid, common) {
 	'use strict';
 
-	var BLEED = 200;
 	var scale = helper.scale;
 
 	var bindings = display.create({
 		title: i18n.t.weight,
-		min: 0,
-		max: 100,
-		step: 1,
 		bindings: {
 			prefix: 'weight-interaction',
 			options: [
@@ -52,28 +47,27 @@ define([
 		}
 	});
 
+	var boundGranger = false;
+	var grangerChange;
+
 	function interactive(canvas) {
-		var self = this;
 		var ctx = canvas.getContext('2d');
-		var img = document.getElementById('cessna-isometric').cloneNode(true);
+		var img = common.setupCessna(this, canvas);
+		var forces = common.setupForces(canvas, bindings.granger);
+		var field = forces.field;
+		var origin = forces.origin;
+		var particle = forces.particle;
+		var value = forces.value;
 
-		img.id = 'weight-cessna-isometric';
-		img.classList.add('interactive--image');
-		img.style.position = 'absolute';
-		img.style.left = '15%';
-		img.style.width = '60%';
-		canvas.parentNode.appendChild(img);
+		if (grangerChange) bindings.granger.element.removeEventListener('change', grangerChange);
 
-		var origin = new __.Vector(canvas.width / 2, canvas.height / 2)
-		var field = new __.Field(new __.Vector(canvas.width / 2 - 50, canvas.height / 2 - 50), 100);
-		var particle = new __.Particle(origin.clone());
-		var value = +bindings.granger.element.value;
-
-		bindings.granger.element.addEventListener('change', function(e) {
+		grangerChange = function(e) {
 			var diff = (+this.value - value) * 4;
-			field.position.x = origin.x + diff;
+			field.position.x = origin.x + diff * 1.5;
 			field.position.y = origin.y + diff;
-		}, false);
+		}
+
+		bindings.granger.element.addEventListener('change', grangerChange, false);
 
 		function onUpdate() {
 			particle.moveToField(field);
@@ -87,7 +81,7 @@ define([
 			img.style.webkitTransform = transform;
 		}
 
-		var tween = grid(this, canvas);
+		var tween = grid(this, canvas, { onUpdate: onUpdate });
 
 		return tween;
 	}

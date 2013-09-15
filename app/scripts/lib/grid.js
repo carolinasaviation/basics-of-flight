@@ -66,7 +66,7 @@ define([
 
 				ctx.restore();
 
-				options.onUpdate();
+				options.onUpdate.call(this);
 			})
 			.start();
 
@@ -77,7 +77,7 @@ define([
 
 		animate();
 
-		return tween;
+		return animate;
 	}
 
 	grid.TWEEN = TWEEN;

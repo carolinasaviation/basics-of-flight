@@ -2,18 +2,15 @@ define([
 	'../../lib/helpers',
 	'i18n',
 	'../../views/display',
-	'../../lib/grid'
-], function(helper, i18n, display, grid) {
+	'../../lib/grid',
+	'./common'
+], function(helper, i18n, display, grid, common) {
 	'use strict';
 
-	var BLEED = 200;
 	var scale = helper.scale;
 
 	var bindings = display.create({
 		title: i18n.t.lift,
-		min: 0,
-		max: 100,
-		step: 1,
 		bindings: {
 			prefix: 'lift-interaction',
 			options: [
@@ -50,8 +47,41 @@ define([
 		}
 	});
 
+	var boundGranger = false;
+	var grangerChange;
+
 	function interactive(canvas) {
-		var tween = grid(this, canvas);
+		var ctx = canvas.getContext('2d');
+		var img = common.setupCessna(this, canvas);
+		var forces = common.setupForces(canvas, bindings.granger);
+		var field = forces.field;
+		var origin = forces.origin;
+		var particle = forces.particle;
+		var value = forces.value;
+
+		if (grangerChange) bindings.granger.element.removeEventListener('change', grangerChange);
+
+		grangerChange = function(e) {
+			var diff = (+this.value - value) * 4;
+			field.position.x = origin.x + diff * 1.5;
+			field.position.y = origin.y + diff;
+		}
+
+		bindings.granger.element.addEventListener('change', grangerChange, false);
+
+		function onUpdate() {
+			particle.moveToField(field);
+			particle.move();
+
+			field.draw(ctx);
+
+			var y = 0;
+			//var y = (Math.sin(this.t) * 14);
+			var transform = 'translate(' + (particle.position.x - img.clientWidth / 2) + 'px,' + (particle.position.y + y - img.clientHeight / 2) + 'px)';
+			img.style.webkitTransform = transform;
+		}
+
+		var tween = grid(this, canvas, { onUpdate: onUpdate });
 
 		return tween;
 	}

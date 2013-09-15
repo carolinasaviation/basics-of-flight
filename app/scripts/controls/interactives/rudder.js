@@ -50,8 +50,15 @@ define([
 		}
 	});
 
+	var cur = +bindings.granger.element.value, n, tween;
+
 	function interactive(canvas) {
-		var tween = grid(this, canvas);
+		console.log('interactive', this.name, tween);
+		if (tween) {
+		 	tween = grid(this, canvas);
+			return tween;
+		}
+		tween = grid(this, canvas);
 
 		return tween;
 	}

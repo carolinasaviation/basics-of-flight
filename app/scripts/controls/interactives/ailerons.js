@@ -63,15 +63,19 @@ define([
 		return img;
 	});
 
+	var cur = +bindings.granger.element.value, n, tween;
+
 	function interactive(canvas) {
+		if (tween) {
+		 	tween = grid(this, canvas);
+			return tween;
+		}
+		tween = grid(this, canvas);
+
 		var self = this;
 		var el = this._page.element;
-		var cur = +bindings.granger.element.value;
 		var dir = 1;
-		var n = 0;
 		var iteration = 0;
-
-		var tween = grid(this, canvas);
 
 		this._page.element.insertBefore(spriteSheet[cur], canvas);
 
