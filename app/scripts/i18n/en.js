@@ -44,7 +44,7 @@ define({
 			//equation: 'L\' =  \rho v \Gamma\,',
 			description: '<p>There are two prominent physic principles that come into play to create lift. Bernoulli&rsquo;s Principle and Newton&rsquo;s Third Law.</p>' +
 				'<p>Bernoulli&rsquo;s principle states that an increase in flow creates a decrease in pressure. When airflow hits the rounded edge of an airfoil the air about the wing travels faster than the air below. The pressure below the wing is higher than the air pressure above the wing. This difference in pressure creates lift. Lift pushes the wings upward.</p>' +
-				'<p>Newton&rsquo;s Third Law states that for every action there is an equal and opposite reaction. Birds fly by moving their wings. Their wings push the air downwards. The equal reaction to this is the air also pushing the bird&rsquo;s wings upwards.'
+				'<p>Newton&rsquo;s Third Law states that for every action there is an equal and opposite reaction. Birds fly by moving their wings. Their wings push the air downwards. The equal reaction to this is the air also pushing the bird&rsquo;s wings upwards.</p>'
 		},
 		history: {
 			title: 'Some History of Lift',
@@ -153,7 +153,7 @@ define({
 		},
 		science: {
 			equation: '',
-			description: '</p>Flaps are responsible for increasing drag.</p>',
+			description: '<p>Flaps are responsible for increasing drag.</p>',
 		},
 		history: {
 			figure: 'throwaway-flaps.jpg',
@@ -174,7 +174,7 @@ define({
 		introduction: {
 			title: 'What&rsquo;s an aileron?',
 			description: '<p>Ailerons are small hinged sections on the outboard portion of a wing. Ailerons usually work in opposition: while one moves down the other moves up.</p>' +
-				'<p>Their job is to increase the lift on one wing and reduce the lift on the other. This rolls the aircraft sideways allowing it to turn. Airplanes turn because of banking created by the ailerons, not because of rudder input.</p>',
+				'<p>Their job is to increase the lift on one wing and reduce the lift on the other. This rolls the aircraft sideways allowing it to turn. Airplanes turn because of banking created by the ailerons, not because of rudder input.</p>'
 		},
 		science: {
 			equation: 'F = m * a',
@@ -184,7 +184,7 @@ define({
 			figure: 'throwaway-aileron.gif',
 			description: '<p>Glenn Curtiss was one of many innovators that expanded on the idea of wing warping developed by the Wright Brothers. He developed an aileron that gave aircraft more lateral control.</p>' +
 			 '<p>Curtiss was born in 1878 in Hammondsport, New York. Similar to the Wright Brothers, Curtiss opend a bicycle shop and manufactured his own bikes. He later started another company and developed the Hercules motorcycle. The motorized engines on his bikes were the best in the country. It was his work with engines that brought him into the aviation realm.</p>' +
-			 '<p>Early aviatiors asked him to supply engines for their aircrafts. In 1908, Curtiss attracted the attention of Alexander Graham Bell, the telephone inventor. Curtiss joined Bell and others to start the Aerial Experiment Association. Curtiss made a controlled flight of over 1,000 feet in an aircraft called the White Wing. This was the first American aircraft to use ailerons for control purposes. Curtiss designed an aircraft called the June Bug, providing it with wing flaps that would later be known as ailerons.'
+			 '<p>Early aviatiors asked him to supply engines for their aircrafts. In 1908, Curtiss attracted the attention of Alexander Graham Bell, the telephone inventor. Curtiss joined Bell and others to start the Aerial Experiment Association. Curtiss made a controlled flight of over 1,000 feet in an aircraft called the White Wing. This was the first American aircraft to use ailerons for control purposes. Curtiss designed an aircraft called the June Bug, providing it with wing flaps that would later be known as ailerons.</p>'
 		},
 		quiz: [
 			{
