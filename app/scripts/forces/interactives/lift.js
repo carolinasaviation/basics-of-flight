@@ -29,9 +29,9 @@ define([
 				{
 					title: i18n.t.lift,
 					calculate: function(p) {
-						return scale(p, 600, 1500);
+						return scale(p, 5, 23.75).toFixed(2);
 					},
-					format: function() { return ' coeffecient'; }
+					format: function() { return ' kN'; }
 				},
 				{
 					title: 'range',

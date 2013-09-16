@@ -29,9 +29,9 @@ define([
 				{
 					title: i18n.t.weight,
 					calculate: function(p) {
-						return scale(p, 600, 1500);
+						return scale(p, 11.113, 11.113).toFixed(3);
 					},
-					format: function() { return ' lbs'; }
+					format: function() { return ' kN'; }
 				},
 				{
 					title: 'range',

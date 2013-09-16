@@ -29,9 +29,9 @@ define([
 				{
 					title: i18n.t.thrust,
 					calculate: function(p) {
-						return scale(p, 600, 1500);
+						return scale(p, 0.4, 1.9).toFixed(2);
 					},
-					format: function() { return ' coeffecient'; }
+					format: function() { return ' kN'; }
 				},
 				{
 					title: 'range',
