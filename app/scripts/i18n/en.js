@@ -26,6 +26,7 @@ define({
 		quiz: [
 			{
 				question: 'What happens to the plane when it reaches an altitude of ?????',
+				correctAnswer: 0,
 				answers: [
 					'It goes slower',
 					'It turns left',
@@ -259,11 +260,8 @@ define({
 		}
 	},
 
-	quiz: {
-		correctAnswers: 'Correct Answers',
-	},
-
 	t: {
+		correctAnswers: 'Correct Answers',
 		altitude: 'Altitude',
 		speed: 'Speed',
 		gravity: 'Gravity',

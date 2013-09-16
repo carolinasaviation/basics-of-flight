@@ -3,16 +3,10 @@ define(['./template'], function(template) {
 
 	var quiz = function() {/***
 		<div>
-			<div class="col col__quiz-equation" style="width: 20%">
-				<h3 class="quiz__correct-title">{{ obj.correctAnswers }}</h3>
-				<div class="quiz__correct">
-					<span class="quiz__correct-count"></span>
-					<span class="quiz__correct-total"></span>
-				</div>
-			</div>
 			{[ obj.questions.forEach(function(q, i) { ]}
-				<div class="col col__quiz-question col__quiz-question--{{ q.isActive ? 'active' : 'inactive' }}">
-					<p>{{ q.question }}</p>
+			<div class="col col__quiz-question col__quiz-question--{{ q.isActive ? 'active' : 'inactive' }}">
+				<p>{{ q.question }}</p>
+				<div style="position:relative">
 					<ol class="quiz__answer-list">
 					{[ q.answers.forEach(function(a, ai) { ]}
 						<li>
@@ -22,8 +16,14 @@ define(['./template'], function(template) {
 						</li>
 					{[ }); ]}
 					</ol>
+					<button class="quiz__submit">Submit</button>
 				</div>
+			</div>
 			{[ }); ]}
+			<div class="col col__quiz-result col__quiz-result--success">
+		  </div>
+			<div class="col col__quiz-result col__quiz-result--error">
+		  </div>
 		</div>
 	***/
 	};

@@ -188,12 +188,11 @@ define([
 
 			// Either Hammer's tap event or dynamically adding these labels to the DOM is preventing
 			// default behavior so we have to manually handle the radio selected state
-			else if (e.target.nodeName.toLowerCase() === 'label') {
-				Array.prototype.slice.call(e.target.parentNode.parentNode.querySelectorAll('input[type="radio"]'), 0).forEach(function(el) {
-					el.removeAttribute('checked');
-				});
-				document.getElementById(e.target.getAttribute('for')).setAttribute('checked', 'checked');
-			}
+			// which is fine since we're wanting to update the quiz's state and position the submit button
+			else if (e.target.nodeName.toLowerCase() === 'label')
+				this._quiz.select(e.target.getAttribute('for'));
+			else if (e.target.nodeName.toLowerCase() === 'button')
+				this._quiz.submit();
 		}
 	};
 
