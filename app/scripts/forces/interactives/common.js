@@ -1,11 +1,12 @@
 define([
 	'../../lib/things',
 ], function(__) {
+
 	return {
 		setupCessna: function(section, canvas) {
 			var img = document.getElementById('cessna-isometric').cloneNode(true);
 			img.id = section.name.toLowerCase() + '-cessna-isometric';
-			img.classList.add('interactive--image');
+			img.setAttribute('class', 'interactive--image');
 			img.style.position = 'absolute';
 			img.style.left = '15%';
 			img.style.width = '60%';

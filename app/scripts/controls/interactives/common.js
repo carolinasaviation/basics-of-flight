@@ -1,6 +1,7 @@
 define([
 	'../../lib/grid'
 ], function(grid) {
+
 	function createSpriteSheet(name, frames) {
 		return Array.apply(0, Array(frames)).map(function(_, i) {
 			var img = new Image();
