@@ -5,7 +5,7 @@ define([
 
 	function Field(point, mass) {
 		this.position = point || new Vector(0, 0);
-		this.mass = mass || 20;
+		this.mass = mass || 5;
 	};
 
 	Field.prototype.draw = function(ctx) {

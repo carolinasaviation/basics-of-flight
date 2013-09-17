@@ -3,8 +3,9 @@ define([
 	'i18n',
 	'../../views/display',
 	'../../lib/grid',
-	'./common'
-], function(helper, i18n, display, grid, common) {
+	'./common',
+	'../../config'
+], function(helper, i18n, display, grid, common, config) {
 	'use strict';
 
 	var scale = helper.scale;
@@ -70,13 +71,12 @@ define([
 		bindings.granger.element.addEventListener('change', grangerChange, false);
 
 		function onUpdate() {
-			particle.moveToField(field);
+			particle.moveTowardsPoint(field);
 			particle.move();
 
-			field.draw(ctx);
+			if (config.showField) field.draw(ctx);
 
-			var y = 0;
-			//var y = (Math.sin(this.t) * 14);
+			var y = (Math.sin(this.t) * 20);
 			var transform = 'translate(' + (particle.position.x - img.clientWidth / 2) + 'px,' + (particle.position.y + y - img.clientHeight / 2) + 'px)';
 			img.style.webkitTransform = transform;
 		}

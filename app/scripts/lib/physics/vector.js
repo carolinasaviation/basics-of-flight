@@ -11,8 +11,14 @@ define([], function() {
 	};
 
 	Vector.prototype.add = function(vector) {
-		this.x += vector.x;
-		this.y += vector.y;
+		if (arguments.length === 1) {
+			this.x += vector.x;
+			this.y += vector.y;
+		}
+		else {
+			this.x += vector;
+			this.y += arguments[1];
+		}
 	};
 
 	Vector.prototype.moveTo = function(x, y) {
@@ -21,7 +27,7 @@ define([], function() {
 	}
 
 	Vector.fromArray = function(a) {
-		return new Array(a[0], a[1]);
+		return new Vector(a[0], a[1]);
 	}
 
 	return Vector;

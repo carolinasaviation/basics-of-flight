@@ -10,47 +10,26 @@ define([
 	};
 
 	Particle.prototype.move = function() {
-		if (this.acceleration.x === null) {
-			this.acceleration.x = 0;
-			this.velocity.x = 0;
-		}
-		if (this.acceleration.y === null) {
-			this.acceleration.y = 0;
-			this.velocity.y = 0;
-		}
 		this.velocity.add(this.acceleration);
 		this.position.add(this.velocity);
 	};
 
-	Particle.prototype.moveToField = function(field) {
+	Particle.prototype.moveTowardsPoint = function(field) {
 		// our starting acceleration this frame
-		var accelX = 0;
-		var accelY = 0;
-		var vectorX, vectorY, force;
+		var speed = 1;
+		var dx = field.position.x - this.position.x,
+				dy = field.position.y - this.position.y,
+				angle, vx, vy;
 
-		// find the distance between the particle and the field
-		vectorX = field.position.x - this.position.x;
-		vectorY = field.position.y - this.position.y;
+		angle = Math.atan2(dy, dx),
+		vx = Math.cos(angle) * speed,
+		vy = Math.sin(angle) * speed;
 
-		// calculate the force via MAGIC and HIGH SCHOOL SCIENCE!
-		force = field.mass / Math.pow(vectorX * vectorX + vectorY * vectorY, 1.5);
+		//arrow.rotation = angle; //radians
+		if (Math.abs(dx) < speed) vx = 0;
+		if (Math.abs(dy) < speed) vy = 0;
 
-		// add to the total acceleration the force adjusted by distance
-		accelX = vectorX * force;
-		accelY = vectorY * force;
-
-		if (Math.abs(vectorX) < 1) {
-		 	this.position.x = field.position.x;
-			this.acceleration.x = accelX = 0;
-		}
-
-		if (Math.abs(vectorY) < 1) {
-		 	this.position.y = field.position.y;
-			this.acceleration.y = accelY = 0;
-		}
-
-		// update our particle's acceleration
-		this.acceleration.moveTo(accelX, accelY);
+		this.position.add(vx, vy);
 	}
 
 	Particle.prototype.submitToFields = function(fields) {

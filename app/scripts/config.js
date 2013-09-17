@@ -1,6 +1,7 @@
 define(function() {
 
 	var dim = document.body.getBoundingClientRect();
+	var config;
 	var logger = {
 		colors: {
 			fn: '#f8682b',
@@ -38,7 +39,14 @@ define(function() {
 	};
 
 
-	return {
+	document.documentElement.addEventListener('keyup', function(e) {
+		if (e.keyCode === 70) { // f;
+			localStorage.setItem('showField', !config.showField);
+			config.showField = !config.showField;
+		}
+	}, false);
+
+	config = {
 		logger: logger,
 		// false or fn
 		/*
@@ -63,10 +71,13 @@ define(function() {
 	  */
 		width: dim.width,
 		height: dim.height,
+		showField: !!localStorage.getItem('showField'),
 
 		transform: 'webkitTransform',
 		animation: 'webkitAnimation'
 	};
+
+	return config;
 
 });
 
