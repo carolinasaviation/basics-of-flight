@@ -1,4 +1,7 @@
 define({
+	t: function(prop) {
+		console.log('TODO: i18n.t()', this);
+	},
 	// === FORCES
 	forces: {
 		title: 'Forces',
@@ -273,6 +276,8 @@ define({
 		flaps: 'Flaps',
 		ailerons: 'Ailerons',
 		rudder: 'Rudder',
+		answeredCorrectly: 'Correct! You got it right!',
+		answeredIncorrectly: 'I&rsquo;m sorry. That&rsquo;s not quite right. Try again?'
 	}
 });
 

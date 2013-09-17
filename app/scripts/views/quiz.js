@@ -20,10 +20,8 @@ define(['./template'], function(template) {
 				</div>
 			</div>
 			{[ }); ]}
-			<div class="col col__quiz-result col__quiz-result--success">
-		  </div>
-			<div class="col col__quiz-result col__quiz-result--error">
-		  </div>
+			<div class="col col__quiz-result col__quiz-result--success">{! t.answeredCorrectly !}</div>
+			<div class="col col__quiz-result col__quiz-result--error">{! t.answeredIncorrectly !}</div>
 		</div>
 	***/
 	};

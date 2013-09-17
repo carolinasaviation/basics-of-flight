@@ -40,8 +40,8 @@ define([
 			return this;
 		},
 
-		quiz: function(questions) {
-			this._quiz = new Quiz(questions);
+		quiz: function(questions, answers) {
+			this._quiz = new Quiz(questions, answers);
 			this._quiz.appendTo(this.card.querySelector('.card-content[data-role="quiz"]'));
 			return this;
 		},
