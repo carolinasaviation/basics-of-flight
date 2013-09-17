@@ -7,7 +7,7 @@ define([
 	var OFFSET = 20;
 	var STROKE_WIDTH = 2;
 	var STROKE_COLOR = '#666';
-	var TIME = 6000;
+	var TIME = 7200;
 
 	function noop(){}
 

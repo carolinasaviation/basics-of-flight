@@ -48,7 +48,6 @@ define([
 		}
 	});
 
-	var boundGranger = false;
 	var grangerChange;
 
 	function interactive(canvas) {
@@ -71,12 +70,12 @@ define([
 		bindings.granger.element.addEventListener('change', grangerChange, false);
 
 		function onUpdate() {
-			particle.moveTowardsPoint(field);
+			particle.moveTowardField(field);
 			particle.move();
 
 			if (config.showField) field.draw(ctx);
-
 			var y = (Math.sin(this.t) * 20);
+
 			var transform = 'translate(' + (particle.position.x - img.clientWidth / 2) + 'px,' + (particle.position.y + y - img.clientHeight / 2) + 'px)';
 			img.style.webkitTransform = transform;
 		}

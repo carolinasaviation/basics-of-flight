@@ -14,7 +14,7 @@ define([
 		this.position.add(this.velocity);
 	};
 
-	Particle.prototype.moveTowardsPoint = function(field) {
+	Particle.prototype.moveTowardField = function(field) {
 		// our starting acceleration this frame
 		var speed = 1;
 		var dx = field.position.x - this.position.x,

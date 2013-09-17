@@ -47,7 +47,6 @@ define([
 		}
 	});
 
-	var boundGranger = false;
 	var grangerChange;
 
 	function interactive(canvas) {
@@ -64,19 +63,18 @@ define([
 		grangerChange = function(e) {
 			var diff = (+this.value - value) * 4;
 			field.position.x = origin.x + diff * 1.5;
-			field.position.y = origin.y + diff;
+			field.position.y = origin.y + diff * 0.333;
 		}
 
 		bindings.granger.element.addEventListener('change', grangerChange, false);
 
 		function onUpdate() {
-			particle.moveToField(field);
+			particle.moveTowardField(field);
 			particle.move();
 
-			field.draw(ctx);
+			if (config.showField) field.draw(ctx);
+			var y = (Math.sin(this.t) * 14);
 
-			var y = 0;
-			//var y = (Math.sin(this.t) * 14);
 			var transform = 'translate(' + (particle.position.x - img.clientWidth / 2) + 'px,' + (particle.position.y + y - img.clientHeight / 2) + 'px)';
 			img.style.webkitTransform = transform;
 		}
