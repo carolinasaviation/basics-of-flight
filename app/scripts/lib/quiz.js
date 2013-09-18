@@ -14,7 +14,7 @@ define([
 
 		var self = this;;
 		questions.forEach(function(question, i) {
-			console.log(question, !!answers ? answers[i] : undefined);
+			//console.log(question, !!answers ? answers[i] : undefined);
 			self.addQuestion(question, !!answers ? answers[i] : undefined);
 		});
 	}

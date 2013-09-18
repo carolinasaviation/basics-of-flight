@@ -1,4 +1,3 @@
-/*global define */
 define([
 	'config',
 	'i18n',
@@ -7,12 +6,12 @@ define([
 	'./pages/preflight',
 	'./views/navigation',
 	'./lib/touch',
+	'./lib/screensaver',
 	'lodash'
-], function (config, i18n, forces, controls, preflight, viewNavigation, touch, _) {
+], function (config, i18n, forces, controls, preflight, viewNavigation, touch, screensaver, _) {
 	'use strict';
 
 	window.config = config;
-	window.i18n = i18n;
 
 	var NAV_ACTIVE_CLASS = 'nav-item-active';
 
@@ -159,7 +158,6 @@ define([
 			page.load();
 		}
 	};
-
 
 	return new AppManager();
 });

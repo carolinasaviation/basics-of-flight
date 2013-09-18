@@ -628,6 +628,25 @@ table
 	content ' '
 
 // modal }}}
+// {{{ screensave
+
+.screensaver
+	fixed top bottom
+	left 0
+	right 0
+	background BLACK
+	z-index 99
+	transition all 0.5s ease-in
+
+.screensaver--is-active
+	opacity 1
+
+.screensaver--is-inactive
+	opacity 0
+
+
+
+// screensaver }}}
 
 .granger
 	absolute left bottom

@@ -3,8 +3,9 @@ define([
 	'../lib/helpers',
 	'../lib/touch',
 	'config',
-	'lodash'
-], function(viewCard, helper, touch, config, _) {
+	'lodash',
+	'i18n'
+], function(viewCard, helper, touch, config, _, i18n) {
 	'use strict';
 
 	var NAV_ACTIVE_CLASS = 'subnav-item-active';
