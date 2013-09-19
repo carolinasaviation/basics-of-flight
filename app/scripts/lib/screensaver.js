@@ -28,8 +28,8 @@ define([
 
 	var cur = 0, n = 1, raf;
 
-	//var TIMEOUT = 300000; // 5 minutes
-	var TIMEOUT = 3000; // 5 minutes
+	var TIMEOUT = 300000; // 5 minutes
+	//var TIMEOUT = 3000; // 5 minutes
 	var INACTIVE_CLASS = 'ss--is-inactive';
 	var ACTIVE_CLASS = 'ss--is-active';
 	var timeout;
