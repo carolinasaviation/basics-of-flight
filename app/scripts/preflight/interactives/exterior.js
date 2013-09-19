@@ -4,8 +4,6 @@ define([
 	'../../views/display',
 	'../../lib/Tween'
 ], function(helper, i18n, display, TWEEN) {
-	'use strict';
-	TWEEN || (TWEEN = window.TWEEN);
 
 	var scale = helper.scale;
 

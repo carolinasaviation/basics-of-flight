@@ -512,10 +512,13 @@ label[for]
 @keyframes actionPulse
 	20%
 		stroke #202020
+		color #202020
 	50%
 		stroke ACTION_RED
+		color ACTION_RED
 	80%
 		stroke #202020
+		color #202020
 
 // animations }}}
 // {{{ range and data table
@@ -628,9 +631,9 @@ table
 	content ' '
 
 // modal }}}
-// {{{ screensave
+// {{{ screensaver
 
-.screensaver
+.ss
 	fixed top bottom
 	left 0
 	right 0
@@ -638,13 +641,44 @@ table
 	z-index 99
 	transition all 0.5s ease-in
 
-.screensaver--is-active
+.ss--is-active
 	opacity 1
 
-.screensaver--is-inactive
+.ss--is-inactive
 	opacity 0
 
+.ss-image
+	absolute left 10% right 10%
+	top -5%
+	width 80%
+	opacity 0.2
+	animation comeSailAway 6s cubic-bezier(1.000, 0.000, 1.000, 0.000) infinite
+	animation-delay 0s
+	&:nth-child(1)
+		animation-delay 3s
 
+@keyframes comeSailAway
+	0%
+		transform translateX(110%)
+	50%
+		opacity 1
+		transform translateX(0%)
+	100%
+		transform translateX(-110%)
+
+.ss-animation
+	absolute left 30% right 30%
+	bottom 9em
+	width 40%
+
+.ss-title
+	fixed left right
+	bottom 1em
+	font-size 4em
+	font-family FONT_FAMILY
+	animation 5s actionPulse linear infinite
+	text-align center
+	text-transform uppercase
 
 // screensaver }}}
 

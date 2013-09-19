@@ -277,7 +277,8 @@ define({
 		ailerons: 'Ailerons',
 		rudder: 'Rudder',
 		answeredCorrectly: 'Correct! You got it right!',
-		answeredIncorrectly: 'I&rsquo;m sorry. That&rsquo;s not quite right. Try again?'
+		answeredIncorrectly: 'I&rsquo;m sorry. That&rsquo;s not quite right. Try again?',
+		touchToEnter: 'Touch to enter'
 	}
 });
 
