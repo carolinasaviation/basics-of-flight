@@ -6,6 +6,8 @@ define([
 	'use strict';
 
 	var NUMBER_OF_ANSWERS = 3;
+	var RESULT_TIMEOUT_DELAY = 5000;
+	var BEM_PREFIX = 'col__quiz-';
 
 	/**
 	 * Creates a new Quiz
@@ -62,11 +64,13 @@ define([
 
 		/**
 		 * Select question.
-		 * Set checked attribute. and store currently selected answer.
+		 * Set checked attribute and store currently selected answer.
 		 *
 		 * @return Quiz instance
 		 */
 		select: function(id) {
+			this.hideNotification();
+
 			if (this.checked) this.checked.removeAttribute('checked');
 			this.checked = document.getElementById(id);
 			this.checked.setAttribute('checked', 'checked');
@@ -82,13 +86,50 @@ define([
 		 * @return Quiz instance
 		 */
 		submit: function() {
-			this.element.querySelector('.col').style.display = 'none';
+			var self = this;
+			var selector = BEM_PREFIX + 'result--';
+			var status = 'error';
+
+			var element;
 
 			if (+this.checked.value === this.active.correctAnswer)
-				this.element.querySelector('.col__quiz-result--success').style.display = 'block';
-			else
-				this.element.querySelector('.col__quiz-result--error').style.display = 'block';
+				status = 'success';
 
+
+			element = this.element.querySelector('.' + selector + status);
+			this.showNotification(element);
+			setTimeout(function () {
+				self.hideNotification(element);
+			}, RESULT_TIMEOUT_DELAY);
+
+			return this;
+		},
+
+		/**
+		 * Add appropriate active class to notification element
+		 *
+		 * @param Node element the notification html node
+		 *
+		 * @return Quiz instance
+		 */
+		showNotification: function(element) {
+			element.classList.add(BEM_PREFIX + 'result--' + 'isActive');
+			return this;
+		},
+
+		/**
+		 * Remove active class from currently active notification element
+		 *
+		 * @param Node [element] the notification html node
+		 *
+		 * @return Quiz instance
+		 */
+		hideNotification: function(element) {
+			if (typeof element === 'undefined')
+				element = this.element.querySelector('.' + BEM_PREFIX + 'result--' + 'isActive');
+
+			if (element)
+				element.classList.remove(BEM_PREFIX + 'result--' + 'isActive');
 			return this;
 		},
 

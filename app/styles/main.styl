@@ -408,11 +408,29 @@ h1
 	line-height 2.23333
 	padding 0 0.666em
 
+.col__quiz-result--success,
+.col__quiz-result--error
+	absolute left 12.5% right 12.5%
+	top 0
+	height 0
+	border-radius 0 0 0.333em 0.333em
+	color #eee
+	line-height 3em
+	padding 0 1.333em
+	overflow hidden
+	opacity 0
+	transition all 0.416666s ease-in
+
 .col__quiz-result--success
-	display none
+	background BLUE
 
 .col__quiz-result--error
-	display none
+	background ACTION_RED
+
+.col__quiz-result--isActive
+	height 3em
+	opacity 1
+
 
 label[for]
 	cursor pointer
