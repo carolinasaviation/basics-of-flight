@@ -6,15 +6,22 @@ define([
 	'use strict';
 
 	var NUMBER_OF_ANSWERS = 3;
+
+	/**
+	 * Creates a new Quiz
+	 * @constructor
+	 *
+	 * @param Array questions questions array of objects. { question: String, answers: Array }
+	 * @param Array [answers]
+	 */
 	function Quiz(questions, answers) {
 		this.element = null;
 		this.questions = [];
 		this['correct-count'] = 0;
 		this['correct-total'] = 0;
 
-		var self = this;;
+		var self = this;
 		questions.forEach(function(question, i) {
-			//console.log(question, !!answers ? answers[i] : undefined);
 			self.addQuestion(question, !!answers ? answers[i] : undefined);
 		});
 	}
@@ -23,20 +30,24 @@ define([
 		constructor: Quiz,
 
 		/**
-		 * Add a question to the
+		 * Add a question object to the instance
 		 *
-		 * @param {Object} obj the question/answer object
+		 * @param {Object} question the question/answer object
 		 * @param {String} [obj.question] the question
 		 * @param {Array} [obj.answers] array of answers
 		 */
-		addQuestion: function(obj, answer) {
-			obj.isActive = this.questions.length === 0;
+		addQuestion: function(question, answer) {
+			question.isActive = this.questions.length === 0;
 			this['correct-total'] = this.questions.length;
-			this.questions.push(obj);
+			this.questions.push(question);
 		},
 
+		/**
+		 * Create first question DOM node
+		 *
+		 * @return {Node} this.element question node
+		 */
 		render: function() {
-			var self = this;
 			this.active = this.questions[0];
 			this.checked = null;
 			this.element = helper.createDomNode(view({ correctAnswers: i18n.t.correctAnswers, questions: this.questions, t: i18n.t }));
@@ -49,6 +60,12 @@ define([
 			return this.element;
 		},
 
+		/**
+		 * Select question.
+		 * Set checked attribute. and store currently selected answer.
+		 *
+		 * @return Quiz instance
+		 */
 		select: function(id) {
 			if (this.checked) this.checked.removeAttribute('checked');
 			this.checked = document.getElementById(id);
@@ -58,6 +75,12 @@ define([
 			return this;
 		},
 
+
+		/**
+		 * Submit the form and show success or error message.
+		 *
+		 * @return Quiz instance
+		 */
 		submit: function() {
 			this.element.querySelector('.col').style.display = 'none';
 
@@ -69,8 +92,16 @@ define([
 			return this;
 		},
 
+		/**
+		 * Append current question to an element
+		 *
+		 * @param Node el element to render quiz into
+		 * @return Quiz instance
+		 */
 		appendTo: function(el) {
 			el.appendChild(this.render());
+
+			return this;
 		}
 
 	};
