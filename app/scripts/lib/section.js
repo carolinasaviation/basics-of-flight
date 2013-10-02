@@ -126,29 +126,7 @@ define([
 				if (el) el.classList.remove('btn--is-active');
 			}
 
-			if (section !== 'film') {
-				el = this.card.querySelector('.card-content--active');
-				el.classList.remove('card-content--active');
-				el.classList.add('card-content--inactive');
-
-				el = this.card.querySelector('.card-content[data-role="' + section + '"]');
-				el.classList.remove('card-content--inactive');
-				el.classList.add('card-content--active');
-
-				if (targetButton) {
-					el = (targetButton.matches('.btn-go-back')) ?
-						this.card.querySelector('.btn--is-active') :
-						targetButton.parentNode.querySelector('.btn--is-active');
-
-					if (el) el.classList.remove('btn--is-active');
-
-					// go back to index selector doesn't get this class
-					if (!targetButton.matches('.btn-go-back'))
-						targetButton.classList.add('btn--is-active');
-				}
-			}
-
-			else {
+			if (section === 'film') {
 				// close modal
 				fn = function fn(_el) {
 					el || (el = _el);
@@ -170,6 +148,30 @@ define([
 					window.closeModal = fn;
 					touch(el).on('tap', fn);
 				}, 4);
+			}
+
+			else {
+				if (section === 'quiz') this._quiz.deselect();
+
+				el = this.card.querySelector('.card-content--active');
+				el.classList.remove('card-content--active');
+				el.classList.add('card-content--inactive');
+
+				el = this.card.querySelector('.card-content[data-role="' + section + '"]');
+				el.classList.remove('card-content--inactive');
+				el.classList.add('card-content--active');
+
+				if (targetButton) {
+					el = (targetButton.matches('.btn-go-back')) ?
+						this.card.querySelector('.btn--is-active') :
+						targetButton.parentNode.querySelector('.btn--is-active');
+
+					if (el) el.classList.remove('btn--is-active');
+
+					// go back to index selector doesn't get this class
+					if (!targetButton.matches('.btn-go-back'))
+						targetButton.classList.add('btn--is-active');
+				}
 			}
 
 			if (config.logger.sectionLifeCycle)

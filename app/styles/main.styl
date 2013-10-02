@@ -192,6 +192,10 @@ h1
 	h1
 		margin-top 0
 
+	p
+		line-height 1.5
+		padding-right 1.5em
+
 .card-content
 	height 100%
 	overflow-y scroll
@@ -199,7 +203,6 @@ h1
 	padding 0.5em
 	// width 70%
 	width 82%
-
 
 	&:before,
 	&:after
@@ -245,7 +248,12 @@ h1
 	transform translateX(0%) translateZ(0)
 .card-content--inactive
 	transform translateX(-100%) translateZ(0)
+	z-index -1
 
+.card-content[data-role="quiz"]
+	overflow hidden
+	.btn.btn-go-back
+		absolute top right
 
 .card-stage
 	absolute left right
@@ -293,9 +301,9 @@ h1
 	border 0
 
 .btn-go-back
-	absolute bottom right
+	// absolute bottom right
+	// text-transform uppercase
 	color ACTION_RED
-	text-transform uppercase
 
 .btn--quiz
 	background BLACK

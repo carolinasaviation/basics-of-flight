@@ -79,6 +79,21 @@ define([
 			return this;
 		},
 
+		/**
+		 * Deselect question.
+		 * Set checked attribute and store currently selected answer.
+		 *
+		 * @return Quiz instance
+		 */
+		deselect: function() {
+			if (!this.checked) return this;
+
+			this.checked.removeAttribute('checked');
+			this.checked = null;
+			this.element.querySelector('button').style.top = 200 + '%';
+
+			return this;
+		},
 
 		/**
 		 * Submit the form and show success or error message.

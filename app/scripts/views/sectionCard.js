@@ -1,5 +1,7 @@
-define(['./template'], function(template) {
+define(['./template', 'i18n'], function(template, i18n) {
 	'use strict';
+
+	window.i18n = i18n;
 
 	var card = function() {/***
 		<div class="card">
@@ -19,7 +21,7 @@ define(['./template'], function(template) {
 					{[ } ]}
 					{! obj[section].description !}
 					{[ if (i !== 0) { ]}
-					<button class="btn btn-go-back" data-action="show-introduction">Back</button>
+					<button class="btn btn-go-back" data-action="show-introduction">{{ i18n.t.closeSection }}</button>
 					{[ } ]}
 				</div>
 			{[ }); ]}

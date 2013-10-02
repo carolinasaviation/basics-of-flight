@@ -264,6 +264,7 @@ define({
 	},
 
 	t: {
+		closeSection: 'Close Section',
 		correctAnswers: 'Correct Answers',
 		altitude: 'Altitude',
 		speed: 'Speed',
