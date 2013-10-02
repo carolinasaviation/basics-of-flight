@@ -160,7 +160,11 @@ define([
 			var section;
 
 			var active = document.querySelector('.subnav .' + NAV_ACTIVE_CLASS);
-			if (active && active.contains(node)) return;
+			if (active && active.contains(node)) {
+				section = _.findWhere(this.sections, { name: active.textContent });
+				if (section) section.show('introduction');
+				return;
+			}
 
 			this.deselectActiveSection();
 			this.deactivate();

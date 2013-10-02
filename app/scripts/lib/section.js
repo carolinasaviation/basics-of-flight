@@ -54,6 +54,7 @@ define([
 
 			if (!(this._page && this._page.element)) return;
 			this.isActive = true;
+			this.show('introduction');
 
 			touch(this._page.element).on('tap', this.handleTap);
 
@@ -119,6 +120,12 @@ define([
 
 		show: function show(section, targetButton) {
 			var el, fn;
+			// reset any active button
+			if (!targetButton) {
+				el = this.card.querySelector('.btn--is-active');
+				if (el) el.classList.remove('btn--is-active');
+			}
+
 			if (section !== 'film') {
 				el = this.card.querySelector('.card-content--active');
 				el.classList.remove('card-content--active');
