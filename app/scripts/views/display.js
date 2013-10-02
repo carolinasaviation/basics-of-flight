@@ -57,6 +57,14 @@ define([
 
 		granger = new Granger(range, { renderer: 'dom', type: 'x', height: 55 });
 
+		// shift the elements around from there default case to add some margin
+		// and fake the positioning correct.
+		var wrapper = document.createElement('div');
+		wrapper.classList.add('granger-wrapper');
+		granger.element.parentNode.insertBefore(wrapper, granger.element);
+		granger.renderer.canvas.parentNode.removeChild(granger.renderer.canvas);
+		wrapper.appendChild(granger.renderer.canvas);
+
 		el.appendChild(bindings.el);
 
 		return {
